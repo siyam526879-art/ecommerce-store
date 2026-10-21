@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getSession, signIn } from "next-auth/react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedCallback = searchParams.get("callbackUrl");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -47,7 +49,13 @@ export default function LoginPage() {
       const role = (session?.user as { role?: string } | undefined)?.role;
 
       if (role === "ADMIN") {
-        router.replace("/admin");
+        const destination =
+          requestedCallback?.startsWith("/") &&
+          !requestedCallback.startsWith("//")
+            ? requestedCallback
+            : "/admin";
+
+        router.replace(destination);
         router.refresh();
         return;
       }
@@ -143,3 +151,5 @@ export default function LoginPage() {
     </main>
   );
 }
+
+
