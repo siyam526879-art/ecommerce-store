@@ -1,0 +1,189 @@
+﻿import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { requirePermission } from "@/lib/auth-guard";
+
+const SALES_STATUSES = [
+  "CONFIRMED",
+  "PROCESSING",
+  "SHIPPED",
+  "DELIVERED",
+  "REFUNDED",
+];
+
+function dateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export async function GET() {
+  try {
+    await requirePermission("reports.view");
+
+    const now = new Date();
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
+    start.setDate(start.getDate() - 29);
+
+    const [orders, refunds] = await Promise.all([
+      prisma.order.findMany({
+        where: {
+          placedAt: { gte: start, lte: now },
+          status: { in: SALES_STATUSES },
+        },
+        select: {
+          id: true,
+          orderNumber: true,
+          status: true,
+          placedAt: true,
+          total: true,
+          items: {
+            select: {
+              name: true,
+              sku: true,
+              quantity: true,
+              total: true,
+              variant: {
+                select: {
+                  product: {
+                    select: { costPrice: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
+      prisma.refund.findMany({
+        where: {
+          status: "SUCCEEDED",
+          createdAt: { gte: start, lte: now },
+        },
+        select: {
+          amount: true,
+          createdAt: true,
+          payment: {
+            select: {
+              orderId: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    const days = new Map<
+      string,
+      {
+        date: string;
+        sales: number;
+        refunds: number;
+        netRevenue: number;
+        grossProfit: number;
+        orders: number;
+        costMissing: number;
+        orderDetails: {
+          orderNumber: string;
+          status: string;
+          total: number;
+          placedAt: string;
+          items: {
+            name: string;
+            sku: string | null;
+            quantity: number;
+            sales: number;
+            cost: number | null;
+          }[];
+        }[];
+      }
+    >();
+
+    // Create all 30 calendar days, including zero-sales days.
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(start);
+      date.setDate(start.getDate() + i);
+      const key = dateKey(date);
+
+      days.set(key, {
+        date: key,
+        sales: 0,
+        refunds: 0,
+        netRevenue: 0,
+        grossProfit: 0,
+        orders: 0,
+        costMissing: 0,
+        orderDetails: [],
+      });
+    }
+
+    for (const order of orders) {
+      const key = dateKey(order.placedAt);
+      const day = days.get(key);
+      if (!day) continue;
+
+      const orderTotal = Number(order.total);
+      day.sales += orderTotal;
+      day.orders += 1;
+
+      const items = order.items.map((item) => {
+        const sales = Number(item.total);
+        const costPrice = item.variant?.product?.costPrice;
+        const cost =
+          costPrice === null || costPrice === undefined
+            ? null
+            : Number(costPrice) * item.quantity;
+
+        if (cost === null) {
+          day.costMissing += 1;
+        } else {
+          day.grossProfit += sales - cost;
+        }
+
+        return {
+          name: item.name,
+          sku: item.sku,
+          quantity: item.quantity,
+          sales,
+          cost,
+        };
+      });
+
+      day.orderDetails.push({
+        orderNumber: order.orderNumber,
+        status: order.status,
+        total: orderTotal,
+        placedAt: order.placedAt.toISOString(),
+        items,
+      });
+    }
+
+    // Count each successful refund once, on the date it was recorded.
+    for (const refund of refunds) {
+      const key = dateKey(refund.createdAt);
+      const day = days.get(key);
+      if (day) day.refunds += Number(refund.amount);
+    }
+
+    for (const day of days.values()) {
+      day.netRevenue = day.sales - day.refunds;
+    }
+
+    return success({
+      generatedAt: now.toISOString(),
+      periodStart: dateKey(start),
+      periodEnd: dateKey(now),
+      days: Array.from(days.values()),
+      totals: {
+        sales: Array.from(days.values()).reduce((sum, day) => sum + day.sales, 0),
+        refunds: Array.from(days.values()).reduce((sum, day) => sum + day.refunds, 0),
+        netRevenue: Array.from(days.values()).reduce((sum, day) => sum + day.netRevenue, 0),
+        grossProfit: Array.from(days.values()).reduce((sum, day) => sum + day.grossProfit, 0),
+        orders: Array.from(days.values()).reduce((sum, day) => sum + day.orders, 0),
+        costMissing: Array.from(days.values()).reduce((sum, day) => sum + day.costMissing, 0),
+      },
+    });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+

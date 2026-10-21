@@ -1,0 +1,123 @@
+// Bangladesh Divisions + Districts data
+// English + Bengali names for search
+
+export interface Division {
+  id: string;
+  name: string;
+  bn: string;
+}
+
+export interface District {
+  id: string;
+  name: string;
+  bn: string;
+  division: string;
+}
+
+export const divisions: Division[] = [
+  { id: "dhaka", name: "Dhaka", bn: "ঢাকা" },
+  { id: "chittagong", name: "Chittagong", bn: "চট্টগ্রাম" },
+  { id: "rajshahi", name: "Rajshahi", bn: "রাজশাহী" },
+  { id: "khulna", name: "Khulna", bn: "খুলনা" },
+  { id: "barishal", name: "Barishal", bn: "বরিশাল" },
+  { id: "sylhet", name: "Sylhet", bn: "সিলেট" },
+  { id: "rangpur", name: "Rangpur", bn: "রংপুর" },
+  { id: "mymensingh", name: "Mymensingh", bn: "ময়মনসিংহ" },
+];
+
+export const districts: District[] = [
+  // Dhaka Division (13)
+  { id: "dhaka", name: "Dhaka", bn: "ঢাকা", division: "dhaka" },
+  { id: "faridpur", name: "Faridpur", bn: "ফরিদপুর", division: "dhaka" },
+  { id: "gazipur", name: "Gazipur", bn: "গাজীপুর", division: "dhaka" },
+  { id: "gopalganj", name: "Gopalganj", bn: "গোপালগঞ্জ", division: "dhaka" },
+  { id: "kishoreganj", name: "Kishoreganj", bn: "কিশোরগঞ্জ", division: "dhaka" },
+  { id: "madaripur", name: "Madaripur", bn: "মাদারীপুর", division: "dhaka" },
+  { id: "manikganj", name: "Manikganj", bn: "মানিকগঞ্জ", division: "dhaka" },
+  { id: "munshiganj", name: "Munshiganj", bn: "মুন্সিগঞ্জ", division: "dhaka" },
+  { id: "narayanganj", name: "Narayanganj", bn: "নারায়ণগঞ্জ", division: "dhaka" },
+  { id: "narsingdi", name: "Narsingdi", bn: "নরসিংদী", division: "dhaka" },
+  { id: "rajbari", name: "Rajbari", bn: "রাজবাড়ী", division: "dhaka" },
+  { id: "shariatpur", name: "Shariatpur", bn: "শরীয়তপুর", division: "dhaka" },
+  { id: "tangail", name: "Tangail", bn: "টাঙ্গাইল", division: "dhaka" },
+
+  // Chittagong Division (11)
+  { id: "chittagong", name: "Chittagong", bn: "চট্টগ্রাম", division: "chittagong" },
+  { id: "bandarban", name: "Bandarban", bn: "বান্দরবান", division: "chittagong" },
+  { id: "brahmanbaria", name: "Brahmanbaria", bn: "ব্রাহ্মণবাড়িয়া", division: "chittagong" },
+  { id: "chandpur", name: "Chandpur", bn: "চাঁদপুর", division: "chittagong" },
+  { id: "comilla", name: "Comilla", bn: "কুমিল্লা", division: "chittagong" },
+  { id: "coxsbazar", name: "Cox's Bazar", bn: "কক্সবাজার", division: "chittagong" },
+  { id: "feni", name: "Feni", bn: "ফেনী", division: "chittagong" },
+  { id: "khagrachari", name: "Khagrachari", bn: "খাগড়াছড়ি", division: "chittagong" },
+  { id: "lakshmipur", name: "Lakshmipur", bn: "লক্ষ্মীপুর", division: "chittagong" },
+  { id: "noakhali", name: "Noakhali", bn: "নোয়াখালী", division: "chittagong" },
+  { id: "rangamati", name: "Rangamati", bn: "রাঙ্গামাটি", division: "chittagong" },
+
+  // Rajshahi Division (8)
+  { id: "rajshahi", name: "Rajshahi", bn: "রাজশাহী", division: "rajshahi" },
+  { id: "bogra", name: "Bogra", bn: "বগুড়া", division: "rajshahi" },
+  { id: "chapainawabganj", name: "Chapainawabganj", bn: "চাঁপাইনবাবগঞ্জ", division: "rajshahi" },
+  { id: "joypurhat", name: "Joypurhat", bn: "জয়পুরহাট", division: "rajshahi" },
+  { id: "naogaon", name: "Naogaon", bn: "নওগাঁ", division: "rajshahi" },
+  { id: "natore", name: "Natore", bn: "নাটোর", division: "rajshahi" },
+  { id: "pabna", name: "Pabna", bn: "পাবনা", division: "rajshahi" },
+  { id: "sirajganj", name: "Sirajganj", bn: "সিরাজগঞ্জ", division: "rajshahi" },
+
+  // Khulna Division (10)
+  { id: "khulna", name: "Khulna", bn: "খুলনা", division: "khulna" },
+  { id: "bagerhat", name: "Bagerhat", bn: "বাগেরহাট", division: "khulna" },
+  { id: "chuadanga", name: "Chuadanga", bn: "চুয়াডাঙ্গা", division: "khulna" },
+  { id: "jessore", name: "Jessore", bn: "যশোর", division: "khulna" },
+  { id: "jhenaidah", name: "Jhenaidah", bn: "ঝিনাইদহ", division: "khulna" },
+  { id: "kushtia", name: "Kushtia", bn: "কুষ্টিয়া", division: "khulna" },
+  { id: "magura", name: "Magura", bn: "মাগুরা", division: "khulna" },
+  { id: "meherpur", name: "Meherpur", bn: "মেহেরপুর", division: "khulna" },
+  { id: "narail", name: "Narail", bn: "নড়াইল", division: "khulna" },
+  { id: "satkhira", name: "Satkhira", bn: "সাতক্ষীরা", division: "khulna" },
+
+  // Barishal Division (6)
+  { id: "barishal", name: "Barishal", bn: "বরিশাল", division: "barishal" },
+  { id: "barguna", name: "Barguna", bn: "বরগুনা", division: "barishal" },
+  { id: "bhola", name: "Bhola", bn: "ভোলা", division: "barishal" },
+  { id: "jhalokati", name: "Jhalokati", bn: "ঝালকাঠি", division: "barishal" },
+  { id: "patuakhali", name: "Patuakhali", bn: "পটুয়াখালী", division: "barishal" },
+  { id: "pirojpur", name: "Pirojpur", bn: "পিরোজপুর", division: "barishal" },
+
+  // Sylhet Division (4)
+  { id: "sylhet", name: "Sylhet", bn: "সিলেট", division: "sylhet" },
+  { id: "habiganj", name: "Habiganj", bn: "হবিগঞ্জ", division: "sylhet" },
+  { id: "moulvibazar", name: "Moulvibazar", bn: "মৌলভীবাজার", division: "sylhet" },
+  { id: "sunamganj", name: "Sunamganj", bn: "সুনামগঞ্জ", division: "sylhet" },
+
+  // Rangpur Division (8)
+  { id: "rangpur", name: "Rangpur", bn: "রংপুর", division: "rangpur" },
+  { id: "dinajpur", name: "Dinajpur", bn: "দিনাজপুর", division: "rangpur" },
+  { id: "gaibandha", name: "Gaibandha", bn: "গাইবান্ধা", division: "rangpur" },
+  { id: "kurigram", name: "Kurigram", bn: "কুড়িগ্রাম", division: "rangpur" },
+  { id: "lalmonirhat", name: "Lalmonirhat", bn: "লালমনিরহাট", division: "rangpur" },
+  { id: "nilphamari", name: "Nilphamari", bn: "নীলফামারী", division: "rangpur" },
+  { id: "panchagarh", name: "Panchagarh", bn: "পঞ্চগড়", division: "rangpur" },
+  { id: "thakurgaon", name: "Thakurgaon", bn: "ঠাকুরগাঁও", division: "rangpur" },
+
+  // Mymensingh Division (4)
+  { id: "mymensingh", name: "Mymensingh", bn: "ময়মনসিংহ", division: "mymensingh" },
+  { id: "jamalpur", name: "Jamalpur", bn: "জামালপুর", division: "mymensingh" },
+  { id: "netrokona", name: "Netrokona", bn: "নেত্রকোণা", division: "mymensingh" },
+  { id: "sherpur", name: "Sherpur", bn: "শেরপুর", division: "mymensingh" },
+];
+
+// Helper: get districts for a division
+export function getDistrictsByDivision(divisionId: string): District[] {
+  return districts.filter((d) => d.division === divisionId);
+}
+
+// Helper: get division by id
+export function getDivision(divisionId: string): Division | undefined {
+  return divisions.find((d) => d.id === divisionId);
+}
+
+// Helper: get district by id
+export function getDistrict(districtId: string): District | undefined {
+  return districts.find((d) => d.id === districtId);
+}

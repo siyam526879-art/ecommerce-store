@@ -1,0 +1,2485 @@
+﻿
+
+================ FILE: src\lib\data\bangladesh.ts ================
+// Bangladesh Divisions + Districts data
+// English + Bengali names for search
+
+export interface Division {
+  id: string;
+  name: string;
+  bn: string;
+}
+
+export interface District {
+  id: string;
+  name: string;
+  bn: string;
+  division: string;
+}
+
+export const divisions: Division[] = [
+  { id: "dhaka", name: "Dhaka", bn: "à¦¢à¦¾à¦•à¦¾" },
+  { id: "chittagong", name: "Chittagong", bn: "à¦šà¦Ÿà§à¦Ÿà¦—à§à¦°à¦¾à¦®" },
+  { id: "rajshahi", name: "Rajshahi", bn: "à¦°à¦¾à¦œà¦¶à¦¾à¦¹à§€" },
+  { id: "khulna", name: "Khulna", bn: "à¦–à§à¦²à¦¨à¦¾" },
+  { id: "barishal", name: "Barishal", bn: "à¦¬à¦°à¦¿à¦¶à¦¾à¦²" },
+  { id: "sylhet", name: "Sylhet", bn: "à¦¸à¦¿à¦²à§‡à¦Ÿ" },
+  { id: "rangpur", name: "Rangpur", bn: "à¦°à¦‚à¦ªà§à¦°" },
+  { id: "mymensingh", name: "Mymensingh", bn: "à¦®à¦¯à¦¼à¦®à¦¨à¦¸à¦¿à¦‚à¦¹" },
+];
+
+export const districts: District[] = [
+  // Dhaka Division (13)
+  { id: "dhaka", name: "Dhaka", bn: "à¦¢à¦¾à¦•à¦¾", division: "dhaka" },
+  { id: "faridpur", name: "Faridpur", bn: "à¦«à¦°à¦¿à¦¦à¦ªà§à¦°", division: "dhaka" },
+  { id: "gazipur", name: "Gazipur", bn: "à¦—à¦¾à¦œà§€à¦ªà§à¦°", division: "dhaka" },
+  { id: "gopalganj", name: "Gopalganj", bn: "à¦—à§‹à¦ªà¦¾à¦²à¦—à¦žà§à¦œ", division: "dhaka" },
+  { id: "kishoreganj", name: "Kishoreganj", bn: "à¦•à¦¿à¦¶à§‹à¦°à¦—à¦žà§à¦œ", division: "dhaka" },
+  { id: "madaripur", name: "Madaripur", bn: "à¦®à¦¾à¦¦à¦¾à¦°à§€à¦ªà§à¦°", division: "dhaka" },
+  { id: "manikganj", name: "Manikganj", bn: "à¦®à¦¾à¦¨à¦¿à¦•à¦—à¦žà§à¦œ", division: "dhaka" },
+  { id: "munshiganj", name: "Munshiganj", bn: "à¦®à§à¦¨à§à¦¸à¦¿à¦—à¦žà§à¦œ", division: "dhaka" },
+  { id: "narayanganj", name: "Narayanganj", bn: "à¦¨à¦¾à¦°à¦¾à¦¯à¦¼à¦£à¦—à¦žà§à¦œ", division: "dhaka" },
+  { id: "narsingdi", name: "Narsingdi", bn: "à¦¨à¦°à¦¸à¦¿à¦‚à¦¦à§€", division: "dhaka" },
+  { id: "rajbari", name: "Rajbari", bn: "à¦°à¦¾à¦œà¦¬à¦¾à¦¡à¦¼à§€", division: "dhaka" },
+  { id: "shariatpur", name: "Shariatpur", bn: "à¦¶à¦°à§€à¦¯à¦¼à¦¤à¦ªà§à¦°", division: "dhaka" },
+  { id: "tangail", name: "Tangail", bn: "à¦Ÿà¦¾à¦™à§à¦—à¦¾à¦‡à¦²", division: "dhaka" },
+
+  // Chittagong Division (11)
+  { id: "chittagong", name: "Chittagong", bn: "à¦šà¦Ÿà§à¦Ÿà¦—à§à¦°à¦¾à¦®", division: "chittagong" },
+  { id: "bandarban", name: "Bandarban", bn: "à¦¬à¦¾à¦¨à§à¦¦à¦°à¦¬à¦¾à¦¨", division: "chittagong" },
+  { id: "brahmanbaria", name: "Brahmanbaria", bn: "à¦¬à§à¦°à¦¾à¦¹à§à¦®à¦£à¦¬à¦¾à¦¡à¦¼à¦¿à¦¯à¦¼à¦¾", division: "chittagong" },
+  { id: "chandpur", name: "Chandpur", bn: "à¦šà¦¾à¦à¦¦à¦ªà§à¦°", division: "chittagong" },
+  { id: "comilla", name: "Comilla", bn: "à¦•à§à¦®à¦¿à¦²à§à¦²à¦¾", division: "chittagong" },
+  { id: "coxsbazar", name: "Cox's Bazar", bn: "à¦•à¦•à§à¦¸à¦¬à¦¾à¦œà¦¾à¦°", division: "chittagong" },
+  { id: "feni", name: "Feni", bn: "à¦«à§‡à¦¨à§€", division: "chittagong" },
+  { id: "khagrachari", name: "Khagrachari", bn: "à¦–à¦¾à¦—à¦¡à¦¼à¦¾à¦›à¦¡à¦¼à¦¿", division: "chittagong" },
+  { id: "lakshmipur", name: "Lakshmipur", bn: "à¦²à¦•à§à¦·à§à¦®à§€à¦ªà§à¦°", division: "chittagong" },
+  { id: "noakhali", name: "Noakhali", bn: "à¦¨à§‹à¦¯à¦¼à¦¾à¦–à¦¾à¦²à§€", division: "chittagong" },
+  { id: "rangamati", name: "Rangamati", bn: "à¦°à¦¾à¦™à§à¦—à¦¾à¦®à¦¾à¦Ÿà¦¿", division: "chittagong" },
+
+  // Rajshahi Division (8)
+  { id: "rajshahi", name: "Rajshahi", bn: "à¦°à¦¾à¦œà¦¶à¦¾à¦¹à§€", division: "rajshahi" },
+  { id: "bogra", name: "Bogra", bn: "à¦¬à¦—à§à¦¡à¦¼à¦¾", division: "rajshahi" },
+  { id: "chapainawabganj", name: "Chapainawabganj", bn: "à¦šà¦¾à¦à¦ªà¦¾à¦‡à¦¨à¦¬à¦¾à¦¬à¦—à¦žà§à¦œ", division: "rajshahi" },
+  { id: "joypurhat", name: "Joypurhat", bn: "à¦œà¦¯à¦¼à¦ªà§à¦°à¦¹à¦¾à¦Ÿ", division: "rajshahi" },
+  { id: "naogaon", name: "Naogaon", bn: "à¦¨à¦“à¦—à¦¾à¦", division: "rajshahi" },
+  { id: "natore", name: "Natore", bn: "à¦¨à¦¾à¦Ÿà§‹à¦°", division: "rajshahi" },
+  { id: "pabna", name: "Pabna", bn: "à¦ªà¦¾à¦¬à¦¨à¦¾", division: "rajshahi" },
+  { id: "sirajganj", name: "Sirajganj", bn: "à¦¸à¦¿à¦°à¦¾à¦œà¦—à¦žà§à¦œ", division: "rajshahi" },
+
+  // Khulna Division (10)
+  { id: "khulna", name: "Khulna", bn: "à¦–à§à¦²à¦¨à¦¾", division: "khulna" },
+  { id: "bagerhat", name: "Bagerhat", bn: "à¦¬à¦¾à¦—à§‡à¦°à¦¹à¦¾à¦Ÿ", division: "khulna" },
+  { id: "chuadanga", name: "Chuadanga", bn: "à¦šà§à¦¯à¦¼à¦¾à¦¡à¦¾à¦™à§à¦—à¦¾", division: "khulna" },
+  { id: "jessore", name: "Jessore", bn: "à¦¯à¦¶à§‹à¦°", division: "khulna" },
+  { id: "jhenaidah", name: "Jhenaidah", bn: "à¦à¦¿à¦¨à¦¾à¦‡à¦¦à¦¹", division: "khulna" },
+  { id: "kushtia", name: "Kushtia", bn: "à¦•à§à¦·à§à¦Ÿà¦¿à¦¯à¦¼à¦¾", division: "khulna" },
+  { id: "magura", name: "Magura", bn: "à¦®à¦¾à¦—à§à¦°à¦¾", division: "khulna" },
+  { id: "meherpur", name: "Meherpur", bn: "à¦®à§‡à¦¹à§‡à¦°à¦ªà§à¦°", division: "khulna" },
+  { id: "narail", name: "Narail", bn: "à¦¨à¦¡à¦¼à¦¾à¦‡à¦²", division: "khulna" },
+  { id: "satkhira", name: "Satkhira", bn: "à¦¸à¦¾à¦¤à¦•à§à¦·à§€à¦°à¦¾", division: "khulna" },
+
+  // Barishal Division (6)
+  { id: "barishal", name: "Barishal", bn: "à¦¬à¦°à¦¿à¦¶à¦¾à¦²", division: "barishal" },
+  { id: "barguna", name: "Barguna", bn: "à¦¬à¦°à¦—à§à¦¨à¦¾", division: "barishal" },
+  { id: "bhola", name: "Bhola", bn: "à¦­à§‹à¦²à¦¾", division: "barishal" },
+  { id: "jhalokati", name: "Jhalokati", bn: "à¦à¦¾à¦²à¦•à¦¾à¦ à¦¿", division: "barishal" },
+  { id: "patuakhali", name: "Patuakhali", bn: "à¦ªà¦Ÿà§à¦¯à¦¼à¦¾à¦–à¦¾à¦²à§€", division: "barishal" },
+  { id: "pirojpur", name: "Pirojpur", bn: "à¦ªà¦¿à¦°à§‹à¦œà¦ªà§à¦°", division: "barishal" },
+
+  // Sylhet Division (4)
+  { id: "sylhet", name: "Sylhet", bn: "à¦¸à¦¿à¦²à§‡à¦Ÿ", division: "sylhet" },
+  { id: "habiganj", name: "Habiganj", bn: "à¦¹à¦¬à¦¿à¦—à¦žà§à¦œ", division: "sylhet" },
+  { id: "moulvibazar", name: "Moulvibazar", bn: "à¦®à§Œà¦²à¦­à§€à¦¬à¦¾à¦œà¦¾à¦°", division: "sylhet" },
+  { id: "sunamganj", name: "Sunamganj", bn: "à¦¸à§à¦¨à¦¾à¦®à¦—à¦žà§à¦œ", division: "sylhet" },
+
+  // Rangpur Division (8)
+  { id: "rangpur", name: "Rangpur", bn: "à¦°à¦‚à¦ªà§à¦°", division: "rangpur" },
+  { id: "dinajpur", name: "Dinajpur", bn: "à¦¦à¦¿à¦¨à¦¾à¦œà¦ªà§à¦°", division: "rangpur" },
+  { id: "gaibandha", name: "Gaibandha", bn: "à¦—à¦¾à¦‡à¦¬à¦¾à¦¨à§à¦§à¦¾", division: "rangpur" },
+  { id: "kurigram", name: "Kurigram", bn: "à¦•à§à¦¡à¦¼à¦¿à¦—à§à¦°à¦¾à¦®", division: "rangpur" },
+  { id: "lalmonirhat", name: "Lalmonirhat", bn: "à¦²à¦¾à¦²à¦®à¦¨à¦¿à¦°à¦¹à¦¾à¦Ÿ", division: "rangpur" },
+  { id: "nilphamari", name: "Nilphamari", bn: "à¦¨à§€à¦²à¦«à¦¾à¦®à¦¾à¦°à§€", division: "rangpur" },
+  { id: "panchagarh", name: "Panchagarh", bn: "à¦ªà¦žà§à¦šà¦—à¦¡à¦¼", division: "rangpur" },
+  { id: "thakurgaon", name: "Thakurgaon", bn: "à¦ à¦¾à¦•à§à¦°à¦—à¦¾à¦à¦“", division: "rangpur" },
+
+  // Mymensingh Division (4)
+  { id: "mymensingh", name: "Mymensingh", bn: "à¦®à¦¯à¦¼à¦®à¦¨à¦¸à¦¿à¦‚à¦¹", division: "mymensingh" },
+  { id: "jamalpur", name: "Jamalpur", bn: "à¦œà¦¾à¦®à¦¾à¦²à¦ªà§à¦°", division: "mymensingh" },
+  { id: "netrokona", name: "Netrokona", bn: "à¦¨à§‡à¦¤à§à¦°à¦•à§‹à¦£à¦¾", division: "mymensingh" },
+  { id: "sherpur", name: "Sherpur", bn: "à¦¶à§‡à¦°à¦ªà§à¦°", division: "mymensingh" },
+];
+
+// Helper: get districts for a division
+export function getDistrictsByDivision(divisionId: string): District[] {
+  return districts.filter((d) => d.division === divisionId);
+}
+
+// Helper: get division by id
+export function getDivision(divisionId: string): Division | undefined {
+  return divisions.find((d) => d.id === divisionId);
+}
+
+// Helper: get district by id
+export function getDistrict(districtId: string): District | undefined {
+  return districts.find((d) => d.id === districtId);
+}
+
+
+================ FILE: src\lib\data\bangladesh-thanas.ts ================
+// Bangladesh Thanas (Upazilas) by District
+export interface Thana {
+  name: string;
+  bn: string;
+}
+
+export const thanasByDistrict: Record<string, Thana[]> = {
+  // ============ DHAKA DIVISION ============
+  dhaka: [
+    { name: "Dhamrai", bn: "à¦§à¦¾à¦®à¦°à¦¾à¦‡" },
+    { name: "Dohar", bn: "à¦¦à§‹à¦¹à¦¾à¦°" },
+    { name: "Keraniganj", bn: "à¦•à§‡à¦°à¦¾à¦¨à§€à¦—à¦žà§à¦œ" },
+    { name: "Nawabganj", bn: "à¦¨à¦¬à¦¾à¦¬à¦—à¦žà§à¦œ" },
+    { name: "Savar", bn: "à¦¸à¦¾à¦­à¦¾à¦°" },
+  ],
+  faridpur: [
+    { name: "Alfadanga", bn: "à¦†à¦²à¦«à¦¾à¦¡à¦¾à¦™à§à¦—à¦¾" },
+    { name: "Bhanga", bn: "à¦­à¦¾à¦™à§à¦—à¦¾" },
+    { name: "Boalmari", bn: "à¦¬à§‹à¦¯à¦¼à¦¾à¦²à¦®à¦¾à¦°à§€" },
+    { name: "Charbhadrasan", bn: "à¦šà¦°à¦­à¦¦à§à¦°à¦¾à¦¸à¦¨" },
+    { name: "Faridpur Sadar", bn: "à¦«à¦°à¦¿à¦¦à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Madhukhali", bn: "à¦®à¦§à§à¦–à¦¾à¦²à§€" },
+    { name: "Nagarkanda", bn: "à¦¨à¦—à¦°à¦•à¦¾à¦¨à§à¦¦à¦¾" },
+    { name: "Sadarpur", bn: "à¦¸à¦¦à¦°à¦ªà§à¦°" },
+    { name: "Saltha", bn: "à¦¸à¦¾à¦²à¦¥à¦¾" },
+  ],
+  gazipur: [
+    { name: "Gazipur Sadar", bn: "à¦—à¦¾à¦œà§€à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Kaliakair", bn: "à¦•à¦¾à¦²à¦¿à¦¯à¦¼à¦¾à¦•à§ˆà¦°" },
+    { name: "Kaliganj", bn: "à¦•à¦¾à¦²à§€à¦—à¦žà§à¦œ" },
+    { name: "Kapasia", bn: "à¦•à¦¾à¦ªà¦¾à¦¸à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Sreepur", bn: "à¦¶à§à¦°à§€à¦ªà§à¦°" },
+  ],
+  gopalganj: [
+    { name: "Gopalganj Sadar", bn: "à¦—à§‹à¦ªà¦¾à¦²à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Kashiani", bn: "à¦•à¦¾à¦¶à¦¿à¦¯à¦¼à¦¾à¦¨à§€" },
+    { name: "Kotalipara", bn: "à¦•à§‹à¦Ÿà¦¾à¦²à§€à¦ªà¦¾à¦¡à¦¼à¦¾" },
+    { name: "Muksudpur", bn: "à¦®à§à¦•à¦¸à§à¦¦à¦ªà§à¦°" },
+    { name: "Tungipara", bn: "à¦Ÿà§à¦™à§à¦—à¦¿à¦ªà¦¾à¦¡à¦¼à¦¾" },
+  ],
+  kishoreganj: [
+    { name: "Austagram", bn: "à¦…à¦·à§à¦Ÿà¦—à§à¦°à¦¾à¦®" },
+    { name: "Bajitpur", bn: "à¦¬à¦¾à¦œà¦¿à¦¤à¦ªà§à¦°" },
+    { name: "Bhairab", bn: "à¦­à§ˆà¦°à¦¬" },
+    { name: "Hossainpur", bn: "à¦¹à§‹à¦¸à§‡à¦¨à¦ªà§à¦°" },
+    { name: "Itna", bn: "à¦‡à¦Ÿà¦¨à¦¾" },
+    { name: "Karimganj", bn: "à¦•à¦°à¦¿à¦®à¦—à¦žà§à¦œ" },
+    { name: "Katiadi", bn: "à¦•à¦Ÿà¦¿à¦¯à¦¼à¦¾à¦¦à§€" },
+    { name: "Kishoreganj Sadar", bn: "à¦•à¦¿à¦¶à§‹à¦°à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Kuliarchar", bn: "à¦•à§à¦²à¦¿à¦¯à¦¼à¦¾à¦°à¦šà¦°" },
+    { name: "Mithamain", bn: "à¦®à¦¿à¦ à¦¾à¦®à¦‡à¦¨" },
+    { name: "Nikli", bn: "à¦¨à¦¿à¦•à¦²à§€" },
+    { name: "Pakundia", bn: "à¦ªà¦¾à¦•à§à¦¨à§à¦¦à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Tarail", bn: "à¦¤à¦¾à¦¡à¦¼à¦¾à¦‡à¦²" },
+  ],
+  madaripur: [
+    { name: "Madaripur Sadar", bn: "à¦®à¦¾à¦¦à¦¾à¦°à§€à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Kalkini", bn: "à¦•à¦¾à¦²à¦•à¦¿à¦¨à¦¿" },
+    { name: "Rajoir", bn: "à¦°à¦¾à¦œà§ˆà¦°" },
+    { name: "Shibchar", bn: "à¦¶à¦¿à¦¬à¦šà¦°" },
+    { name: "Dasar", bn: "à¦¡à¦¾à¦¸à¦¾à¦°" },
+  ],
+  manikganj: [
+    { name: "Manikganj Sadar", bn: "à¦®à¦¾à¦¨à¦¿à¦•à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Daulatpur", bn: "à¦¦à§Œà¦²à¦¤à¦ªà§à¦°" },
+    { name: "Ghior", bn: "à¦˜à¦¿à¦“à¦°" },
+    { name: "Harirampur", bn: "à¦¹à¦°à¦¿à¦°à¦¾à¦®à¦ªà§à¦°" },
+    { name: "Saturia", bn: "à¦¸à¦¾à¦Ÿà§à¦°à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Shivalaya", bn: "à¦¶à¦¿à¦¬à¦¾à¦²à¦¯à¦¼" },
+    { name: "Singair", bn: "à¦¸à¦¿à¦‚à¦—à¦¾à¦‡à¦°" },
+  ],
+  munshiganj: [
+    { name: "Munshiganj Sadar", bn: "à¦®à§à¦¨à§à¦¸à¦¿à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Gazaria", bn: "à¦—à¦œà¦¾à¦°à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Lohajang", bn: "à¦²à§Œà¦¹à¦œà¦‚" },
+    { name: "Sirajdikhan", bn: "à¦¸à¦¿à¦°à¦¾à¦œà¦¦à¦¿à¦–à¦¾à¦¨" },
+    { name: "Sreenagar", bn: "à¦¶à§à¦°à§€à¦¨à¦—à¦°" },
+    { name: "Tongibari", bn: "à¦Ÿà¦‚à¦—à§€à¦¬à¦¾à¦¡à¦¼à§€" },
+  ],
+  narayanganj: [
+    { name: "Araihazar", bn: "à¦†à¦¡à¦¼à¦¾à¦‡à¦¹à¦¾à¦œà¦¾à¦°" },
+    { name: "Bandar", bn: "à¦¬à¦¨à§à¦¦à¦°" },
+    { name: "Narayanganj Sadar", bn: "à¦¨à¦¾à¦°à¦¾à¦¯à¦¼à¦£à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Rupganj", bn: "à¦°à§‚à¦ªà¦—à¦žà§à¦œ" },
+    { name: "Sonargaon", bn: "à¦¸à§‹à¦¨à¦¾à¦°à¦—à¦¾à¦" },
+  ],
+  narsingdi: [
+    { name: "Narsingdi Sadar", bn: "à¦¨à¦°à¦¸à¦¿à¦‚à¦¦à§€ à¦¸à¦¦à¦°" },
+    { name: "Belabo", bn: "à¦¬à§‡à¦²à¦¾à¦¬à§‹" },
+    { name: "Monohardi", bn: "à¦®à¦¨à§‹à¦¹à¦°à¦¦à§€" },
+    { name: "Palash", bn: "à¦ªà¦²à¦¾à¦¶" },
+    { name: "Raipura", bn: "à¦°à¦¾à¦¯à¦¼à¦ªà§à¦°à¦¾" },
+    { name: "Shibpur", bn: "à¦¶à¦¿à¦¬à¦ªà§à¦°" },
+  ],
+  rajbari: [
+    { name: "Rajbari Sadar", bn: "à¦°à¦¾à¦œà¦¬à¦¾à¦¡à¦¼à§€ à¦¸à¦¦à¦°" },
+    { name: "Baliakandi", bn: "à¦¬à¦¾à¦²à¦¿à¦¯à¦¼à¦¾à¦•à¦¾à¦¨à§à¦¦à¦¿" },
+    { name: "Goalanda", bn: "à¦—à§‹à¦¯à¦¼à¦¾à¦²à¦¨à§à¦¦" },
+    { name: "Pangsha", bn: "à¦ªà¦¾à¦‚à¦¶à¦¾" },
+    { name: "Kalukhali", bn: "à¦•à¦¾à¦²à§à¦–à¦¾à¦²à§€" },
+  ],
+  shariatpur: [
+    { name: "Shariatpur Sadar", bn: "à¦¶à¦°à§€à¦¯à¦¼à¦¤à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Bhedarganj", bn: "à¦­à§‡à¦¦à¦°à¦—à¦žà§à¦œ" },
+    { name: "Damudya", bn: "à¦¡à¦¾à¦®à§à¦¡à§à¦¯à¦¾" },
+    { name: "Gosairhat", bn: "à¦—à§‹à¦¸à¦¾à¦‡à¦°à¦¹à¦¾à¦Ÿ" },
+    { name: "Naria", bn: "à¦¨à¦¡à¦¼à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Zanjira", bn: "à¦œà¦¾à¦œà¦¿à¦°à¦¾" },
+  ],
+  tangail: [
+    { name: "Tangail Sadar", bn: "à¦Ÿà¦¾à¦™à§à¦—à¦¾à¦‡à¦² à¦¸à¦¦à¦°" },
+    { name: "Basail", bn: "à¦¬à¦¾à¦¸à¦¾à¦‡à¦²" },
+    { name: "Bhuapur", bn: "à¦­à§‚à¦žà¦¾à¦ªà§à¦°" },
+    { name: "Delduar", bn: "à¦¦à§‡à¦²à¦¦à§à¦¯à¦¼à¦¾à¦°" },
+    { name: "Dhanbari", bn: "à¦§à¦¨à¦¬à¦¾à¦¡à¦¼à§€" },
+    { name: "Ghatail", bn: "à¦˜à¦¾à¦Ÿà¦¾à¦‡à¦²" },
+    { name: "Gopalpur", bn: "à¦—à§‹à¦ªà¦¾à¦²à¦ªà§à¦°" },
+    { name: "Kalihati", bn: "à¦•à¦¾à¦²à¦¿à¦¹à¦¾à¦¤à§€" },
+    { name: "Madhupur", bn: "à¦®à¦§à§à¦ªà§à¦°" },
+    { name: "Mirzapur", bn: "à¦®à¦¿à¦°à§à¦œà¦¾à¦ªà§à¦°" },
+    { name: "Nagarpur", bn: "à¦¨à¦¾à¦—à¦°à¦ªà§à¦°" },
+    { name: "Sakhipur", bn: "à¦¸à¦–à§€à¦ªà§à¦°" },
+  ],
+
+  // ============ CHITTAGONG DIVISION ============
+  chittagong: [
+    { name: "Anwara", bn: "à¦†à¦¨à§‹à¦¯à¦¼à¦¾à¦°à¦¾" },
+    { name: "Banshkhali", bn: "à¦¬à¦¾à¦à¦¶à¦–à¦¾à¦²à§€" },
+    { name: "Boalkhali", bn: "à¦¬à§‹à¦¯à¦¼à¦¾à¦²à¦–à¦¾à¦²à§€" },
+    { name: "Chandanaish", bn: "à¦šà¦¨à§à¦¦à¦¨à¦¾à¦‡à¦¶" },
+    { name: "Fatikchhari", bn: "à¦«à¦Ÿà¦¿à¦•à¦›à¦¡à¦¼à¦¿" },
+    { name: "Hathazari", bn: "à¦¹à¦¾à¦Ÿà¦¹à¦¾à¦œà¦¾à¦°à§€" },
+    { name: "Lohagara", bn: "à¦²à§‹à¦¹à¦¾à¦—à¦¾à¦¡à¦¼à¦¾" },
+    { name: "Mirsharai", bn: "à¦®à§€à¦°à¦¸à¦°à¦¾à¦‡" },
+    { name: "Patiya", bn: "à¦ªà¦Ÿà¦¿à¦¯à¦¼à¦¾" },
+    { name: "Rangunia", bn: "à¦°à¦¾à¦™à§à¦—à§à¦¨à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Raozan", bn: "à¦°à¦¾à¦‰à¦œà¦¾à¦¨" },
+    { name: "Sandwip", bn: "à¦¸à¦¨à§à¦¦à§à¦¬à§€à¦ª" },
+    { name: "Satkania", bn: "à¦¸à¦¾à¦¤à¦•à¦¾à¦¨à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Sitakunda", bn: "à¦¸à§€à¦¤à¦¾à¦•à§à¦£à§à¦¡" },
+    { name: "Karnaphuli", bn: "à¦•à¦°à§à¦£à¦«à§à¦²à§€" },
+  ],
+  bandarban: [
+    { name: "Alikadam", bn: "à¦†à¦²à§€à¦•à¦¦à¦®" },
+    { name: "Bandarban Sadar", bn: "à¦¬à¦¾à¦¨à§à¦¦à¦°à¦¬à¦¾à¦¨ à¦¸à¦¦à¦°" },
+    { name: "Lama", bn: "à¦²à¦¾à¦®à¦¾" },
+    { name: "Naikhongchhari", bn: "à¦¨à¦¾à¦‡à¦•à§à¦·à§à¦¯à¦‚à¦›à¦¡à¦¼à¦¿" },
+    { name: "Rowangchhari", bn: "à¦°à§‹à¦¯à¦¼à¦¾à¦‚à¦›à¦¡à¦¼à¦¿" },
+    { name: "Ruma", bn: "à¦°à§à¦®à¦¾" },
+    { name: "Thanchi", bn: "à¦¥à¦¾à¦¨à¦šà¦¿" },
+  ],
+  brahmanbaria: [
+    { name: "Brahmanbaria Sadar", bn: "à¦¬à§à¦°à¦¾à¦¹à§à¦®à¦£à¦¬à¦¾à¦¡à¦¼à¦¿à¦¯à¦¼à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Akhaura", bn: "à¦†à¦–à¦¾à¦‰à¦¡à¦¼à¦¾" },
+    { name: "Ashuganj", bn: "à¦†à¦¶à§à¦—à¦žà§à¦œ" },
+    { name: "Bancharampur", bn: "à¦¬à¦¾à¦žà§à¦›à¦¾à¦°à¦¾à¦®à¦ªà§à¦°" },
+    { name: "Bijoynagar", bn: "à¦¬à¦¿à¦œà¦¯à¦¼à¦¨à¦—à¦°" },
+    { name: "Kasba", bn: "à¦•à¦¸à¦¬à¦¾" },
+    { name: "Nabinagar", bn: "à¦¨à¦¬à§€à¦¨à¦—à¦°" },
+    { name: "Nasirnagar", bn: "à¦¨à¦¾à¦¸à¦¿à¦°à¦¨à¦—à¦°" },
+    { name: "Sarail", bn: "à¦¸à¦°à¦¾à¦‡à¦²" },
+  ],
+  chandpur: [
+    { name: "Chandpur Sadar", bn: "à¦šà¦¾à¦à¦¦à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Faridganj", bn: "à¦«à¦°à¦¿à¦¦à¦—à¦žà§à¦œ" },
+    { name: "Haimchar", bn: "à¦¹à¦¾à¦‡à¦®à¦šà¦°" },
+    { name: "Haziganj", bn: "à¦¹à¦¾à¦œà§€à¦—à¦žà§à¦œ" },
+    { name: "Kachua", bn: "à¦•à¦šà§à¦¯à¦¼à¦¾" },
+    { name: "Matlab Dakshin", bn: "à¦®à¦¤à¦²à¦¬ à¦¦à¦•à§à¦·à¦¿à¦£" },
+    { name: "Matlab Uttar", bn: "à¦®à¦¤à¦²à¦¬ à¦‰à¦¤à§à¦¤à¦°" },
+    { name: "Shahrasti", bn: "à¦¶à¦¾à¦¹à¦°à¦¾à¦¸à§à¦¤à¦¿" },
+  ],
+  comilla: [
+    { name: "Comilla Sadar", bn: "à¦•à§à¦®à¦¿à¦²à§à¦²à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Barura", bn: "à¦¬à¦°à§à¦¡à¦¼à¦¾" },
+    { name: "Brahmanpara", bn: "à¦¬à§à¦°à¦¾à¦¹à§à¦®à¦£à¦ªà¦¾à¦¡à¦¼à¦¾" },
+    { name: "Burichang", bn: "à¦¬à§à¦¡à¦¼à¦¿à¦šà¦‚" },
+    { name: "Chandina", bn: "à¦šà¦¾à¦¨à§à¦¦à¦¿à¦¨à¦¾" },
+    { name: "Chauddagram", bn: "à¦šà§Œà¦¦à§à¦¦à¦—à§à¦°à¦¾à¦®" },
+    { name: "Daudkandi", bn: "à¦¦à¦¾à¦‰à¦¦à¦•à¦¾à¦¨à§à¦¦à¦¿" },
+    { name: "Debidwar", bn: "à¦¦à§‡à¦¬à¦¿à¦¦à§à¦¬à¦¾à¦°" },
+    { name: "Homna", bn: "à¦¹à§‹à¦®à¦¨à¦¾" },
+    { name: "Laksam", bn: "à¦²à¦¾à¦•à¦¸à¦¾à¦®" },
+    { name: "Manoharganj", bn: "à¦®à¦¨à§‹à¦¹à¦°à¦—à¦žà§à¦œ" },
+    { name: "Meghna", bn: "à¦®à§‡à¦˜à¦¨à¦¾" },
+    { name: "Muradnagar", bn: "à¦®à§à¦°à¦¾à¦¦à¦¨à¦—à¦°" },
+    { name: "Nangalkot", bn: "à¦¨à¦¾à¦™à§à¦—à¦²à¦•à§‹à¦Ÿ" },
+    { name: "Titas", bn: "à¦¤à¦¿à¦¤à¦¾à¦¸" },
+  ],
+  coxsbazar: [
+    { name: "Chakaria", bn: "à¦šà¦•à¦°à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Cox's Bazar Sadar", bn: "à¦•à¦•à§à¦¸à¦¬à¦¾à¦œà¦¾à¦° à¦¸à¦¦à¦°" },
+    { name: "Kutubdia", bn: "à¦•à§à¦¤à§à¦¬à¦¦à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Maheshkhali", bn: "à¦®à¦¹à§‡à¦¶à¦–à¦¾à¦²à§€" },
+    { name: "Ramu", bn: "à¦°à¦¾à¦®à§" },
+    { name: "Teknaf", bn: "à¦Ÿà§‡à¦•à¦¨à¦¾à¦«" },
+    { name: "Ukhia", bn: "à¦‰à¦–à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Pekua", bn: "à¦ªà§‡à¦•à§à¦¯à¦¼à¦¾" },
+  ],
+  feni: [
+    { name: "Feni Sadar", bn: "à¦«à§‡à¦¨à§€ à¦¸à¦¦à¦°" },
+    { name: "Chhagalnaiya", bn: "à¦›à¦¾à¦—à¦²à¦¨à¦¾à¦‡à¦¯à¦¼à¦¾" },
+    { name: "Daganbhuiyan", bn: "à¦¦à¦¾à¦—à¦¨à¦­à§‚à¦žà¦¾" },
+    { name: "Parshuram", bn: "à¦ªà¦°à¦¶à§à¦°à¦¾à¦®" },
+    { name: "Sonagazi", bn: "à¦¸à§‹à¦¨à¦¾à¦—à¦¾à¦œà§€" },
+    { name: "Fulgazi", bn: "à¦«à§à¦²à¦—à¦¾à¦œà§€" },
+  ],
+  khagrachari: [
+    { name: "Dighinala", bn: "à¦¦à§€à¦˜à¦¿à¦¨à¦¾à¦²à¦¾" },
+    { name: "Khagrachhari", bn: "à¦–à¦¾à¦—à¦¡à¦¼à¦¾à¦›à¦¡à¦¼à¦¿" },
+    { name: "Lakshmichhari", bn: "à¦²à¦•à§à¦·à§à¦®à§€à¦›à¦¡à¦¼à¦¿" },
+    { name: "Mahalchhari", bn: "à¦®à¦¹à¦¾à¦²à¦›à¦¡à¦¼à¦¿" },
+    { name: "Manikchhari", bn: "à¦®à¦¾à¦¨à¦¿à¦•à¦›à¦¡à¦¼à¦¿" },
+    { name: "Matiranga", bn: "à¦®à¦¾à¦Ÿà¦¿à¦°à¦¾à¦™à§à¦—à¦¾" },
+    { name: "Panchhari", bn: "à¦ªà¦¾à¦¨à¦›à¦¡à¦¼à¦¿" },
+    { name: "Ramgarh", bn: "à¦°à¦¾à¦®à¦—à¦¡à¦¼" },
+  ],
+  lakshmipur: [
+    { name: "Lakshmipur Sadar", bn: "à¦²à¦•à§à¦·à§à¦®à§€à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Kamalnagar", bn: "à¦•à¦®à¦²à¦¨à¦—à¦°" },
+    { name: "Raipur", bn: "à¦°à¦¾à¦¯à¦¼à¦ªà§à¦°" },
+    { name: "Ramganj", bn: "à¦°à¦¾à¦®à¦—à¦žà§à¦œ" },
+    { name: "Ramgati", bn: "à¦°à¦¾à¦®à¦—à¦¤à¦¿" },
+  ],
+  noakhali: [
+    { name: "Noakhali Sadar", bn: "à¦¨à§‹à¦¯à¦¼à¦¾à¦–à¦¾à¦²à§€ à¦¸à¦¦à¦°" },
+    { name: "Begumganj", bn: "à¦¬à§‡à¦—à¦®à¦—à¦žà§à¦œ" },
+    { name: "Chatkhil", bn: "à¦šà¦¾à¦Ÿà¦–à¦¿à¦²" },
+    { name: "Companiganj", bn: "à¦•à§‹à¦®à§à¦ªà¦¾à¦¨à§€à¦—à¦žà§à¦œ" },
+    { name: "Hatiya", bn: "à¦¹à¦¾à¦¤à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Kabirhat", bn: "à¦•à¦¬à¦¿à¦°à¦¹à¦¾à¦Ÿ" },
+    { name: "Senbagh", bn: "à¦¸à§‡à¦¨à¦¬à¦¾à¦—" },
+    { name: "Sonaimuri", bn: "à¦¸à§‹à¦¨à¦¾à¦‡à¦®à§à¦¡à¦¼à§€" },
+    { name: "Subarnachar", bn: "à¦¸à§à¦¬à¦°à§à¦£à¦šà¦°" },
+  ],
+  rangamati: [
+    { name: "Baghaichhari", bn: "à¦¬à¦¾à¦˜à¦¾à¦‡à¦›à¦¡à¦¼à¦¿" },
+    { name: "Barkal", bn: "à¦¬à¦°à¦•à¦²" },
+    { name: "Kawkhali", bn: "à¦•à¦¾à¦‰à¦–à¦¾à¦²à§€" },
+    { name: "Belaichhari", bn: "à¦¬à¦¿à¦²à¦¾à¦‡à¦›à¦¡à¦¼à¦¿" },
+    { name: "Juraichhari", bn: "à¦œà§à¦°à¦¾à¦›à¦¡à¦¼à¦¿" },
+    { name: "Kaptai", bn: "à¦•à¦¾à¦ªà§à¦¤à¦¾à¦‡" },
+    { name: "Langadu", bn: "à¦²à¦‚à¦—à¦¦à§" },
+    { name: "Naniarchar", bn: "à¦¨à¦¾à¦¨à¦¿à¦¯à¦¼à¦¾à¦°à¦šà¦°" },
+    { name: "Rajasthali", bn: "à¦°à¦¾à¦œà¦¸à§à¦¥à¦²à§€" },
+    { name: "Rangamati Sadar", bn: "à¦°à¦¾à¦™à§à¦—à¦¾à¦®à¦¾à¦Ÿà¦¿ à¦¸à¦¦à¦°" },
+  ],
+
+  // ============ RAJSHAHI DIVISION ============
+  rajshahi: [
+    { name: "Bagha", bn: "à¦¬à¦¾à¦˜à¦¾" },
+    { name: "Bagmara", bn: "à¦¬à¦¾à¦—à¦®à¦¾à¦°à¦¾" },
+    { name: "Charghat", bn: "à¦šà¦¾à¦°à¦˜à¦¾à¦Ÿ" },
+    { name: "Durgapur", bn: "à¦¦à§à¦°à§à¦—à¦¾à¦ªà§à¦°" },
+    { name: "Godagari", bn: "à¦—à§‹à¦¦à¦¾à¦—à¦¾à¦¡à¦¼à§€" },
+    { name: "Mohanpur", bn: "à¦®à§‹à¦¹à¦¨à¦ªà§à¦°" },
+    { name: "Paba", bn: "à¦ªà¦¬à¦¾" },
+    { name: "Puthia", bn: "à¦ªà§à¦ à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Tanore", bn: "à¦¤à¦¾à¦¨à§‹à¦°" },
+  ],
+  bogra: [
+    { name: "Bogra Sadar", bn: "à¦¬à¦—à§à¦¡à¦¼à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Adamdighi", bn: "à¦†à¦¦à¦®à¦¦à§€à¦˜à¦¿" },
+    { name: "Dhunat", bn: "à¦§à§à¦¨à¦Ÿ" },
+    { name: "Dhupchanchia", bn: "à¦¦à§à¦ªà¦šà¦¾à¦à¦šà¦¿à¦¯à¦¼à¦¾" },
+    { name: "Gabtali", bn: "à¦—à¦¾à¦¬à¦¤à¦²à§€" },
+    { name: "Kahaloo", bn: "à¦•à¦¾à¦¹à¦¾à¦²à§" },
+    { name: "Nandigram", bn: "à¦¨à¦¨à§à¦¦à§€à¦—à§à¦°à¦¾à¦®" },
+    { name: "Sariakandi", bn: "à¦¸à¦¾à¦°à¦¿à¦¯à¦¼à¦¾à¦•à¦¾à¦¨à§à¦¦à¦¿" },
+    { name: "Shajahanpur", bn: "à¦¶à¦¾à¦œà¦¾à¦¹à¦¾à¦¨à¦ªà§à¦°" },
+    { name: "Sherpur", bn: "à¦¶à§‡à¦°à¦ªà§à¦°" },
+    { name: "Shibganj", bn: "à¦¶à¦¿à¦¬à¦—à¦žà§à¦œ" },
+    { name: "Sonatala", bn: "à¦¸à§‹à¦¨à¦¾à¦¤à¦²à¦¾" },
+  ],
+  chapainawabganj: [
+    { name: "Chapainawabganj Sadar", bn: "à¦šà¦¾à¦à¦ªà¦¾à¦‡à¦¨à¦¬à¦¾à¦¬à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Bholahat", bn: "à¦­à§‹à¦²à¦¾à¦¹à¦¾à¦Ÿ" },
+    { name: "Gomastapur", bn: "à¦—à§‹à¦®à¦¸à§à¦¤à¦¾à¦ªà§à¦°" },
+    { name: "Nachole", bn: "à¦¨à¦¾à¦šà§‹à¦²" },
+    { name: "Shibganj", bn: "à¦¶à¦¿à¦¬à¦—à¦žà§à¦œ" },
+  ],
+  joypurhat: [
+    { name: "Joypurhat Sadar", bn: "à¦œà¦¯à¦¼à¦ªà§à¦°à¦¹à¦¾à¦Ÿ à¦¸à¦¦à¦°" },
+    { name: "Akkelpur", bn: "à¦†à¦•à§à¦•à§‡à¦²à¦ªà§à¦°" },
+    { name: "Kalai", bn: "à¦•à¦¾à¦²à¦¾à¦‡" },
+    { name: "Khetlal", bn: "à¦•à§à¦·à§‡à¦¤à¦²à¦¾à¦²" },
+    { name: "Panchbibi", bn: "à¦ªà¦¾à¦à¦šà¦¬à¦¿à¦¬à¦¿" },
+  ],
+  naogaon: [
+    { name: "Naogaon Sadar", bn: "à¦¨à¦“à¦—à¦¾à¦ à¦¸à¦¦à¦°" },
+    { name: "Atrai", bn: "à¦†à¦¤à§à¦°à¦¾à¦‡" },
+    { name: "Badalgachhi", bn: "à¦¬à¦¦à¦²à¦—à¦¾à¦›à§€" },
+    { name: "Dhamoirhat", bn: "à¦§à¦¾à¦®à¦‡à¦°à¦¹à¦¾à¦Ÿ" },
+    { name: "Manda", bn: "à¦®à¦¾à¦¨à§à¦¦à¦¾" },
+    { name: "Mahadevpur", bn: "à¦®à¦¹à¦¾à¦¦à§‡à¦¬à¦ªà§à¦°" },
+    { name: "Niamatpur", bn: "à¦¨à¦¿à¦¯à¦¼à¦¾à¦®à¦¤à¦ªà§à¦°" },
+    { name: "Patnitala", bn: "à¦ªà¦¤à§à¦¨à§€à¦¤à¦²à¦¾" },
+    { name: "Porsha", bn: "à¦ªà§‹à¦°à¦¶à¦¾" },
+    { name: "Raninagar", bn: "à¦°à¦¾à¦£à§€à¦¨à¦—à¦°" },
+    { name: "Sapahar", bn: "à¦¸à¦¾à¦ªà¦¾à¦¹à¦¾à¦°" },
+  ],
+  natore: [
+    { name: "Natore Sadar", bn: "à¦¨à¦¾à¦Ÿà§‹à¦° à¦¸à¦¦à¦°" },
+    { name: "Bagatipara", bn: "à¦¬à¦¾à¦—à¦¾à¦¤à¦¿à¦ªà¦¾à¦¡à¦¼à¦¾" },
+    { name: "Baraigram", bn: "à¦¬à¦¡à¦¼à¦¾à¦‡à¦—à§à¦°à¦¾à¦®" },
+    { name: "Gurudaspur", bn: "à¦—à§à¦°à§à¦¦à¦¾à¦¸à¦ªà§à¦°" },
+    { name: "Lalpur", bn: "à¦²à¦¾à¦²à¦ªà§à¦°" },
+    { name: "Singra", bn: "à¦¸à¦¿à¦‚à¦¡à¦¼à¦¾" },
+    { name: "Naldanga", bn: "à¦¨à¦²à¦¡à¦¾à¦™à§à¦—à¦¾" },
+  ],
+  pabna: [
+    { name: "Pabna Sadar", bn: "à¦ªà¦¾à¦¬à¦¨à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Atgharia", bn: "à¦†à¦Ÿà¦˜à¦°à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Bera", bn: "à¦¬à§‡à¦¡à¦¼à¦¾" },
+    { name: "Bhangura", bn: "à¦­à¦¾à¦™à§à¦—à§à¦¡à¦¼à¦¾" },
+    { name: "Chatmohar", bn: "à¦šà¦¾à¦Ÿà¦®à§‹à¦¹à¦°" },
+    { name: "Faridpur", bn: "à¦«à¦°à¦¿à¦¦à¦ªà§à¦°" },
+    { name: "Ishwardi", bn: "à¦ˆà¦¶à§à¦¬à¦°à¦¦à§€" },
+    { name: "Santhia", bn: "à¦¸à¦¾à¦à¦¥à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Sujanagar", bn: "à¦¸à§à¦œà¦¾à¦¨à¦—à¦°" },
+  ],
+  sirajganj: [
+    { name: "Sirajganj Sadar", bn: "à¦¸à¦¿à¦°à¦¾à¦œà¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Belkuchi", bn: "à¦¬à§‡à¦²à¦•à§à¦šà¦¿" },
+    { name: "Chauhali", bn: "à¦šà§Œà¦¹à¦¾à¦²à§€" },
+    { name: "Kamarkhanda", bn: "à¦•à¦¾à¦®à¦¾à¦°à¦–à¦¨à§à¦¦" },
+    { name: "Kazipur", bn: "à¦•à¦¾à¦œà§€à¦ªà§à¦°" },
+    { name: "Raiganj", bn: "à¦°à¦¾à¦¯à¦¼à¦—à¦žà§à¦œ" },
+    { name: "Shahjadpur", bn: "à¦¶à¦¾à¦¹à¦œà¦¾à¦¦à¦ªà§à¦°" },
+    { name: "Tarash", bn: "à¦¤à¦¾à¦¡à¦¼à¦¾à¦¶" },
+    { name: "Ullahpara", bn: "à¦‰à¦²à§à¦²à¦¾à¦ªà¦¾à¦¡à¦¼à¦¾" },
+  ],
+
+  // ============ KHULNA DIVISION ============
+  khulna: [
+    { name: "Khulna Sadar", bn: "à¦–à§à¦²à¦¨à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Batiaghata", bn: "à¦¬à¦Ÿà¦¿à¦¯à¦¼à¦¾à¦˜à¦¾à¦Ÿà¦¾" },
+    { name: "Dacope", bn: "à¦¦à¦¾à¦•à§‹à¦ª" },
+    { name: "Dumuria", bn: "à¦¡à§à¦®à§à¦°à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Dighalia", bn: "à¦¦à¦¿à¦˜à¦²à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Koyra", bn: "à¦•à¦¯à¦¼à¦°à¦¾" },
+    { name: "Paikgachha", bn: "à¦ªà¦¾à¦‡à¦•à¦—à¦¾à¦›à¦¾" },
+    { name: "Phultala", bn: "à¦«à§à¦²à¦¤à¦²à¦¾" },
+    { name: "Rupsha", bn: "à¦°à§‚à¦ªà¦¸à¦¾" },
+    { name: "Terokhada", bn: "à¦¤à§‡à¦°à¦–à¦¾à¦¦à¦¾" },
+  ],
+  bagerhat: [
+    { name: "Bagerhat Sadar", bn: "à¦¬à¦¾à¦—à§‡à¦°à¦¹à¦¾à¦Ÿ à¦¸à¦¦à¦°" },
+    { name: "Chitalmari", bn: "à¦šà¦¿à¦¤à¦²à¦®à¦¾à¦°à§€" },
+    { name: "Fakirhat", bn: "à¦«à¦•à¦¿à¦°à¦¹à¦¾à¦Ÿ" },
+    { name: "Kachua", bn: "à¦•à¦šà§à¦¯à¦¼à¦¾" },
+    { name: "Mollahat", bn: "à¦®à§‹à¦²à§à¦²à¦¾à¦¹à¦¾à¦Ÿ" },
+    { name: "Mongla", bn: "à¦®à§‹à¦‚à¦²à¦¾" },
+    { name: "Morrelganj", bn: "à¦®à§‹à¦¡à¦¼à§‡à¦²à¦—à¦žà§à¦œ" },
+    { name: "Rampal", bn: "à¦°à¦¾à¦®à¦ªà¦¾à¦²" },
+    { name: "Sarankhola", bn: "à¦¶à¦°à¦£à¦–à§‹à¦²à¦¾" },
+  ],
+  chuadanga: [
+    { name: "Chuadanga Sadar", bn: "à¦šà§à¦¯à¦¼à¦¾à¦¡à¦¾à¦™à§à¦—à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Alamdanga", bn: "à¦†à¦²à¦®à¦¡à¦¾à¦™à§à¦—à¦¾" },
+    { name: "Damurhuda", bn: "à¦¦à¦¾à¦®à§à¦¡à¦¼à¦¹à§à¦¦à¦¾" },
+    { name: "Jibannagar", bn: "à¦œà§€à¦¬à¦¨à¦¨à¦—à¦°" },
+  ],
+  jessore: [
+    { name: "Jessore Sadar", bn: "à¦¯à¦¶à§‹à¦° à¦¸à¦¦à¦°" },
+    { name: "Abhaynagar", bn: "à¦…à¦­à¦¯à¦¼à¦¨à¦—à¦°" },
+    { name: "Bagherpara", bn: "à¦¬à¦¾à¦˜à¦¾à¦°à¦ªà¦¾à¦¡à¦¼à¦¾" },
+    { name: "Chaugachha", bn: "à¦šà§Œà¦—à¦¾à¦›à¦¾" },
+    { name: "Jhikargachha", bn: "à¦à¦¿à¦•à¦°à¦—à¦¾à¦›à¦¾" },
+    { name: "Keshabpur", bn: "à¦•à§‡à¦¶à¦¬à¦ªà§à¦°" },
+    { name: "Manirampur", bn: "à¦®à¦£à¦¿à¦°à¦¾à¦®à¦ªà§à¦°" },
+    { name: "Sharsha", bn: "à¦¶à¦¾à¦°à§à¦¶à¦¾" },
+  ],
+  jhenaidah: [
+    { name: "Jhenaidah Sadar", bn: "à¦à¦¿à¦¨à¦¾à¦‡à¦¦à¦¹ à¦¸à¦¦à¦°" },
+    { name: "Harinakunda", bn: "à¦¹à¦°à¦¿à¦£à¦¾à¦•à§à¦£à§à¦¡à§" },
+    { name: "Kaliganj", bn: "à¦•à¦¾à¦²à§€à¦—à¦žà§à¦œ" },
+    { name: "Kotchandpur", bn: "à¦•à§‹à¦Ÿà¦šà¦¾à¦à¦¦à¦ªà§à¦°" },
+    { name: "Maheshpur", bn: "à¦®à¦¹à§‡à¦¶à¦ªà§à¦°" },
+    { name: "Shailkupa", bn: "à¦¶à§ˆà¦²à¦•à§à¦ªà¦¾" },
+  ],
+  kushtia: [
+    { name: "Kushtia Sadar", bn: "à¦•à§à¦·à§à¦Ÿà¦¿à¦¯à¦¼à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Bheramara", bn: "à¦­à§‡à¦¡à¦¼à¦¾à¦®à¦¾à¦°à¦¾" },
+    { name: "Daulatpur", bn: "à¦¦à§Œà¦²à¦¤à¦ªà§à¦°" },
+    { name: "Khoksa", bn: "à¦–à§‹à¦•à¦¸à¦¾" },
+    { name: "Kumarkhali", bn: "à¦•à§à¦®à¦¾à¦°à¦–à¦¾à¦²à§€" },
+    { name: "Mirpur", bn: "à¦®à¦¿à¦°à¦ªà§à¦°" },
+  ],
+  magura: [
+    { name: "Magura Sadar", bn: "à¦®à¦¾à¦—à§à¦°à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Mohammadpur", bn: "à¦®à§‹à¦¹à¦¾à¦®à§à¦®à¦¦à¦ªà§à¦°" },
+    { name: "Shalikha", bn: "à¦¶à¦¾à¦²à¦¿à¦–à¦¾" },
+    { name: "Sreepur", bn: "à¦¶à§à¦°à§€à¦ªà§à¦°" },
+  ],
+  meherpur: [
+    { name: "Meherpur Sadar", bn: "à¦®à§‡à¦¹à§‡à¦°à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Gangni", bn: "à¦—à¦¾à¦‚à¦¨à§€" },
+    { name: "Mujibnagar", bn: "à¦®à§à¦œà¦¿à¦¬à¦¨à¦—à¦°" },
+  ],
+  narail: [
+    { name: "Narail Sadar", bn: "à¦¨à¦¡à¦¼à¦¾à¦‡à¦² à¦¸à¦¦à¦°" },
+    { name: "Kalia", bn: "à¦•à¦¾à¦²à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Lohagara", bn: "à¦²à§‹à¦¹à¦¾à¦—à¦¡à¦¼à¦¾" },
+  ],
+  satkhira: [
+    { name: "Satkhira Sadar", bn: "à¦¸à¦¾à¦¤à¦•à§à¦·à§€à¦°à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Assasuni", bn: "à¦†à¦¶à¦¾à¦¶à§à¦¨à¦¿" },
+    { name: "Debhata", bn: "à¦¦à§‡à¦¬à¦¹à¦¾à¦Ÿà¦¾" },
+    { name: "Kalaroa", bn: "à¦•à¦²à¦¾à¦°à§‹à¦¯à¦¼à¦¾" },
+    { name: "Kaliganj", bn: "à¦•à¦¾à¦²à§€à¦—à¦žà§à¦œ" },
+    { name: "Shyamnagar", bn: "à¦¶à§à¦¯à¦¾à¦®à¦¨à¦—à¦°" },
+    { name: "Tala", bn: "à¦¤à¦¾à¦²à¦¾" },
+  ],
+
+  // ============ BARISHAL DIVISION ============
+  barishal: [
+    { name: "Barishal Sadar", bn: "à¦¬à¦°à¦¿à¦¶à¦¾à¦² à¦¸à¦¦à¦°" },
+    { name: "Agailjhara", bn: "à¦†à¦—à§ˆà¦²à¦à¦¾à¦¡à¦¼à¦¾" },
+    { name: "Babuganj", bn: "à¦¬à¦¾à¦¬à§à¦—à¦žà§à¦œ" },
+    { name: "Bakerganj", bn: "à¦¬à¦¾à¦•à§‡à¦°à¦—à¦žà§à¦œ" },
+    { name: "Banaripara", bn: "à¦¬à¦¾à¦¨à¦¾à¦°à§€à¦ªà¦¾à¦¡à¦¼à¦¾" },
+    { name: "Gaurnadi", bn: "à¦—à§Œà¦°à¦¨à¦¦à§€" },
+    { name: "Hizla", bn: "à¦¹à¦¿à¦œà¦²à¦¾" },
+    { name: "Mehendiganj", bn: "à¦®à§‡à¦¹à§‡à¦¨à§à¦¦à¦¿à¦—à¦žà§à¦œ" },
+    { name: "Muladi", bn: "à¦®à§à¦²à¦¾à¦¦à§€" },
+    { name: "Wazirpur", bn: "à¦‰à¦œà¦¿à¦°à¦ªà§à¦°" },
+  ],
+  barguna: [
+    { name: "Barguna Sadar", bn: "à¦¬à¦°à¦—à§à¦¨à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Amtali", bn: "à¦†à¦®à¦¤à¦²à§€" },
+    { name: "Bamna", bn: "à¦¬à¦¾à¦®à¦¨à¦¾" },
+    { name: "Betagi", bn: "à¦¬à§‡à¦¤à¦¾à¦—à§€" },
+    { name: "Patharghata", bn: "à¦ªà¦¾à¦¥à¦°à¦˜à¦¾à¦Ÿà¦¾" },
+    { name: "Taltali", bn: "à¦¤à¦¾à¦²à¦¤à¦²à§€" },
+  ],
+  bhola: [
+    { name: "Bhola Sadar", bn: "à¦­à§‹à¦²à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Borhanuddin", bn: "à¦¬à§‹à¦°à¦¹à¦¾à¦¨à¦‰à¦¦à§à¦¦à¦¿à¦¨" },
+    { name: "Char Fasson", bn: "à¦šà¦°à¦«à§à¦¯à¦¾à¦¶à¦¨" },
+    { name: "Daulatkhan", bn: "à¦¦à§Œà¦²à¦¤à¦–à¦¾à¦¨" },
+    { name: "Lalmohan", bn: "à¦²à¦¾à¦²à¦®à§‹à¦¹à¦¨" },
+    { name: "Manpura", bn: "à¦®à¦¨à¦ªà§à¦°à¦¾" },
+    { name: "Tazumuddin", bn: "à¦¤à¦œà§à¦®à¦¦à§à¦¦à¦¿à¦¨" },
+  ],
+  jhalokati: [
+    { name: "Jhalokati Sadar", bn: "à¦à¦¾à¦²à¦•à¦¾à¦ à¦¿ à¦¸à¦¦à¦°" },
+    { name: "Kathalia", bn: "à¦•à¦¾à¦ à¦¾à¦²à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Nalchity", bn: "à¦¨à¦²à¦›à¦¿à¦Ÿà¦¿" },
+    { name: "Rajapur", bn: "à¦°à¦¾à¦œà¦¾à¦ªà§à¦°" },
+  ],
+  patuakhali: [
+    { name: "Patuakhali Sadar", bn: "à¦ªà¦Ÿà§à¦¯à¦¼à¦¾à¦–à¦¾à¦²à§€ à¦¸à¦¦à¦°" },
+    { name: "Bauphal", bn: "à¦¬à¦¾à¦‰à¦«à¦²" },
+    { name: "Dashmina", bn: "à¦¦à¦¶à¦®à¦¿à¦¨à¦¾" },
+    { name: "Dumki", bn: "à¦¦à§à¦®à¦•à¦¿" },
+    { name: "Galachipa", bn: "à¦—à¦²à¦¾à¦šà¦¿à¦ªà¦¾" },
+    { name: "Kalapara", bn: "à¦•à¦²à¦¾à¦ªà¦¾à¦¡à¦¼à¦¾" },
+    { name: "Mirzaganj", bn: "à¦®à¦¿à¦°à§à¦œà¦¾à¦—à¦žà§à¦œ" },
+    { name: "Rangabali", bn: "à¦°à¦¾à¦™à§à¦—à¦¾à¦¬à¦¾à¦²à§€" },
+  ],
+  pirojpur: [
+    { name: "Pirojpur Sadar", bn: "à¦ªà¦¿à¦°à§‹à¦œà¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Bhandaria", bn: "à¦­à¦¾à¦£à§à¦¡à¦¾à¦°à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Kawkhali", bn: "à¦•à¦¾à¦‰à¦–à¦¾à¦²à§€" },
+    { name: "Mathbaria", bn: "à¦®à¦ à¦¬à¦¾à¦¡à¦¼à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Nazirpur", bn: "à¦¨à¦¾à¦œà¦¿à¦°à¦ªà§à¦°" },
+    { name: "Nesarabad", bn: "à¦¨à§‡à¦›à¦¾à¦°à¦¾à¦¬à¦¾à¦¦" },
+    { name: "Zianagar", bn: "à¦œà¦¿à¦¯à¦¼à¦¾à¦¨à¦—à¦°" },
+  ],
+
+  // ============ SYLHET DIVISION ============
+  sylhet: [
+    { name: "Sylhet Sadar", bn: "à¦¸à¦¿à¦²à§‡à¦Ÿ à¦¸à¦¦à¦°" },
+    { name: "Balaganj", bn: "à¦¬à¦¾à¦²à¦¾à¦—à¦žà§à¦œ" },
+    { name: "Beanibazar", bn: "à¦¬à¦¿à¦¯à¦¼à¦¾à¦¨à§€à¦¬à¦¾à¦œà¦¾à¦°" },
+    { name: "Bishwanath", bn: "à¦¬à¦¿à¦¶à§à¦¬à¦¨à¦¾à¦¥" },
+    { name: "Companiganj", bn: "à¦•à§‹à¦®à§à¦ªà¦¾à¦¨à§€à¦—à¦žà§à¦œ" },
+    { name: "Fenchuganj", bn: "à¦«à§‡à¦žà§à¦šà§à¦—à¦žà§à¦œ" },
+    { name: "Golapganj", bn: "à¦—à§‹à¦²à¦¾à¦ªà¦—à¦žà§à¦œ" },
+    { name: "Gowainghat", bn: "à¦—à§‹à¦¯à¦¼à¦¾à¦‡à¦¨à¦˜à¦¾à¦Ÿ" },
+    { name: "Jaintiapur", bn: "à¦œà§ˆà¦¨à§à¦¤à¦¾à¦ªà§à¦°" },
+    { name: "Kanaighat", bn: "à¦•à¦¾à¦¨à¦¾à¦‡à¦˜à¦¾à¦Ÿ" },
+    { name: "Osmani Nagar", bn: "à¦“à¦¸à¦®à¦¾à¦¨à§€à¦¨à¦—à¦°" },
+    { name: "Zakiganj", bn: "à¦œà¦•à¦¿à¦—à¦žà§à¦œ" },
+  ],
+  habiganj: [
+    { name: "Habiganj Sadar", bn: "à¦¹à¦¬à¦¿à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Ajmiriganj", bn: "à¦†à¦œà¦®à¦¿à¦°à§€à¦—à¦žà§à¦œ" },
+    { name: "Bahubal", bn: "à¦¬à¦¾à¦¹à§à¦¬à¦²" },
+    { name: "Baniyachong", bn: "à¦¬à¦¾à¦¨à¦¿à¦¯à¦¼à¦¾à¦šà¦‚" },
+    { name: "Chunarughat", bn: "à¦šà§à¦¨à¦¾à¦°à§à¦˜à¦¾à¦Ÿ" },
+    { name: "Lakhai", bn: "à¦²à¦¾à¦–à¦¾à¦‡" },
+    { name: "Madhabpur", bn: "à¦®à¦¾à¦§à¦¬à¦ªà§à¦°" },
+    { name: "Nabiganj", bn: "à¦¨à¦¬à§€à¦—à¦žà§à¦œ" },
+    { name: "Sayestaganj", bn: "à¦¶à¦¾à¦¯à¦¼à§‡à¦¸à§à¦¤à¦¾à¦—à¦žà§à¦œ" },
+  ],
+  moulvibazar: [
+    { name: "Moulvibazar Sadar", bn: "à¦®à§Œà¦²à¦­à§€à¦¬à¦¾à¦œà¦¾à¦° à¦¸à¦¦à¦°" },
+    { name: "Barlekha", bn: "à¦¬à¦¡à¦¼à¦²à§‡à¦–à¦¾" },
+    { name: "Juri", bn: "à¦œà§à¦¡à¦¼à§€" },
+    { name: "Kamalganj", bn: "à¦•à¦®à¦²à¦—à¦žà§à¦œ" },
+    { name: "Kulaura", bn: "à¦•à§à¦²à¦¾à¦‰à¦¡à¦¼à¦¾" },
+    { name: "Rajnagar", bn: "à¦°à¦¾à¦œà¦¨à¦—à¦°" },
+    { name: "Sreemangal", bn: "à¦¶à§à¦°à§€à¦®à¦™à§à¦—à¦²" },
+  ],
+  sunamganj: [
+    { name: "Sunamganj Sadar", bn: "à¦¸à§à¦¨à¦¾à¦®à¦—à¦žà§à¦œ à¦¸à¦¦à¦°" },
+    { name: "Bishwamvarpur", bn: "à¦¬à¦¿à¦¶à§à¦¬à¦®à§à¦­à¦°à¦ªà§à¦°" },
+    { name: "Chhatak", bn: "à¦›à¦¾à¦¤à¦•" },
+    { name: "Derai", bn: "à¦¦à¦¿à¦°à¦¾à¦‡" },
+    { name: "Dharampasha", bn: "à¦§à¦°à§à¦®à¦ªà¦¾à¦¶à¦¾" },
+    { name: "Dowarabazar", bn: "à¦¦à§‹à¦¯à¦¼à¦¾à¦°à¦¾à¦¬à¦¾à¦œà¦¾à¦°" },
+    { name: "Jagannathpur", bn: "à¦œà¦—à¦¨à§à¦¨à¦¾à¦¥à¦ªà§à¦°" },
+    { name: "Jamalganj", bn: "à¦œà¦¾à¦®à¦¾à¦²à¦—à¦žà§à¦œ" },
+    { name: "Sulla", bn: "à¦¶à¦¾à¦²à§à¦²à¦¾" },
+    { name: "Tahirpur", bn: "à¦¤à¦¾à¦¹à¦¿à¦°à¦ªà§à¦°" },
+    { name: "Shanthiganj", bn: "à¦¶à¦¾à¦¨à§à¦¤à¦¿à¦—à¦žà§à¦œ" },
+  ],
+
+  // ============ RANGPUR DIVISION ============
+  rangpur: [
+    { name: "Rangpur Sadar", bn: "à¦°à¦‚à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Badarganj", bn: "à¦¬à¦¦à¦°à¦—à¦žà§à¦œ" },
+    { name: "Gangachara", bn: "à¦—à¦™à§à¦—à¦¾à¦šà¦¡à¦¼à¦¾" },
+    { name: "Kaunia", bn: "à¦•à¦¾à¦‰à¦¨à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Mithapukur", bn: "à¦®à¦¿à¦ à¦¾à¦ªà§à¦•à§à¦°" },
+    { name: "Pirgachha", bn: "à¦ªà§€à¦°à¦—à¦¾à¦›à¦¾" },
+    { name: "Pirganj", bn: "à¦ªà§€à¦°à¦—à¦žà§à¦œ" },
+    { name: "Taraganj", bn: "à¦¤à¦¾à¦°à¦¾à¦—à¦žà§à¦œ" },
+  ],
+  dinajpur: [
+    { name: "Dinajpur Sadar", bn: "à¦¦à¦¿à¦¨à¦¾à¦œà¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Birampur", bn: "à¦¬à¦¿à¦°à¦¾à¦®à¦ªà§à¦°" },
+    { name: "Birganj", bn: "à¦¬à§€à¦°à¦—à¦žà§à¦œ" },
+    { name: "Biral", bn: "à¦¬à¦¿à¦°à¦²" },
+    { name: "Bochaganj", bn: "à¦¬à§‹à¦šà¦¾à¦—à¦žà§à¦œ" },
+    { name: "Chirirbandar", bn: "à¦šà¦¿à¦°à¦¿à¦°à¦¬à¦¨à§à¦¦à¦°" },
+    { name: "Phulbari", bn: "à¦«à§à¦²à¦¬à¦¾à¦¡à¦¼à§€" },
+    { name: "Ghoraghat", bn: "à¦˜à§‹à¦¡à¦¼à¦¾à¦˜à¦¾à¦Ÿ" },
+    { name: "Hakimpur", bn: "à¦¹à¦¾à¦•à¦¿à¦®à¦ªà§à¦°" },
+    { name: "Kaharole", bn: "à¦•à¦¾à¦¹à¦¾à¦°à§‹à¦²" },
+    { name: "Khansama", bn: "à¦–à¦¾à¦¨à¦¸à¦¾à¦®à¦¾" },
+    { name: "Nawabganj", bn: "à¦¨à¦¬à¦¾à¦¬à¦—à¦žà§à¦œ" },
+    { name: "Parbatipur", bn: "à¦ªà¦¾à¦°à§à¦¬à¦¤à§€à¦ªà§à¦°" },
+  ],
+  gaibandha: [
+    { name: "Gaibandha Sadar", bn: "à¦—à¦¾à¦‡à¦¬à¦¾à¦¨à§à¦§à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Phulchhari", bn: "à¦«à§à¦²à¦›à¦¡à¦¼à¦¿" },
+    { name: "Gobindaganj", bn: "à¦—à§‹à¦¬à¦¿à¦¨à§à¦¦à¦—à¦žà§à¦œ" },
+    { name: "Palashbari", bn: "à¦ªà¦²à¦¾à¦¶à¦¬à¦¾à¦¡à¦¼à§€" },
+    { name: "Sadullapur", bn: "à¦¸à¦¾à¦¦à§à¦²à§à¦²à¦¾à¦ªà§à¦°" },
+    { name: "Saghata", bn: "à¦¸à¦¾à¦˜à¦¾à¦Ÿà¦¾" },
+    { name: "Sundarganj", bn: "à¦¸à§à¦¨à§à¦¦à¦°à¦—à¦žà§à¦œ" },
+  ],
+  kurigram: [
+    { name: "Kurigram Sadar", bn: "à¦•à§à¦¡à¦¼à¦¿à¦—à§à¦°à¦¾à¦® à¦¸à¦¦à¦°" },
+    { name: "Bhurungamari", bn: "à¦­à§à¦°à§à¦™à§à¦—à¦¾à¦®à¦¾à¦°à§€" },
+    { name: "Char Rajibpur", bn: "à¦šà¦° à¦°à¦¾à¦œà¦¿à¦¬à¦ªà§à¦°" },
+    { name: "Chilmari", bn: "à¦šà¦¿à¦²à¦®à¦¾à¦°à§€" },
+    { name: "Phulbari", bn: "à¦«à§à¦²à¦¬à¦¾à¦¡à¦¼à§€" },
+    { name: "Nageshwari", bn: "à¦¨à¦¾à¦—à§‡à¦¶à§à¦¬à¦°à§€" },
+    { name: "Rajarhat", bn: "à¦°à¦¾à¦œà¦¾à¦°à¦¹à¦¾à¦Ÿ" },
+    { name: "Raomari", bn: "à¦°à§Œà¦®à¦¾à¦°à§€" },
+    { name: "Ulipur", bn: "à¦‰à¦²à¦¿à¦ªà§à¦°" },
+  ],
+  lalmonirhat: [
+    { name: "Lalmonirhat Sadar", bn: "à¦²à¦¾à¦²à¦®à¦¨à¦¿à¦°à¦¹à¦¾à¦Ÿ à¦¸à¦¦à¦°" },
+    { name: "Aditmari", bn: "à¦†à¦¦à¦¿à¦¤à¦®à¦¾à¦°à§€" },
+    { name: "Hatibandha", bn: "à¦¹à¦¾à¦¤à§€à¦¬à¦¾à¦¨à§à¦§à¦¾" },
+    { name: "Kaliganj", bn: "à¦•à¦¾à¦²à§€à¦—à¦žà§à¦œ" },
+    { name: "Patgram", bn: "à¦ªà¦¾à¦Ÿà¦—à§à¦°à¦¾à¦®" },
+  ],
+  nilphamari: [
+    { name: "Nilphamari Sadar", bn: "à¦¨à§€à¦²à¦«à¦¾à¦®à¦¾à¦°à§€ à¦¸à¦¦à¦°" },
+    { name: "Dimla", bn: "à¦¡à¦¿à¦®à¦²à¦¾" },
+    { name: "Domar", bn: "à¦¡à§‹à¦®à¦¾à¦°" },
+    { name: "Jaldhaka", bn: "à¦œà¦²à¦¢à¦¾à¦•à¦¾" },
+    { name: "Kishoreganj", bn: "à¦•à¦¿à¦¶à§‹à¦°à¦—à¦žà§à¦œ" },
+    { name: "Saidpur", bn: "à¦¸à§ˆà¦¯à¦¼à¦¦à¦ªà§à¦°" },
+  ],
+  panchagarh: [
+    { name: "Panchagarh Sadar", bn: "à¦ªà¦žà§à¦šà¦—à¦¡à¦¼ à¦¸à¦¦à¦°" },
+    { name: "Atwari", bn: "à¦†à¦Ÿà§‹à¦¯à¦¼à¦¾à¦°à§€" },
+    { name: "Boda", bn: "à¦¬à§‹à¦¦à¦¾" },
+    { name: "Debiganj", bn: "à¦¦à§‡à¦¬à§€à¦—à¦žà§à¦œ" },
+    { name: "Tetulia", bn: "à¦¤à§‡à¦à¦¤à§à¦²à¦¿à¦¯à¦¼à¦¾" },
+  ],
+  thakurgaon: [
+    { name: "Thakurgaon Sadar", bn: "à¦ à¦¾à¦•à§à¦°à¦—à¦¾à¦à¦“ à¦¸à¦¦à¦°" },
+    { name: "Baliadangi", bn: "à¦¬à¦¾à¦²à¦¿à¦¯à¦¼à¦¾à¦¡à¦¾à¦™à§à¦—à§€" },
+    { name: "Haripur", bn: "à¦¹à¦°à¦¿à¦ªà§à¦°" },
+    { name: "Pirganj", bn: "à¦ªà§€à¦°à¦—à¦žà§à¦œ" },
+    { name: "Ranisankail", bn: "à¦°à¦¾à¦£à§€à¦¶à¦‚à¦•à§ˆà¦²" },
+  ],
+
+  // ============ MYMENSINGH DIVISION ============
+  mymensingh: [
+    { name: "Mymensingh Sadar", bn: "à¦®à¦¯à¦¼à¦®à¦¨à¦¸à¦¿à¦‚à¦¹ à¦¸à¦¦à¦°" },
+    { name: "Bhaluka", bn: "à¦­à¦¾à¦²à§à¦•à¦¾" },
+    { name: "Dhobaura", bn: "à¦§à§‹à¦¬à¦¾à¦‰à¦¡à¦¼à¦¾" },
+    { name: "Fulbaria", bn: "à¦«à§à¦²à¦¬à¦¾à¦¡à¦¼à¦¿à¦¯à¦¼à¦¾" },
+    { name: "Gaffargaon", bn: "à¦—à¦«à¦°à¦—à¦¾à¦à¦“" },
+    { name: "Gauripur", bn: "à¦—à§Œà¦°à§€à¦ªà§à¦°" },
+    { name: "Haluaghat", bn: "à¦¹à¦¾à¦²à§à¦¯à¦¼à¦¾à¦˜à¦¾à¦Ÿ" },
+    { name: "Ishwarganj", bn: "à¦ˆà¦¶à§à¦¬à¦°à¦—à¦žà§à¦œ" },
+    { name: "Muktagachha", bn: "à¦®à§à¦•à§à¦¤à¦¾à¦—à¦¾à¦›à¦¾" },
+    { name: "Nandail", bn: "à¦¨à¦¾à¦¨à§à¦¦à¦¾à¦‡à¦²" },
+    { name: "Phulpur", bn: "à¦«à§à¦²à¦ªà§à¦°" },
+    { name: "Tarakanda", bn: "à¦¤à¦¾à¦°à¦¾à¦•à¦¾à¦¨à§à¦¦à¦¾" },
+    { name: "Trishal", bn: "à¦¤à§à¦°à¦¿à¦¶à¦¾à¦²" },
+  ],
+  jamalpur: [
+    { name: "Jamalpur Sadar", bn: "à¦œà¦¾à¦®à¦¾à¦²à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Baksiganj", bn: "à¦¬à¦•à¦¶à§€à¦—à¦žà§à¦œ" },
+    { name: "Dewanganj", bn: "à¦¦à§‡à¦“à¦¯à¦¼à¦¾à¦¨à¦—à¦žà§à¦œ" },
+    { name: "Islampur", bn: "à¦‡à¦¸à¦²à¦¾à¦®à¦ªà§à¦°" },
+    { name: "Madarganj", bn: "à¦®à¦¾à¦¦à¦¾à¦°à¦—à¦žà§à¦œ" },
+    { name: "Melandaha", bn: "à¦®à§‡à¦²à¦¾à¦¨à§à¦¦à¦¹" },
+    { name: "Sarishabari", bn: "à¦¸à¦°à¦¿à¦·à¦¾à¦¬à¦¾à¦¡à¦¼à§€" },
+  ],
+  netrokona: [
+    { name: "Netrokona Sadar", bn: "à¦¨à§‡à¦¤à§à¦°à¦•à§‹à¦£à¦¾ à¦¸à¦¦à¦°" },
+    { name: "Atpara", bn: "à¦†à¦Ÿà¦ªà¦¾à¦¡à¦¼à¦¾" },
+    { name: "Barhatta", bn: "à¦¬à¦¾à¦°à¦¹à¦¾à¦Ÿà§à¦Ÿà¦¾" },
+    { name: "Durgapur", bn: "à¦¦à§à¦°à§à¦—à¦¾à¦ªà§à¦°" },
+    { name: "Kalmakanda", bn: "à¦•à¦²à¦®à¦¾à¦•à¦¾à¦¨à§à¦¦à¦¾" },
+    { name: "Kendua", bn: "à¦•à§‡à¦¨à§à¦¦à§à¦¯à¦¼à¦¾" },
+    { name: "Khaliajuri", bn: "à¦–à¦¾à¦²à¦¿à¦¯à¦¼à¦¾à¦œà§à¦°à§€" },
+    { name: "Madan", bn: "à¦®à¦¦à¦¨" },
+    { name: "Mohanganj", bn: "à¦®à§‹à¦¹à¦¨à¦—à¦žà§à¦œ" },
+    { name: "Purbadhala", bn: "à¦ªà§‚à¦°à§à¦¬à¦§à¦²à¦¾" },
+  ],
+  sherpur: [
+    { name: "Sherpur Sadar", bn: "à¦¶à§‡à¦°à¦ªà§à¦° à¦¸à¦¦à¦°" },
+    { name: "Jhenaigati", bn: "à¦à¦¿à¦¨à¦¾à¦‡à¦—à¦¾à¦¤à§€" },
+    { name: "Nakla", bn: "à¦¨à¦•à¦²à¦¾" },
+    { name: "Nalitabari", bn: "à¦¨à¦¾à¦²à¦¿à¦¤à¦¾à¦¬à¦¾à¦¡à¦¼à§€" },
+    { name: "Sreebardi", bn: "à¦¶à§à¦°à§€à¦¬à¦°à¦¦à§€" },
+  ],
+};
+
+export function getThanasByDistrict(districtId: string): Thana[] {
+  return thanasByDistrict[districtId] || [];
+}
+
+
+================ FILE: src\lib\data\bangladesh-postcodes.ts ================
+// Bangladesh Post Codes by District
+export interface PostCode {
+  code: string;
+  area: string;
+}
+
+export const postCodesByDistrict: Record<string, PostCode[]> = {
+  // DHAKA DIVISION
+  dhaka: [
+    { code: "1000", area: "Dhaka GPO" },
+    { code: "1100", area: "Dhaka Sadar" },
+    { code: "1205", area: "Dhanmondi" },
+    { code: "1216", area: "Gulshan" },
+    { code: "1212", area: "Banani" },
+    { code: "1209", area: "Uttara" },
+    { code: "1207", area: "Mirpur" },
+    { code: "1204", area: "Mohammadpur" },
+  ],
+  faridpur: [{ code: "7800", area: "Faridpur" }],
+  gazipur: [
+    { code: "1700", area: "Gazipur Sadar" },
+    { code: "1703", area: "Tongi" },
+    { code: "1704", area: "Joydebpur" },
+  ],
+  gopalganj: [{ code: "8100", area: "Gopalganj" }],
+  kishoreganj: [{ code: "2300", area: "Kishoreganj" }],
+  madaripur: [{ code: "7900", area: "Madaripur" }],
+  manikganj: [{ code: "1800", area: "Manikganj" }],
+  munshiganj: [{ code: "1500", area: "Munshiganj" }],
+  narayanganj: [
+    { code: "1400", area: "Narayanganj" },
+    { code: "1410", area: "Fatullah" },
+  ],
+  narsingdi: [{ code: "1600", area: "Narsingdi" }],
+  rajbari: [{ code: "7700", area: "Rajbari" }],
+  shariatpur: [{ code: "8000", area: "Shariatpur" }],
+  tangail: [{ code: "1900", area: "Tangail" }],
+
+  // CHITTAGONG DIVISION
+  chittagong: [
+    { code: "4000", area: "Chittagong GPO" },
+    { code: "4100", area: "Chittagong Sadar" },
+    { code: "4212", area: "Halishahar" },
+    { code: "4000", area: "Agrabad" },
+  ],
+  bandarban: [{ code: "4600", area: "Bandarban" }],
+  brahmanbaria: [{ code: "3400", area: "Brahmanbaria" }],
+  chandpur: [{ code: "3600", area: "Chandpur" }],
+  comilla: [
+    { code: "3500", area: "Comilla" },
+    { code: "3501", area: "Comilla Sadar" },
+  ],
+  coxsbazar: [
+    { code: "4700", area: "Cox's Bazar" },
+    { code: "4702", area: "Cox's Bazar Sadar" },
+  ],
+  feni: [{ code: "3900", area: "Feni" }],
+  khagrachari: [{ code: "4400", area: "Khagrachari" }],
+  lakshmipur: [{ code: "3700", area: "Lakshmipur" }],
+  noakhali: [{ code: "3800", area: "Noakhali" }],
+  rangamati: [{ code: "4500", area: "Rangamati" }],
+
+  // RAJSHAHI DIVISION
+  rajshahi: [
+    { code: "6000", area: "Rajshahi GPO" },
+    { code: "6100", area: "Rajshahi Sadar" },
+  ],
+  bogra: [{ code: "5800", area: "Bogra" }],
+  chapainawabganj: [{ code: "6300", area: "Chapainawabganj" }],
+  joypurhat: [{ code: "5900", area: "Joypurhat" }],
+  naogaon: [{ code: "6500", area: "Naogaon" }],
+  natore: [{ code: "6400", area: "Natore" }],
+  pabna: [{ code: "6600", area: "Pabna" }],
+  sirajganj: [{ code: "6700", area: "Sirajganj" }],
+
+  // KHULNA DIVISION
+  khulna: [
+    { code: "9000", area: "Khulna GPO" },
+    { code: "9100", area: "Khulna Sadar" },
+  ],
+  bagerhat: [{ code: "9300", area: "Bagerhat" }],
+  chuadanga: [{ code: "7200", area: "Chuadanga" }],
+  jessore: [
+    { code: "7400", area: "Jessore" },
+    { code: "7401", area: "Jessore Sadar" },
+  ],
+  jhenaidah: [{ code: "7300", area: "Jhenaidah" }],
+  kushtia: [{ code: "7000", area: "Kushtia" }],
+  magura: [{ code: "7600", area: "Magura" }],
+  meherpur: [{ code: "7100", area: "Meherpur" }],
+  narail: [{ code: "7500", area: "Narail" }],
+  satkhira: [{ code: "9400", area: "Satkhira" }],
+
+  // BARISHAL DIVISION
+  barishal: [
+    { code: "8200", area: "Barishal" },
+    { code: "8201", area: "Barishal Sadar" },
+  ],
+  barguna: [{ code: "8700", area: "Barguna" }],
+  bhola: [{ code: "8300", area: "Bhola" }],
+  jhalokati: [{ code: "8400", area: "Jhalokati" }],
+  patuakhali: [{ code: "8600", area: "Patuakhali" }],
+  pirojpur: [{ code: "8500", area: "Pirojpur" }],
+
+  // SYLHET DIVISION
+  sylhet: [
+    { code: "3100", area: "Sylhet GPO" },
+    { code: "3101", area: "Sylhet Sadar" },
+    { code: "3103", area: "Zindabazar" },
+  ],
+  habiganj: [{ code: "3300", area: "Habiganj" }],
+  moulvibazar: [{ code: "3200", area: "Moulvibazar" }],
+  sunamganj: [{ code: "3000", area: "Sunamganj" }],
+
+  // RANGPUR DIVISION
+  rangpur: [
+    { code: "5400", area: "Rangpur GPO" },
+    { code: "5401", area: "Rangpur Sadar" },
+  ],
+  dinajpur: [{ code: "5200", area: "Dinajpur" }],
+  gaibandha: [{ code: "5700", area: "Gaibandha" }],
+  kurigram: [{ code: "5600", area: "Kurigram" }],
+  lalmonirhat: [{ code: "5500", area: "Lalmonirhat" }],
+  nilphamari: [{ code: "5300", area: "Nilphamari" }],
+  panchagarh: [{ code: "5000", area: "Panchagarh" }],
+  thakurgaon: [{ code: "5100", area: "Thakurgaon" }],
+
+  // MYMENSINGH DIVISION
+  mymensingh: [{ code: "2200", area: "Mymensingh" }],
+  jamalpur: [{ code: "2000", area: "Jamalpur" }],
+  netrokona: [{ code: "2400", area: "Netrokona" }],
+  sherpur: [{ code: "2100", area: "Sherpur" }],
+};
+
+export function getPostCodesByDistrict(districtId: string): PostCode[] {
+  return postCodesByDistrict[districtId] || [];
+}
+
+
+================ FILE: src\components\account\add-address.tsx ================
+"use client";
+import { PhotonAddressAutocomplete } from "@/components/address/photon-address-autocomplete";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { MapPin, Loader2, Plus, X, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+
+interface AddAddressProps {
+  defaultFullName?: string;
+  defaultPhone?: string;
+}
+
+export function AddAddress({ defaultFullName, defaultPhone }: AddAddressProps) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [form, setForm] = useState({
+    label: "Home",
+    fullName: defaultFullName ?? "",
+    line1: "",
+    line2: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "Bangladesh",
+    phone: defaultPhone ?? "",
+    isDefault: true,
+  });
+
+  const update = (key: string, value: string) =>
+    setForm((f) => ({ ...f, [key]: value }));
+
+  const useLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Your browser doesn't support location access");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+            { headers: { "Accept-Language": "en" } }
+          );
+          if (!res.ok) throw new Error("geocode failed");
+          const data = await res.json();
+          const a = data.address || {};
+          setForm((f) => ({
+            ...f,
+            line1:
+              [a.road, a.neighbourhood, a.suburb, a.hamlet]
+                .filter(Boolean)
+                .join(", ") || f.line1,
+            city: a.city || a.town || a.village || a.county || f.city,
+            state: a.state || a.division || f.state,
+            postalCode: a.postcode || f.postalCode || "0000",
+            country: a.country || "Bangladesh",
+          }));
+          toast.success("Location detected! Verify & save.");
+        } catch {
+          toast.error("Could not fetch address from location");
+        } finally {
+          setLocating(false);
+        }
+      },
+      (err) => {
+        setLocating(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          toast.error("Location permission denied");
+        } else if (err.code === err.TIMEOUT) {
+          toast.error("Location request timed out");
+        } else {
+          toast.error("Could not get location");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  };
+
+  const save = async () => {
+    if (
+      !form.fullName ||
+      !form.line1 ||
+      !form.city ||
+      !form.postalCode ||
+      !form.country
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    setSaving(true);
+    try {
+      const res = await fetch("/api/v1/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          label: form.label || undefined,
+          fullName: form.fullName,
+          line1: form.line1,
+          line2: form.line2 || undefined,
+          city: form.city,
+          state: form.state || undefined,
+          postalCode: form.postalCode,
+          country: form.country,
+          phone: form.phone || undefined,
+          isDefault: form.isDefault,
+        }),
+      });
+      const text = await res.text();
+      const json = text ? JSON.parse(text) : {};
+      if (!res.ok) {
+        throw new Error(json.error?.message ?? "Failed to save address");
+      }
+      toast.success("Address saved!");
+      setOpen(false);
+      setForm({
+        label: "Home",
+        fullName: defaultFullName ?? "",
+        line1: "",
+        line2: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "Bangladesh",
+        phone: defaultPhone ?? "",
+        isDefault: true,
+      });
+      router.refresh();
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to save");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!open) {
+    return (
+      <Button onClick={() => setOpen(true)}>
+        <Plus className="h-4 w-4 mr-2" /> Add new address
+      </Button>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border p-5 bg-card shadow-sm w-full">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-semibold text-lg">Add new address</h2>
+        <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className="mb-5 p-4 rounded-lg bg-muted/40 border border-dashed">
+        <Button
+          type="button"
+          variant="default"
+          onClick={useLocation}
+          disabled={locating}
+          className="w-full"
+        >
+          {locating ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Getting your location...
+            </>
+          ) : (
+            <>
+              <MapPin className="h-4 w-4 mr-2" />
+              Use my current location
+            </>
+          )}
+        </Button>
+        <p className="text-xs text-muted-foreground mt-2 text-center">
+          Auto-fill address from your device GPS
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">Label</label>
+          <Input
+            placeholder="Home, Office, etc."
+            value={form.label}
+            onChange={(e) => update("label", e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">
+            Full name *
+          </label>
+          <Input
+            placeholder="Your name"
+            value={form.fullName}
+            onChange={(e) => update("fullName", e.target.value)}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="text-xs font-medium text-muted-foreground">
+            Address line 1 *
+          </label>
+          <PhotonAddressAutocomplete
+            value={form.line1}
+            onChange={(value) => update("line1", value)}
+            onSelect={(address) => {
+              setForm((current) => ({
+                ...current,
+                line1: address.line1 || current.line1,
+                line2: address.line2 || current.line2,
+                city: address.city || current.city,
+                state: address.state || current.state,
+                postalCode: address.postalCode || current.postalCode,
+                country: address.country || current.country,
+              }));
+            }}
+            placeholder="Type street, area, city or postcode"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="text-xs font-medium text-muted-foreground">
+            Address line 2
+          </label>
+          <Input
+            placeholder="Apartment, landmark (optional)"
+            value={form.line2}
+            onChange={(e) => update("line2", e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">City *</label>
+          <Input
+            placeholder="City"
+            value={form.city}
+            onChange={(e) => update("city", e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">State</label>
+          <Input
+            placeholder="State / Division"
+            value={form.state}
+            onChange={(e) => update("state", e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">
+            Postal code *
+          </label>
+          <Input
+            placeholder="Postal code"
+            value={form.postalCode}
+            onChange={(e) => update("postalCode", e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-muted-foreground">
+            Country *
+          </label>
+          <Input
+            placeholder="Country"
+            value={form.country}
+            onChange={(e) => update("country", e.target.value)}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="text-xs font-medium text-muted-foreground">Phone</label>
+          <Input
+            placeholder="Phone number"
+            value={form.phone}
+            onChange={(e) => update("phone", e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 mt-5">
+        <Button onClick={save} disabled={saving}>
+          {saving ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Saving...
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" /> Save address
+            </>
+          )}
+        </Button>
+        <Button variant="outline" onClick={() => setOpen(false)}>
+          Cancel
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+
+================ FILE: src\app\(public)\checkout\page.tsx ================
+"use client";
+import { PhotonAddressAutocomplete } from "@/components/address/photon-address-autocomplete";
+
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Loader2, Banknote, Landmark } from "lucide-react";
+import { Container } from "@/components/ui/container";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useCartStore } from "@/lib/store/cart-store";
+import { formatPrice, cleanProductName } from "@/lib/utils";
+import { toast } from "sonner";
+import { SearchableSelect } from "@/components/ui/searchable-select";
+import { divisions, getDistrictsByDivision } from "@/lib/data/bangladesh";
+import { getThanasByDistrict } from "@/lib/data/bangladesh-thanas";
+import { getPostCodesByDistrict } from "@/lib/data/bangladesh-postcodes";
+
+// EDIT THESE: your real payment numbers / bank details
+const LOCAL_METHODS = [
+  { id: "bkash", label: "bKash", info: "Send Money to 01XXXXXXXXX (Personal)" },
+  { id: "nagad", label: "Nagad", info: "Send Money to 01XXXXXXXXX (Personal)" },
+  { id: "rocket", label: "Rocket", info: "Send Money to 01XXXXXXXXX-X (Personal)" },
+  { id: "bank", label: "Bank transfer", info: "Bank: YOUR BANK | A/C name: YOUR NAME | A/C no: 0000000000" },
+];
+
+type Pay = "cod" | "local";
+
+type ShippingMethodOption = {
+  id: string;
+  name: string;
+  price: number;
+  dhakaPrice: number;
+  outsideDhakaPrice: number;
+  freeThreshold: number | null;
+  estimatedDays: string | null;
+};
+
+async function readJson(res: Response) {
+  const t = await res.text();
+  try {
+    return t ? JSON.parse(t) : {};
+  } catch {
+    return {};
+  }
+}
+
+export default function CheckoutPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
+  const [only, setOnly] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+  const finishing = useRef(false);
+  useEffect(() => {
+    setOnly(new URLSearchParams(window.location.search).get("only"));
+    setReady(true);
+  }, []);
+
+  const allItems = useCartStore((s) => s.items);
+  const items = only ? allItems.filter((i) => i.variantId === only) : allItems;
+  const removeItemFromCart = useCartStore((s) => s.removeItem);
+
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [line1, setLine1] = useState("");
+  const [line2, setLine2] = useState("");
+  const [division, setDivision] = useState("");
+  const [district, setDistrict] = useState("");
+  const [thana, setThana] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [notes, setNotes] = useState("");
+  const [pay, setPay] = useState<Pay>("cod");
+  const [localMethod, setLocalMethod] = useState("bkash");
+  const [trxId, setTrxId] = useState("");
+  const [senderNumber, setSenderNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [shippingMethods, setShippingMethods] = useState<ShippingMethodOption[]>([]);
+  const [selectedShippingMethodId, setSelectedShippingMethodId] = useState("");
+  const [shippingMethodsLoading, setShippingMethodsLoading] = useState(true);
+  const [shippingMethodsError, setShippingMethodsError] = useState("");
+  const [freeDeliveryEnabled, setFreeDeliveryEnabled] = useState(false);
+  const [freeDeliveryMinimum, setFreeDeliveryMinimum] = useState(1000);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadShippingMethods() {
+      setShippingMethodsLoading(true);
+      setShippingMethodsError("");
+
+      try {
+        const res = await fetch("/api/v1/shipping", { cache: "no-store" });
+        const json: any = await readJson(res);
+
+        if (!res.ok) {
+          throw new Error(json.error?.message || "Unable to load shipping methods.");
+        }
+
+        const methods = json.data?.methods;
+        if (!Array.isArray(methods)) {
+          throw new Error("Invalid shipping methods response.");
+        }
+
+        const settings = json.data?.settings;
+
+        if (!cancelled) {
+          setFreeDeliveryEnabled(settings?.freeDeliveryEnabled === true);
+
+          const configuredMinimum = Number(settings?.freeDeliveryMinimum ?? 1000);
+          setFreeDeliveryMinimum(
+            Number.isFinite(configuredMinimum) && configuredMinimum >= 0
+              ? configuredMinimum
+              : 1000
+          );
+
+          setShippingMethods(methods);
+          setSelectedShippingMethodId((current) =>
+            methods.some((item: ShippingMethodOption) => item.id === current)
+              ? current
+              : (methods[0]?.id ?? "")
+          );
+
+          if (methods.length === 0) {
+            setShippingMethodsError("No active Bangladesh courier is available. Please contact the store.");
+          }
+        }
+      } catch (err: any) {
+        if (!cancelled) {
+          setShippingMethodsError(err?.message || "Unable to load shipping methods.");
+        }
+      } finally {
+        if (!cancelled) setShippingMethodsLoading(false);
+      }
+    }
+
+    loadShippingMethods();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (session?.user?.name && !fullName) setFullName(session.user.name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+
+  useEffect(() => {
+    if (ready && items.length === 0 && !finishing.current) router.replace("/cart");
+  }, [ready, items.length, router]);
+
+  const divisionId = divisions.find((d) => d.name === division)?.id ?? "";
+  const districtId = divisionId ? getDistrictsByDivision(divisionId).find((d) => d.name === district)?.id ?? "" : "";
+
+  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const selectedShippingMethod = shippingMethods.find(
+    (item) => item.id === selectedShippingMethodId
+  );
+
+  const globalShippingIsFree =
+    freeDeliveryEnabled && subtotal >= freeDeliveryMinimum;
+
+  const shippingIsFree = Boolean(
+    globalShippingIsFree ||
+    (
+      selectedShippingMethod &&
+      selectedShippingMethod.freeThreshold !== null &&
+      subtotal >= selectedShippingMethod.freeThreshold
+    )
+  );
+
+  const districtShippingPrice = selectedShippingMethod
+    ? (
+        district.trim().toLowerCase() === "dhaka"
+          ? selectedShippingMethod.dhakaPrice
+          : selectedShippingMethod.outsideDhakaPrice
+      )
+    : 0;
+
+  const shippingCost = selectedShippingMethod
+    ? (shippingIsFree ? 0 : districtShippingPrice)
+    : 0;
+
+  const total = subtotal + shippingCost;
+  const method = LOCAL_METHODS.find((m) => m.id === localMethod)!;
+
+  const afterOrder = () => {
+    const rest = useCartStore.getState().items;
+    if (only && rest.length > 0) {
+      window.location.assign("/cart");
+      return;
+    }
+    window.location.assign("/account/orders");
+  };
+
+  const placeOrder = async () => {
+    if (status === "loading") return;
+    if (status !== "authenticated") {
+      toast("Please sign in to place your order");
+      window.dispatchEvent(new CustomEvent("open-auth-modal", { detail: "login" }));
+      return;
+    }
+    if (fullName.trim().length < 2) return toast.error("Enter your full name");
+    if (phone.trim().length < 6) return toast.error("Enter your phone number");
+    if (!division || !district || !thana) return toast.error("Select division, district and thana");
+    if (!postalCode) return toast.error("Select your post code");
+    if (line1.trim().length < 2) return toast.error("Enter your address");
+    if (shippingMethodsLoading) return toast.error("Please wait while shipping methods load");
+    if (!selectedShippingMethod) return toast.error("Please select an available courier");
+    if (pay === "local" && trxId.trim().length < 4) return toast.error("Enter the transaction ID of your payment");
+
+    setLoading(true);
+    try {
+      const addrRes = await fetch("/api/v1/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          line1: line1.trim(),
+          line2: [thana, line2.trim()].filter(Boolean).join(", "),
+          city: district,
+          state: division,
+          postalCode,
+          country: "Bangladesh",
+          phone: phone.trim(),
+          label: "Checkout",
+        }),
+      });
+      const addrJson: any = await readJson(addrRes);
+      if (!addrRes.ok) throw new Error(addrJson.error?.message ?? "Address error (" + addrRes.status + ")");
+
+      const noteParts: string[] = [];
+      if (pay === "local") {
+        noteParts.push("PAYMENT: " + method.label + " | TrxID: " + trxId.trim() + (senderNumber.trim() ? " | Sender: " + senderNumber.trim() : ""));
+      } else {
+        noteParts.push("PAYMENT: Cash on delivery");
+      }
+      if (notes.trim()) noteParts.push(notes.trim());
+
+      const res = await fetch("/api/v1/checkout/cod", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
+          addressId: addrJson.data.address.id,
+          shippingMethodId: selectedShippingMethodId,
+          notes: noteParts.join(" || "),
+        }),
+      });
+      const json: any = await readJson(res);
+      if (!res.ok) throw new Error(json.error?.message ?? "Order failed (" + res.status + ")");
+
+      finishing.current = true;
+      if (only) removeItemFromCart(only);
+      else useCartStore.getState().clear();
+      toast.success("Order placed");
+      afterOrder();
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!ready || items.length === 0) return null;
+
+  const box = "rounded-lg border bg-white p-5 space-y-4";
+
+  return (
+    <div className="bg-[#eff0f5] py-6">
+      <Container>
+        <div className="mx-auto max-w-2xl space-y-4">
+          <h1 className="text-xl font-bold">Order</h1>
+
+          <div className={box}>
+            {items.map((i) => (
+              <div key={i.variantId} className="flex items-center gap-3">
+                <div className="h-14 w-14 shrink-0 overflow-hidden rounded bg-gray-100">
+                  {i.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={i.image} alt="" className="h-full w-full object-cover" />
+                  ) : null}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{cleanProductName(i.name)}</p>
+                  <p className="text-xs text-gray-500">Qty {i.quantity}</p>
+                </div>
+                <p className="text-sm font-semibold">{formatPrice(i.price * i.quantity)}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className={box}>
+            <h2 className="font-semibold">Delivery address</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label>Full name</Label>
+                <Input value={fullName} onChange={(e) => setFullName(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Phone</Label>
+                <Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Address</Label>
+              <PhotonAddressAutocomplete
+                value={line1}
+                onChange={setLine1}
+                onSelect={(address) => {
+                  setLine1(address.line1 || line1);
+                  if (address.line2) setLine2(address.line2);
+
+                  const normalize = (value: string) =>
+                    value
+                      .toLowerCase()
+                      .replace(/\bdivision\b/g, "")
+                      .replace(/\bdistrict\b/g, "")
+                      .replace(/\s+/g, " ")
+                      .trim();
+
+                  const divisionCandidates = [
+                    address.division,
+                    address.state,
+                  ].filter(Boolean);
+
+                  const matchedDivision = divisions.find((item) =>
+                    divisionCandidates.some(
+                      (candidate) =>
+                        normalize(candidate) === normalize(item.name) ||
+                        normalize(candidate) === normalize(item.name + " division")
+                    )
+                  );
+
+                  if (matchedDivision) {
+                    setDivision(matchedDivision.name);
+
+                    const districtCandidates = [
+                      address.district,
+                      address.city,
+                    ].filter(Boolean);
+
+                    const availableDistricts = getDistrictsByDivision(
+                      matchedDivision.id
+                    );
+
+                    const matchedDistrict = availableDistricts.find((item) =>
+                      districtCandidates.some(
+                        (candidate) =>
+                          normalize(candidate) === normalize(item.name)
+                      )
+                    );
+
+                    if (matchedDistrict) {
+                      setDistrict(matchedDistrict.name);
+
+                      const matchedThana = getThanasByDistrict(
+                        matchedDistrict.id
+                      ).find((item) =>
+                        [
+                          address.thana,
+                          address.suburb,
+                          address.city,
+                        ].some(
+                          (candidate) =>
+                            Boolean(candidate) &&
+                            normalize(candidate!) === normalize(item.name)
+                        )
+                      );
+
+                      if (matchedThana) setThana(matchedThana.name);
+
+                      const matchedPostCode = getPostCodesByDistrict(
+                        matchedDistrict.id
+                      ).find(
+                        (item) => item.code === address.postalCode
+                      );
+
+                      if (matchedPostCode) {
+                        setPostalCode(matchedPostCode.code);
+                      }
+                    }
+                  }
+                }}
+                placeholder="Type street, area, city or postcode"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Address line 2 (optional)</Label>
+              <Input value={line2} onChange={(e) => setLine2(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label>Division</Label>
+                <SearchableSelect
+                  options={divisions.map((d) => ({ value: d.name, label: d.name, sublabel: d.bn }))}
+                  value={division}
+                  onChange={(v) => {
+                    setDivision(v);
+                    setDistrict("");
+                    setThana("");
+                    setPostalCode("");
+                  }}
+                  placeholder="Select division"
+                  searchPlaceholder="Search division..."
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>District</Label>
+                <SearchableSelect
+                  options={getDistrictsByDivision(divisionId).map((d) => ({ value: d.name, label: d.name, sublabel: d.bn }))}
+                  value={district}
+                  onChange={(v) => {
+                    setDistrict(v);
+                    setThana("");
+                    setPostalCode("");
+                  }}
+                  placeholder={division ? "Select district" : "Select division first"}
+                  searchPlaceholder="Search district..."
+                  disabled={!division}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Thana / Upazila</Label>
+                <SearchableSelect
+                  options={getThanasByDistrict(districtId).map((t) => ({ value: t.name, label: t.name }))}
+                  value={thana}
+                  onChange={setThana}
+                  placeholder={district ? "Select thana" : "Select district first"}
+                  searchPlaceholder="Search thana..."
+                  disabled={!districtId}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Post code</Label>
+                <SearchableSelect
+                  options={getPostCodesByDistrict(districtId).map((p) => ({ value: p.code, label: p.code, sublabel: p.area }))}
+                  value={postalCode}
+                  onChange={setPostalCode}
+                  placeholder={district ? "Select post code" : "Select district first"}
+                  searchPlaceholder="Search post code..."
+                  disabled={!districtId}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={box}>
+            <h2 className="font-semibold">Shipping method</h2>
+
+            {shippingMethodsLoading ? (
+              <p className="text-sm text-gray-500">Loading available couriers...</p>
+            ) : shippingMethodsError ? (
+              <p role="alert" className="text-sm text-red-600">{shippingMethodsError}</p>
+            ) : (
+              <div className="space-y-3">
+                {shippingMethods.map((shippingOption) => (
+                  <label
+                    key={shippingOption.id}
+                    className={
+                      "flex cursor-pointer items-start gap-3 rounded-lg border p-4 " +
+                      (selectedShippingMethodId === shippingOption.id
+                        ? "border-[#f85606] bg-orange-50"
+                        : "hover:border-gray-400")
+                    }
+                  >
+                    <input
+                      type="radio"
+                      name="shippingMethod"
+                      value={shippingOption.id}
+                      checked={selectedShippingMethodId === shippingOption.id}
+                      onChange={() => setSelectedShippingMethodId(shippingOption.id)}
+                      className="mt-1"
+                    />
+                    <span className="flex-1">
+                      <span className="block font-medium">{shippingOption.name}</span>
+                      {shippingOption.estimatedDays && (
+                        <span className="block text-xs text-gray-500">
+                          Estimated delivery: {shippingOption.estimatedDays}
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-semibold">
+                      {(freeDeliveryEnabled && subtotal >= freeDeliveryMinimum) ||
+                      (shippingOption.freeThreshold !== null &&
+                      subtotal >= shippingOption.freeThreshold)
+                        ? "Free"
+                        : formatPrice(
+                            district.trim().toLowerCase() === "dhaka"
+                              ? shippingOption.dhakaPrice
+                              : shippingOption.outsideDhakaPrice
+                          )}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className={box}>
+            <h2 className="font-semibold">Payment</h2>
+
+            <button
+              type="button"
+              onClick={() => setPay("cod")}
+              className={"flex w-full items-center gap-3 rounded-lg border p-4 text-left " + (pay === "cod" ? "border-[#f85606] bg-orange-50" : "hover:border-gray-400")}
+            >
+              <Banknote className="h-5 w-5" />
+              <div className="flex-1">
+                <p className="font-medium">Cash on delivery</p>
+                <p className="text-xs text-gray-500">Pay when you receive your order</p>
+              </div>
+              <input type="radio" readOnly checked={pay === "cod"} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPay("local")}
+              className={"flex w-full items-center gap-3 rounded-lg border p-4 text-left " + (pay === "local" ? "border-[#f85606] bg-orange-50" : "hover:border-gray-400")}
+            >
+              <Landmark className="h-5 w-5" />
+              <div className="flex-1">
+                <p className="font-medium">Local payment</p>
+                <p className="text-xs text-gray-500">bKash, Nagad, Rocket or bank transfer</p>
+              </div>
+              <input type="radio" readOnly checked={pay === "local"} />
+            </button>
+
+            {pay === "local" && (
+              <div className="space-y-3 rounded-lg bg-gray-50 p-4">
+                <div className="flex flex-wrap gap-2">
+                  {LOCAL_METHODS.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setLocalMethod(m.id)}
+                      className={"rounded-full border px-4 py-1.5 text-sm " + (localMethod === m.id ? "border-[#f85606] bg-[#f85606] text-white" : "bg-white hover:border-gray-400")}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-sm">
+                  Pay <span className="font-bold">{formatPrice(total)}</span> now. {method.info}
+                </p>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label>Transaction ID</Label>
+                    <Input value={trxId} onChange={(e) => setTrxId(e.target.value)} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Your sending number (optional)</Label>
+                    <Input value={senderNumber} onChange={(e) => setSenderNumber(e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <Label>Note (optional)</Label>
+              <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
+            </div>
+
+            <div className="space-y-1 border-t pt-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Subtotal</span>
+                <span>{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">
+                  Delivery{selectedShippingMethod ? " (" + selectedShippingMethod.name + ")" : ""}
+                </span>
+                <span>{formatPrice(shippingCost)}</span>
+              </div>
+              <div className="flex justify-between text-base font-bold">
+                <span>Total</span>
+                <span>{formatPrice(total)}</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={placeOrder}
+              disabled={loading || shippingMethodsLoading || !selectedShippingMethod}
+              className="flex w-full items-center justify-center gap-2 rounded bg-[#f85606] py-3 font-bold text-white hover:bg-[#d94b05] disabled:opacity-60"
+            >
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />} Order now
+            </button>
+          </div>
+        </div>
+      </Container>
+    </div>
+  );
+}
+
+
+
+================ FILE: src\app\api\v1\addresses\route.ts ================
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { auth } from "@/lib/auth";
+import { UnauthorizedError } from "@/lib/errors";
+import { z } from "zod";
+
+const addressSchema = z.object({
+  label: z.string().optional(),
+  fullName: z.string().min(2, "Full name required"),
+  line1: z.string().min(3, "Address required"),
+  line2: z.string().optional(),
+  city: z.string().min(1, "District required"),
+  state: z.string().optional(),
+  postalCode: z.string().optional(),
+  country: z.string().default("Bangladesh"),
+  phone: z.string().optional(),
+  isDefault: z.boolean().optional().default(false),
+});
+
+// GET /api/v1/addresses â€” current user's addresses
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new UnauthorizedError();
+
+    const addresses = await prisma.address.findMany({
+      where: { userId: session.user.id, deletedAt: null },
+      orderBy: [{ isDefault: "desc" }, { id: "desc" }],
+    });
+
+    return success({ addresses });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+// POST /api/v1/addresses â€” create new address
+export async function POST(request: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new UnauthorizedError();
+    const userId = session.user.id;
+
+    const body = addressSchema.parse(await request.json());
+
+    const count = await prisma.address.count({
+      where: { userId, deletedAt: null },
+    });
+
+    const shouldBeDefault = body.isDefault || count === 0;
+
+    if (shouldBeDefault && count > 0) {
+      await prisma.address.updateMany({
+        where: { userId, isDefault: true, deletedAt: null },
+        data: { isDefault: false },
+      });
+    }
+
+    const address = await prisma.address.create({
+      data: {
+        userId,
+        label: body.label,
+        fullName: body.fullName,
+        line1: body.line1,
+        line2: body.line2,
+        city: body.city,
+        state: body.state,
+        postalCode: body.postalCode ?? "",
+        country: body.country,
+        phone: body.phone,
+        isDefault: shouldBeDefault,
+      },
+    });
+
+    return success({ address }, 201);
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+
+================ FILE: src\app\api\v1\addresses\[id]\route.ts ================
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { requireUser } from "@/lib/auth-guard";
+import { NotFoundError } from "@/lib/errors";
+import { z } from "zod";
+
+const addressSchema = z.object({
+  label: z.string().optional(),
+  fullName: z.string().min(2),
+  line1: z.string().min(2),
+  line2: z.string().optional(),
+  city: z.string().min(2),
+  state: z.string().optional(),
+  postalCode: z.string().min(2),
+  country: z.string().min(2),
+  phone: z.string().optional(),
+  isDefault: z.boolean().optional(),
+});
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await requireUser();
+    const { id } = await params;
+    const body = addressSchema.parse(await request.json());
+
+    const existing = await prisma.address.findFirst({
+      where: { id, userId: user.id, deletedAt: null },
+    });
+    if (!existing) throw new NotFoundError("Address");
+
+    if (body.isDefault) {
+      await prisma.address.updateMany({
+        where: { userId: user.id, isDefault: true, id: { not: id } },
+        data: { isDefault: false },
+      });
+    }
+
+    const updated = await prisma.address.update({
+      where: { id },
+      data: body,
+    });
+
+    return success({ address: updated });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await requireUser();
+    const { id } = await params;
+
+    const existing = await prisma.address.findFirst({
+      where: { id, userId: user.id, deletedAt: null },
+      include: {
+        _count: {
+          select: { shippingOrders: true, billingOrders: true },
+        },
+      },
+    });
+
+    if (!existing) {
+      return errorResponse({ message: "Address not found", status: 404 });
+    }
+
+    const totalOrders =
+      existing._count.shippingOrders + existing._count.billingOrders;
+
+    // Soft delete: keep row so Order history stays intact
+    await prisma.address.update({
+      where: { id },
+      data: {
+        deletedAt: new Date(),
+        isDefault: false,
+      },
+    });
+
+    return success({
+      ok: true,
+      softDeleted: true,
+      linkedOrders: totalOrders,
+    });
+  } catch (err) {
+    console.error("[DELETE /addresses/:id] error:", err);
+    return errorResponse(err);
+  }
+}
+
+
+================ FILE: prisma\schema.prisma ================
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ AUTH & USERS ============
+
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  name           String?
+  phone          String?
+  passwordHash   String?
+  passwordResetToken    String?
+  passwordResetExpires  DateTime?
+  passwordResetAttempts Int      @default(0)
+  resetSessionToken     String?  @unique
+  resetSessionExpires   DateTime?
+  role           Role      @default(CUSTOMER)
+  image          String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  addresses      Address[]
+  products    Product[] @relation("SellerProducts")
+  orders         Order[]
+  cart           Cart?
+  wishlist       WishlistItem[]
+  reviews        Review[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============ ADDRESSES ============
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  label      String?
+  fullName   String
+  line1      String
+  line2      String?
+  city       String
+  state      String?
+  postalCode String
+  country    String  @default("US")
+  phone      String?
+  isDefault  Boolean @default(false)
+  deletedAt  DateTime?
+
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shippingOrders    Order[]        @relation("ShippingAddress")
+  billingOrders     Order[]        @relation("BillingAddress")
+
+  @@index([userId, deletedAt])
+}
+
+// ============ CATALOG ============
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  image       String?
+  parentId    String?
+  order       Int        @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@index([parentId])
+  @@index([slug])
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  name             String
+  slug             String        @unique
+  description      String?       @db.Text
+  shortDescription String?
+  basePrice        Decimal       @db.Decimal(12, 2)
+  compareAtPrice   Decimal?      @db.Decimal(12, 2)
+  costPrice        Decimal?      @db.Decimal(12, 2)
+  sku              String?       @unique
+  sellerId    String?
+  seller      User?     @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: SetNull)
+  categoryId       String
+  status           String        @default("DRAFT")
+  isFeatured       Boolean       @default(false)
+  weight           Decimal?      @db.Decimal(8, 2)
+  stock            Int           @default(0)
+  trackInventory   Boolean       @default(true)
+  metaTitle        String?
+  metaDescription  String?       @db.Text
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  category  Category         @relation(fields: [categoryId], references: [id])
+  variants  ProductVariant[]
+  images    ProductImage[]
+  reviews   Review[]
+  wishlist  WishlistItem[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([status])
+  @@index([isFeatured])
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+  productId  String
+  sku        String?  @unique
+  price      Decimal  @db.Decimal(12, 2)
+  stock      Int      @default(0)
+  attributes Json     @default("{}")
+  isActive   Boolean  @default(true)
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([productId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  alt       String?
+  order     Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ============ CART ============
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String?  @unique
+  sessionId String?  @unique
+  updatedAt DateTime @updatedAt
+
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([sessionId])
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String
+  variantId String
+  quantity  Int    @default(1)
+
+  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+}
+
+// ============ ORDERS ============
+
+model Order {
+  id                String   @id @default(cuid())
+  orderNumber       String   @unique
+  userId            String
+  status            String   @default("PENDING")
+  subtotal          Decimal  @db.Decimal(12, 2)
+  discountAmount    Decimal  @default(0) @db.Decimal(12, 2)
+  shippingAmount    Decimal  @default(0) @db.Decimal(12, 2)
+  deliveryZone      String?
+  shippingMethodName String?
+  shippingEstimatedDays String?
+  taxAmount         Decimal  @default(0) @db.Decimal(12, 2)
+  total             Decimal  @db.Decimal(12, 2)
+  currency String @default("BDT")
+  shippingAddressId String
+  billingAddressId  String?
+  notes             String?  @db.Text
+  placedAt          DateTime @default(now())
+  paidAt            DateTime?
+  updatedAt         DateTime @updatedAt
+
+  user              User              @relation(fields: [userId], references: [id])
+  shippingAddress   Address           @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddress    Address?          @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  items             OrderItem[]
+  payments          Payment[]
+  statusLog         OrderStatusLog[]
+  couponUsages      CouponUsage[]
+  returns           Return[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
+  @@index([placedAt])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  variantId String
+  name      String
+  sku       String?
+  price     Decimal @db.Decimal(12, 2)
+  quantity  Int
+  total     Decimal @db.Decimal(12, 2)
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+}
+
+model OrderStatusLog {
+  id         String   @id @default(cuid())
+  orderId    String
+  fromStatus String
+  toStatus   String
+  note       String?
+  changedBy  String?
+  createdAt  DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ============ PAYMENTS ============
+
+model Payment {
+  id                String    @id @default(cuid())
+  orderId           String
+  provider          String
+  providerPaymentId String    @unique
+  amount            Decimal   @db.Decimal(12, 2)
+  currency String @default("BDT")
+  status            String    @default("PENDING")
+  method            String?
+  last4             String?
+  capturedAt        DateTime?
+  refundedAt        DateTime?
+  metadata          Json?
+  createdAt         DateTime  @default(now())
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds Refund[]
+
+  @@index([orderId])
+  @@index([providerPaymentId])
+}
+
+model Refund {
+  id                String    @id @default(cuid())
+  paymentId         String
+  returnId          String?
+  amount            Decimal   @db.Decimal(12, 2)
+  status            String    @default("PENDING")
+  providerRefundId  String?   @unique
+  reason            String?
+  createdAt         DateTime  @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+  return  Return? @relation(fields: [returnId], references: [id])
+
+  @@index([paymentId])
+}
+
+// ============ SHIPPING ============
+
+model ShippingZone {
+  id        String   @id @default(cuid())
+  name      String
+  countries Json     @default("[]")
+  isActive  Boolean  @default(true)
+
+  methods ShippingMethod[]
+}
+
+model ShippingMethod {
+  id              String  @id @default(cuid())
+  zoneId          String
+  name            String
+  price           Decimal @db.Decimal(12, 2)
+  dhakaPrice        Decimal? @db.Decimal(12, 2)
+  outsideDhakaPrice Decimal? @db.Decimal(12, 2)
+  freeThreshold   Decimal? @db.Decimal(12, 2)
+  estimatedDays   String?
+  isActive        Boolean @default(true)
+
+  zone ShippingZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+}
+
+// ============ COUPONS ============
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  type        String
+  value       Decimal   @db.Decimal(12, 2)
+  minOrder    Decimal?  @db.Decimal(12, 2)
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  startsAt    DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  usages CouponUsage[]
+
+  @@index([code])
+}
+
+model CouponUsage {
+  id        String   @id @default(cuid())
+  couponId  String
+  orderId   String
+  userId    String?
+  createdAt DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  order  Order  @relation(fields: [orderId], references: [id])
+
+  @@unique([couponId, orderId])
+}
+
+// ============ REVIEWS ============
+
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  userId     String
+  rating     Int
+  title      String?
+  body       String?  @db.Text
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+  @@index([productId])
+}
+
+// ============ WISHLIST ============
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+// ============ RETURNS ============
+
+model Return {
+  id           String   @id @default(cuid())
+  orderId      String
+  userId       String
+  status       String   @default("REQUESTED")
+  reason       String   @db.Text
+  items        Json
+  refundAmount Decimal  @db.Decimal(12, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  refunds Refund[]
+
+  @@index([orderId])
+}
+
+// ============ CMS ============
+
+model CmsPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  seoTitle  String?
+  seoDesc   String?
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+
+  @@index([key])
+}
+
+// ============ AUDIT ============
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  metadata   Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([resource, resourceId])
+  @@index([createdAt])
+}
+
+
+

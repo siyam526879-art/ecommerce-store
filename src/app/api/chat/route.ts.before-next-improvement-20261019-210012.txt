@@ -1,0 +1,239 @@
+﻿import { groq } from "@ai-sdk/groq";
+import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/db";
+import { setDefaultResultOrder } from "node:dns";
+
+setDefaultResultOrder("ipv4first");
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
+async function searchProducts(
+  query: string,
+  budgetMax?: number,
+  intent: "general" | "gift" = "general"
+) {
+  const normalized = query
+    .normalize("NFKC")
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+    .trim();
+
+  const terms = Array.from(
+    new Set(
+      normalized
+        .split(/\s+/)
+        .map((term) => term.trim())
+        .filter((term) => term.length >= 2)
+    )
+  ).slice(0, 10);
+
+  if (terms.length === 0) return [];
+
+  const or: Prisma.ProductWhereInput[] = terms.flatMap((term) => [
+    { name: { contains: term, mode: "insensitive" as const } },
+    { shortDescription: { contains: term, mode: "insensitive" as const } },
+    { description: { contains: term, mode: "insensitive" as const } },
+    { category: { name: { contains: term, mode: "insensitive" as const } } },
+  ]);
+
+  const rows = await prisma.product.findMany({
+    where: {
+      status: "ACTIVE",
+      OR: or,
+    },
+    take: 100,
+    include: {
+      category: { select: { name: true } },
+      images: {
+        orderBy: [{ isPrimary: "desc" }, { order: "asc" }],
+        take: 1,
+      },
+      variants: {
+        where: { isActive: true },
+        select: { stock: true, price: true },
+      },
+    },
+  });
+
+  const giftTerms =
+    /\b(gift|perfume|fragrance|bag|handbag|wallet|jewell?ery|necklace|bracelet|earrings?|watch|accessor(y|ies)|makeup|lipstick|chocolate|teddy|plush|flowers?|giftset|gift set)\b/i;
+
+  const excludedGiftTerms =
+    /\b(medicine|medicin|tablet|capsule|antibiotic|ointment|cream|gel|fungidal|prescription|disease|treatment|face pack|medical)\b/i;
+
+  const scored = rows
+    .map((product) => {
+      const name = product.name.toLocaleLowerCase();
+      const description = [
+        product.shortDescription ?? "",
+        product.description ?? "",
+      ].join(" ").toLocaleLowerCase();
+      const category = (product.category?.name ?? "").toLocaleLowerCase();
+      const combined = `${name} ${category} ${description}`;
+
+      const variantPrices = product.variants.map((variant) =>
+        Number(variant.price)
+      );
+
+      const price =
+        variantPrices.length > 0
+          ? Math.min(...variantPrices)
+          : Number(product.basePrice);
+
+      const variantStock = product.variants.reduce(
+        (total, variant) => total + Math.max(0, variant.stock),
+        0
+      );
+
+      const hasActiveVariants = product.variants.length > 0;
+      const stock = hasActiveVariants ? variantStock : product.stock;
+      const inStock = product.trackInventory ? stock > 0 : true;
+
+      const score = terms.reduce((total, term) => {
+        if (name === term) return total + 12;
+        if (name.includes(term)) return total + 7;
+        if (category.includes(term)) return total + 4;
+        if (description.includes(term)) return total + 1;
+        return total;
+      }, 0);
+
+      return {
+        product,
+        score,
+        price,
+        stock,
+        inStock,
+        variantPrices,
+        combined,
+        name,
+        category,
+      };
+    })
+    .filter((item) => {
+      if (item.score <= 0) return false;
+
+      // Enforce the requested budget on the server.
+      if (
+        typeof budgetMax === "number" &&
+        Number.isFinite(budgetMax) &&
+        item.price > budgetMax
+      ) {
+        return false;
+      }
+
+      // Gift recommendations must be plausible gift items.
+      // Do not turn medicated products into casual gift suggestions.
+      if (intent === "gift") {
+        if (excludedGiftTerms.test(item.combined)) return false;
+        if (!giftTerms.test(`${item.name} ${item.category}`)) return false;
+      }
+
+      return true;
+    })
+    .sort(
+      (a, b) =>
+        Number(b.inStock) - Number(a.inStock) ||
+        b.score - a.score ||
+        a.price - b.price
+    )
+    .slice(0, 8);
+
+  // Avoid presenting irrelevant results when a suitable gift is not found.
+  return scored.map(({ product, price, stock, inStock }) => ({
+    name: product.name,
+    price,
+    comparePrice: product.compareAtPrice
+      ? Number(product.compareAtPrice)
+      : null,
+    category: product.category?.name ?? null,
+    inStock,
+    stock: product.trackInventory ? stock : null,
+    description: String(
+      product.shortDescription ?? product.description ?? ""
+    ).slice(0, 400),
+    url: "/product/" + product.slug,
+    image: product.images[0]?.url ?? null,
+  }));
+}
+
+async function listCategories() {
+  const all = await prisma.category.findMany({
+    where: { isActive: true },
+    orderBy: [{ order: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, slug: true, parentId: true },
+  });
+  return all
+    .filter((c) => !c.parentId)
+    .map((c) => ({
+      name: c.name,
+      url: "/shop?category=" + c.slug,
+      subCategories: all
+        .filter((s) => s.parentId === c.id)
+        .map((s) => s.name)
+        .slice(0, 15),
+    }));
+}
+
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
+
+    const hasImage = JSON.stringify(messages).includes("\"type\":\"file\"");
+    const result = streamText({
+      model: groq(hasImage ? "meta-llama/llama-4-scout-17b-16e-instruct" : "openai/gpt-oss-120b"),
+      system:
+        "You are Trillion Mart's intelligent shopping assistant for an online store in Bangladesh. " +
+        "CONVERSATION RULES: Always answer the user's actual question in natural, helpful language before or alongside product recommendations. Never respond with only product cards or tool results. " +
+        "Understand the user's intent, occasion, preferences, language, and stated budget. Reply in the language the user uses, including Bangla and Banglish. " +
+        "GIFT REQUESTS: For gift requests, identify the recipient, occasion, and budget. Search for relevant gift items, not random products. Consider the recipient and occasion. Cosmetics may be suggested only when relevant; medicine, disease treatments, and unrelated technical books are not ordinary gift suggestions. " +
+        "PRODUCT SEARCH: Call searchProducts for store-product requests. Convert the user's full message into a concise product-focused search query. Remove conversational filler, budget phrases, and unrelated words. For example, for a girlfriend gift under 2000 taka, search relevant gift terms such as gift, perfume, jewellery, bag, wallet, beauty gift, or other plausible gift categories. Do not send the entire conversational sentence as the search query. " +
+        "BUDGET: Treat the user's stated budget as a strict maximum. Recommend only products whose returned price is within that budget. If no relevant products fit, clearly say that no suitable matching item was found; do not show unrelated items just to fill the results. " +
+        "RELEVANCE: Prefer in-stock products. Avoid out-of-stock products unless the user specifically asks about them. Never repeat the same product. Do not describe an item as a good gift unless it is reasonably relevant to the request. " +
+        "TRUTHFULNESS: Use tool results for product names, prices, stock, images, and links. Never invent store inventory, discounts, or prices. If search results are irrelevant or empty, explain that honestly and suggest browsing /shop or ask one useful clarifying question. " +
+        "ANSWER FORMAT: Give a short direct answer to the question, then explain why the suggested products may fit, with actual price and stock information when available. The interface may render product cards separately, but you must still provide a conversational text response. " +
+        "CATEGORIES: For questions about store categories, call listCategories. " +
+        "PRODUCT PHOTOS: If the user sends a product photo, identify its likely type from visible information, search using 1 to 3 concise keywords, and distinguish an exact match from a similar item. Do not invent a match. " +
+        "HEALTH AND SKINCARE SAFETY: Give general informational guidance, not a diagnosis. Do not recommend prescription medicines or medicated creams as casual beauty products. Do not claim a product treats or cures a condition unless reliable evidence supports that claim. Encourage professional medical advice for serious, persistent, or worsening symptoms. " +
+        "Keep the answer clear, polite, concise, and useful.",
+      messages: await convertToModelMessages(messages),
+      stopWhen: stepCountIs(4),
+      tools: {
+        searchProducts: tool({
+          description:
+            "Search the store database for active products by name, keyword or category. Returns price, discount, stock and link.",
+          inputSchema: z.object({
+            query: z.string().min(2).describe("Short product-focused search terms, not the full conversational message."),
+            budgetMax: z.number().positive().optional().describe("Strict maximum price in BDT, extracted from the user's budget. Omit if no budget was stated."),
+            intent: z.enum(["general", "gift"]).default("general").describe("Use gift for gift recommendations; otherwise general."),
+          }),
+          execute: async ({ query, budgetMax, intent }) => {
+            const products = await searchProducts(query, budgetMax, intent);
+            return { products };
+          },
+        }),
+        listCategories: tool({
+          description: "List the store's main categories with their sub-categories.",
+          inputSchema: z.object({}),
+          execute: async () => {
+            const categories = await listCategories();
+            return { categories };
+          },
+        }),
+      },
+    });
+
+    return result.toUIMessageStreamResponse({
+      onError: (e) => (e instanceof Error ? e.message : String(e)),
+    });
+  } catch (error: any) {
+    console.error("API Error:", error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  }
+}
+
+
+
+

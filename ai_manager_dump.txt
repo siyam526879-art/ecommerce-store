@@ -1,0 +1,1800 @@
+﻿TRILLION MART - ADMIN AI MANAGER PROJECT INSPECTION
+Generated: 2026-10-19 22:46:26
+Project: D:\New folder 190\ecommerce-store
+Backup: D:\New folder 190\ecommerce-store-backups\ai-manager-2026-10-19_22-46-24
+
+========== FILE: package.json ==========
+{
+  "name": "ecommerce-store",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^4.0.99",
+    "@ai-sdk/groq": "^4.0.63",
+    "@ai-sdk/react": "^4.0.147",
+    "@auth/prisma-adapter": "^2.11.3",
+    "@hookform/resolvers": "^5.9.1",
+    "@prisma/client": "^6.19.3",
+    "@radix-ui/react-aspect-ratio": "^1.2.0",
+    "@radix-ui/react-dialog": "^1.3.0",
+    "@radix-ui/react-dropdown-menu": "^2.2.0",
+    "@radix-ui/react-label": "^2.1.17",
+    "@radix-ui/react-navigation-menu": "^1.4.0",
+    "@radix-ui/react-separator": "^1.2.0",
+    "@radix-ui/react-slot": "^1.5.0",
+    "@radix-ui/react-tabs": "^1.2.0",
+    "@radix-ui/react-toast": "^1.3.0",
+    "@stripe/react-stripe-js": "^7.0.0",
+    "@stripe/stripe-js": "^10.1.0",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.39.0",
+    "ai": "^7.0.143",
+    "bcryptjs": "^3.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cn": "^0.4.0",
+    "jose": "^6.2.12",
+    "lucide-react": "^1.55.0",
+    "next": "16.4.0",
+    "next-auth": "5.0.0-beta.32",
+    "next-themes": "^0.4.6",
+    "prisma": "^6.19.3",
+    "radix-ui": "^1.8.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "^7.90.0",
+    "resend": "^6.32.1",
+    "shadcn": "^4.21.4",
+    "sonner": "^2.0.8",
+    "stripe": "^23.0.0",
+    "tailwind-merge": "^3.7.0",
+    "tw-animate-css": "^1.4.0",
+    "zod": "^4.6.6",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/turbopack": "^4",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^18.0.8",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "postcss": "^8.5.30",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@12.11.2"
+}
+
+========== FILE: prisma\schema.prisma ==========
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ AUTH & USERS ============
+
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  name           String?
+  phone          String?
+  passwordHash   String?
+  passwordResetToken    String?
+  passwordResetExpires  DateTime?
+  passwordResetAttempts Int      @default(0)
+  resetSessionToken     String?  @unique
+  resetSessionExpires   DateTime?
+  role           Role      @default(CUSTOMER)
+  image          String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  addresses      Address[]
+  products    Product[] @relation("SellerProducts")
+  orders         Order[]
+  cart           Cart?
+  wishlist       WishlistItem[]
+  reviews        Review[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============ ADDRESSES ============
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  label      String?
+  fullName   String
+  line1      String
+  line2      String?
+  city       String
+  state      String?
+  postalCode String
+  country    String  @default("US")
+  phone      String?
+  isDefault  Boolean @default(false)
+  deletedAt  DateTime?
+
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shippingOrders    Order[]        @relation("ShippingAddress")
+  billingOrders     Order[]        @relation("BillingAddress")
+
+  @@index([userId, deletedAt])
+}
+
+// ============ CATALOG ============
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  image       String?
+  parentId    String?
+  order       Int        @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@index([parentId])
+  @@index([slug])
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  name             String
+  slug             String        @unique
+  description      String?       @db.Text
+  shortDescription String?
+  basePrice        Decimal       @db.Decimal(12, 2)
+  compareAtPrice   Decimal?      @db.Decimal(12, 2)
+  costPrice        Decimal?      @db.Decimal(12, 2)
+  sku              String?       @unique
+  sellerId    String?
+  seller      User?     @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: SetNull)
+  categoryId       String
+  status           String        @default("DRAFT")
+  isFeatured       Boolean       @default(false)
+  weight           Decimal?      @db.Decimal(8, 2)
+  stock            Int           @default(0)
+  trackInventory   Boolean       @default(true)
+  metaTitle        String?
+  metaDescription  String?       @db.Text
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  category  Category         @relation(fields: [categoryId], references: [id])
+  variants  ProductVariant[]
+  images    ProductImage[]
+  reviews   Review[]
+  wishlist  WishlistItem[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([status])
+  @@index([isFeatured])
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+  productId  String
+  sku        String?  @unique
+  price      Decimal  @db.Decimal(12, 2)
+  stock      Int      @default(0)
+  attributes Json     @default("{}")
+  isActive   Boolean  @default(true)
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([productId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  alt       String?
+  order     Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ============ CART ============
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String?  @unique
+  sessionId String?  @unique
+  updatedAt DateTime @updatedAt
+
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([sessionId])
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String
+  variantId String
+  quantity  Int    @default(1)
+
+  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+}
+
+// ============ ORDERS ============
+
+model Order {
+  id                String   @id @default(cuid())
+  orderNumber       String   @unique
+  userId            String
+  status            String   @default("PENDING")
+  subtotal          Decimal  @db.Decimal(12, 2)
+  discountAmount    Decimal  @default(0) @db.Decimal(12, 2)
+  shippingAmount    Decimal  @default(0) @db.Decimal(12, 2)
+  deliveryZone      String?
+  taxAmount         Decimal  @default(0) @db.Decimal(12, 2)
+  total             Decimal  @db.Decimal(12, 2)
+  currency String @default("BDT")
+  shippingAddressId String
+  billingAddressId  String?
+  notes             String?  @db.Text
+  placedAt          DateTime @default(now())
+  paidAt            DateTime?
+  updatedAt         DateTime @updatedAt
+
+  user              User              @relation(fields: [userId], references: [id])
+  shippingAddress   Address           @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddress    Address?          @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  items             OrderItem[]
+  payments          Payment[]
+  statusLog         OrderStatusLog[]
+  couponUsages      CouponUsage[]
+  returns           Return[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
+  @@index([placedAt])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  variantId String
+  name      String
+  sku       String?
+  price     Decimal @db.Decimal(12, 2)
+  quantity  Int
+  total     Decimal @db.Decimal(12, 2)
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+}
+
+model OrderStatusLog {
+  id         String   @id @default(cuid())
+  orderId    String
+  fromStatus String
+  toStatus   String
+  note       String?
+  changedBy  String?
+  createdAt  DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ============ PAYMENTS ============
+
+model Payment {
+  id                String    @id @default(cuid())
+  orderId           String
+  provider          String
+  providerPaymentId String    @unique
+  amount            Decimal   @db.Decimal(12, 2)
+  currency String @default("BDT")
+  status            String    @default("PENDING")
+  method            String?
+  last4             String?
+  capturedAt        DateTime?
+  refundedAt        DateTime?
+  metadata          Json?
+  createdAt         DateTime  @default(now())
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds Refund[]
+
+  @@index([orderId])
+  @@index([providerPaymentId])
+}
+
+model Refund {
+  id                String    @id @default(cuid())
+  paymentId         String
+  returnId          String?
+  amount            Decimal   @db.Decimal(12, 2)
+  status            String    @default("PENDING")
+  providerRefundId  String?   @unique
+  reason            String?
+  createdAt         DateTime  @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+  return  Return? @relation(fields: [returnId], references: [id])
+
+  @@index([paymentId])
+}
+
+// ============ SHIPPING ============
+
+model ShippingZone {
+  id        String   @id @default(cuid())
+  name      String
+  countries Json     @default("[]")
+  isActive  Boolean  @default(true)
+
+  methods ShippingMethod[]
+}
+
+model ShippingMethod {
+  id              String  @id @default(cuid())
+  zoneId          String
+  name            String
+  price           Decimal @db.Decimal(12, 2)
+  freeThreshold   Decimal? @db.Decimal(12, 2)
+  estimatedDays   String?
+  isActive        Boolean @default(true)
+
+  zone ShippingZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+}
+
+// ============ COUPONS ============
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  type        String
+  value       Decimal   @db.Decimal(12, 2)
+  minOrder    Decimal?  @db.Decimal(12, 2)
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  startsAt    DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  usages CouponUsage[]
+
+  @@index([code])
+}
+
+model CouponUsage {
+  id        String   @id @default(cuid())
+  couponId  String
+  orderId   String
+  userId    String?
+  createdAt DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  order  Order  @relation(fields: [orderId], references: [id])
+
+  @@unique([couponId, orderId])
+}
+
+// ============ REVIEWS ============
+
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  userId     String
+  rating     Int
+  title      String?
+  body       String?  @db.Text
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+  @@index([productId])
+}
+
+// ============ WISHLIST ============
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+// ============ RETURNS ============
+
+model Return {
+  id           String   @id @default(cuid())
+  orderId      String
+  userId       String
+  status       String   @default("REQUESTED")
+  reason       String   @db.Text
+  items        Json
+  refundAmount Decimal  @db.Decimal(12, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  refunds Refund[]
+
+  @@index([orderId])
+}
+
+// ============ CMS ============
+
+model CmsPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  seoTitle  String?
+  seoDesc   String?
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+
+  @@index([key])
+}
+
+// ============ AUDIT ============
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  metadata   Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([resource, resourceId])
+  @@index([createdAt])
+}
+
+
+
+========== FILE: src\app\api\v1\admin\dashboard\route.ts ==========
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { requirePermission } from "@/lib/auth-guard";
+
+export async function GET() {
+  try {
+    await requirePermission("reports.view");
+
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+    const [
+      totalRevenue,
+      monthRevenue,
+      lastMonthRevenue,
+      totalOrders,
+      monthOrders,
+      totalCustomers,
+      totalProducts,
+      pendingOrders,
+      lowStock,
+      recentOrders,
+      salesByDay,
+    ] = await Promise.all([
+      prisma.order.aggregate({
+        where: { status: { in: ["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"] } },
+        _sum: { total: true },
+      }),
+      prisma.order.aggregate({
+        where: {
+          placedAt: { gte: startOfMonth },
+          status: { in: ["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"] },
+        },
+        _sum: { total: true },
+      }),
+      prisma.order.aggregate({
+        where: {
+          placedAt: { gte: startOfLastMonth, lt: startOfMonth },
+          status: { in: ["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"] },
+        },
+        _sum: { total: true },
+      }),
+      prisma.order.count(),
+      prisma.order.count({ where: { placedAt: { gte: startOfMonth } } }),
+      prisma.user.count({ where: { role: "CUSTOMER" } }),
+      prisma.product.count({ where: { status: "ACTIVE" } }),
+      prisma.order.count({ where: { status: "PENDING" } }),
+      prisma.productVariant.count({
+        where: { stock: { lte: 5 }, product: { status: "ACTIVE" } },
+      }),
+      prisma.order.findMany({
+        take: 5,
+        orderBy: { placedAt: "desc" },
+        select: {
+          id: true,
+          orderNumber: true,
+          total: true,
+          status: true,
+          placedAt: true,
+          user: { select: { name: true, email: true } },
+        },
+      }),
+      // Sales by day (last 30 days)
+      prisma.order.findMany({
+        where: {
+          placedAt: { gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) },
+          status: { in: ["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"] },
+        },
+        select: { placedAt: true, total: true },
+      }),
+    ]);
+
+    // Aggregate sales by day
+    const salesMap = new Map<string, number>();
+    for (const o of salesByDay) {
+      const day = o.placedAt.toISOString().slice(0, 10);
+      salesMap.set(day, (salesMap.get(day) ?? 0) + Number(o.total));
+    }
+    const salesChart = Array.from(salesMap.entries())
+      .map(([date, total]) => ({ date, total }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    const revenueNow = Number(totalRevenue._sum.total ?? 0);
+    const monthNow = Number(monthRevenue._sum.total ?? 0);
+    const monthPrev = Number(lastMonthRevenue._sum.total ?? 0);
+    const revenueTrend = monthPrev > 0 ? ((monthNow - monthPrev) / monthPrev) * 100 : 0;
+
+    return success({
+      revenue: { total: revenueNow, thisMonth: monthNow, trend: revenueTrend },
+      orders: { total: totalOrders, thisMonth: monthOrders, pending: pendingOrders },
+      customers: totalCustomers,
+      products: totalProducts,
+      lowStockCount: lowStock,
+      recentOrders,
+      salesChart,
+    });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+========== FILE: src\app\api\v1\admin\dashboard\live\route.ts ==========
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { requirePermission } from "@/lib/auth-guard";
+
+export const dynamic = "force-dynamic";
+
+const VALID = ["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"];
+const DAY = 24 * 60 * 60 * 1000;
+const TZ_OFFSET = 6 * 60 * 60 * 1000; // Bangladesh UTC+6
+
+const dayKey = (d: Date) => new Date(d.getTime() + TZ_OFFSET).toISOString().slice(0, 10);
+
+async function loadPeriod(from: Date, to: Date) {
+  const orders = await prisma.order.findMany({
+    where: { placedAt: { gte: from, lt: to }, status: { in: VALID } },
+    select: {
+      placedAt: true,
+      total: true,
+      items: {
+        select: {
+          quantity: true,
+          price: true,
+          variant: { select: { product: { select: { costPrice: true } } } },
+        },
+      },
+    },
+  });
+
+  const byDay = new Map<string, { revenue: number; profit: number; units: number }>();
+  const totals = { revenue: 0, orders: orders.length, units: 0, profit: 0, missingCost: 0 };
+
+  for (const o of orders) {
+    const key = dayKey(o.placedAt);
+    const row = byDay.get(key) ?? { revenue: 0, profit: 0, units: 0 };
+    const orderTotal = Number(o.total);
+    row.revenue += orderTotal;
+    totals.revenue += orderTotal;
+
+    for (const it of o.items) {
+      row.units += it.quantity;
+      totals.units += it.quantity;
+      const cost = it.variant?.product?.costPrice;
+      if (cost === null || cost === undefined) {
+        totals.missingCost += 1;
+      } else {
+        const p = (Number(it.price) - Number(cost)) * it.quantity;
+        row.profit += p;
+        totals.profit += p;
+      }
+    }
+    byDay.set(key, row);
+  }
+  return { byDay, totals };
+}
+
+export async function GET() {
+  try {
+    await requirePermission("reports.view");
+
+    const now = new Date();
+    const start = new Date(now.getTime() - 30 * DAY);
+    const prevStart = new Date(now.getTime() - 60 * DAY);
+
+    const [cur, prev] = await Promise.all([
+      loadPeriod(start, new Date(now.getTime() + 1000)),
+      loadPeriod(prevStart, start),
+    ]);
+
+    const days = [];
+    for (let i = 29; i >= 0; i--) {
+      const key = dayKey(new Date(now.getTime() - i * DAY));
+      const r = cur.byDay.get(key) ?? { revenue: 0, profit: 0, units: 0 };
+      days.push({ date: key, revenue: r.revenue, profit: r.profit, units: r.units });
+    }
+
+    return success({
+      days,
+      current: cur.totals,
+      previous: prev.totals,
+      updatedAt: now.toISOString(),
+    });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+========== FILE: src\app\api\v1\admin\orders\route.ts ==========
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, paginated, errorResponse } from "@/lib/api-response";
+import { requirePermission } from "@/lib/auth-guard";
+import { Prisma } from "@prisma/client";
+import { z } from "zod";
+
+const filterSchema = z.object({
+  status: z.string().optional(),
+  q: z.string().optional(),
+});
+
+export async function GET(request: NextRequest) {
+  try {
+    await requirePermission("orders.view");
+    const raw = Object.fromEntries(request.nextUrl.searchParams);
+    const page = Math.max(1, Number(request.nextUrl.searchParams.get("page") ?? 1));
+    const pageSize = Math.min(100, Math.max(1, Number(request.nextUrl.searchParams.get("pageSize") ?? 20)));
+    const filters = filterSchema.parse(raw);
+
+    const where: Prisma.OrderWhereInput = {
+      ...(filters.status && { status: filters.status }),
+      ...(filters.q && {
+        OR: [
+          { orderNumber: { contains: filters.q, mode: "insensitive" } },
+          { user: { email: { contains: filters.q, mode: "insensitive" } } },
+          { user: { name: { contains: filters.q, mode: "insensitive" } } },
+        ],
+      }),
+    };
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        orderBy: { placedAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          user: { select: { name: true, email: true } },
+          _count: { select: { items: true } },
+        },
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    return paginated(orders, total, page, pageSize);
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+========== FILE: src\app\api\v1\admin\inventory\route.ts ==========
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { paginated, errorResponse } from "@/lib/api-response";
+import { requirePermission } from "@/lib/auth-guard";
+
+// GET /api/v1/admin/inventory
+export async function GET(request: NextRequest) {
+  try {
+    await requirePermission("products.view");
+
+    const page = Math.max(1, Number(request.nextUrl.searchParams.get("page") ?? 1));
+    const pageSize = Math.min(
+      200,
+      Math.max(1, Number(request.nextUrl.searchParams.get("pageSize") ?? 50))
+    );
+    const q = request.nextUrl.searchParams.get("q") ?? "";
+    const filter = request.nextUrl.searchParams.get("filter") ?? "";
+
+    const where: any = {};
+
+    if (q) {
+      where.OR = [
+        { sku: { contains: q, mode: "insensitive" } },
+        { product: { name: { contains: q, mode: "insensitive" } } },
+      ];
+    }
+
+    if (filter === "out") {
+      where.stock = { lte: 0 };
+    } else if (filter === "low") {
+      where.stock = { gt: 0, lte: 5 };
+    } else if (filter === "in") {
+      where.stock = { gt: 5 };
+    }
+
+    const [variants, total] = await Promise.all([
+      prisma.productVariant.findMany({
+        where,
+        orderBy: [{ stock: "asc" }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          product: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              status: true,
+              images: { take: 1, where: { isPrimary: true } },
+            },
+          },
+        },
+      }),
+      prisma.productVariant.count({ where }),
+    ]);
+
+    return paginated(variants, total, page, pageSize);
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+========== FILE: src\app\api\v1\admin\returns\route.ts ==========
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, paginated, errorResponse } from "@/lib/api-response";
+import { requirePermission, getRequestInfo } from "@/lib/auth-guard";
+import { logAudit } from "@/lib/audit";
+import { stripe, isStripeConfigured } from "@/lib/stripe";
+import { AppError, NotFoundError } from "@/lib/errors";
+import { Decimal } from "@prisma/client/runtime/library";
+import { z } from "zod";
+
+export const runtime = "nodejs";
+
+export async function GET(request: NextRequest) {
+  try {
+    await requirePermission("returns.view");
+
+    const page = Math.max(
+      1,
+      Number(request.nextUrl.searchParams.get("page") ?? 1)
+    );
+    const pageSize = Math.min(
+      100,
+      Math.max(1, Number(request.nextUrl.searchParams.get("pageSize") ?? 20))
+    );
+
+    const [returns, total] = await Promise.all([
+      prisma.return.findMany({
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          order: {
+            select: {
+              orderNumber: true,
+              user: { select: { email: true, name: true } },
+            },
+          },
+          refunds: {
+            select: {
+              id: true,
+              paymentId: true,
+              amount: true,
+              status: true,
+              providerRefundId: true,
+            },
+          },
+        },
+      }),
+      prisma.return.count(),
+    ]);
+
+    return paginated(returns, total, page, pageSize);
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+const patchSchema = z.object({
+  id: z.string().min(1),
+  status: z.enum(["REQUESTED", "APPROVED", "REJECTED", "COMPLETED"]),
+});
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const user = await requirePermission("returns.manage");
+    const parsed = patchSchema.safeParse(await request.json());
+
+    if (!parsed.success) {
+      throw new AppError("Invalid return status request.", 400, "INVALID_REQUEST");
+    }
+
+    const { id, status } = parsed.data;
+
+    const returnRequest = await prisma.return.findUnique({
+      where: { id },
+      include: {
+        order: {
+          include: {
+            user: true,
+            payments: true,
+          },
+        },
+        refunds: true,
+      },
+    });
+
+    if (!returnRequest) throw new NotFoundError("Return");
+
+    if (returnRequest.status === "COMPLETED") {
+      if (status === "COMPLETED") {
+        return success({ return: returnRequest, message: "Refund already completed." });
+      }
+      throw new AppError(
+        "A completed return cannot be changed.",
+        409,
+        "RETURN_ALREADY_COMPLETED"
+      );
+    }
+
+    if (status === "COMPLETED") {
+      throw new AppError(
+        "A return can only be completed after Stripe confirms the refund.",
+        400,
+        "REFUND_CONFIRMATION_REQUIRED"
+      );
+    }
+
+    if (status === "REQUESTED") {
+      if (returnRequest.status !== "REQUESTED") {
+        throw new AppError(
+          "This return cannot be moved back to Requested.",
+          409,
+          "INVALID_RETURN_TRANSITION"
+        );
+      }
+      return success({ return: returnRequest });
+    }
+
+    if (status === "REJECTED") {
+      if (returnRequest.status !== "REQUESTED") {
+        throw new AppError(
+          "Only a requested return can be rejected.",
+          409,
+          "INVALID_RETURN_TRANSITION"
+        );
+      }
+
+      const updated = await prisma.return.update({
+        where: { id },
+        data: { status: "REJECTED" },
+      });
+
+      await logAudit({
+        userId: user.id,
+        action: "UPDATE_STATUS",
+        resource: "return",
+        resourceId: id,
+        metadata: { status: "REJECTED" },
+        ...getRequestInfo(request),
+      });
+
+      return success({ return: updated, message: "Return request rejected." });
+    }
+
+    // APPROVED: initiate or safely resume the Stripe refund.
+    if (returnRequest.status !== "REQUESTED" && returnRequest.status !== "APPROVED") {
+      throw new AppError(
+        "Only a requested or already approved return can be processed.",
+        409,
+        "INVALID_RETURN_TRANSITION"
+      );
+    }
+
+    if (!isStripeConfigured() || !stripe) {
+      throw new AppError(
+        "Stripe is not configured. No refund was issued.",
+        503,
+        "PAYMENT_NOT_CONFIGURED"
+      );
+    }
+
+    const payment = returnRequest.order.payments.find(
+      (item) =>
+        item.provider === "stripe" &&
+        (item.status === "SUCCEEDED" || item.status === "PARTIALLY_REFUNDED") &&
+        item.providerPaymentId.startsWith("pi_")
+    );
+
+    if (!payment) {
+      throw new AppError(
+        "No successful Stripe payment was found for this order. No refund was issued.",
+        400,
+        "NO_REFUNDABLE_STRIPE_PAYMENT"
+      );
+    }
+
+    const amount = Number(returnRequest.refundAmount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new AppError("The refund amount is invalid.", 400, "INVALID_REFUND_AMOUNT");
+    }
+
+    // Reuse an existing refund for this return rather than issuing another one.
+    const existingRefund = returnRequest.refunds.find(
+      (item) => item.paymentId === payment.id
+    );
+
+    if (existingRefund?.status === "SUCCEEDED") {
+      const updated = await prisma.return.update({
+        where: { id },
+        data: { status: "COMPLETED" },
+      });
+
+      await logAudit({
+        userId: user.id,
+        action: "UPDATE_STATUS",
+        resource: "return",
+        resourceId: id,
+        metadata: { status: "COMPLETED", refundId: existingRefund.id },
+        ...getRequestInfo(request),
+      });
+
+      return success({ return: updated, message: "Refund was already successful." });
+    }
+
+    if (existingRefund?.providerRefundId && existingRefund.status === "PENDING") {
+      const providerRefund = await stripe.refunds.retrieve(
+        existingRefund.providerRefundId
+      );
+
+      if (providerRefund.status === "succeeded") {
+        await prisma.refund.update({
+          where: { id: existingRefund.id },
+          data: { status: "SUCCEEDED" },
+        });
+
+        const updated = await prisma.return.update({
+          where: { id },
+          data: { status: "COMPLETED" },
+        });
+
+        return success({
+          return: updated,
+          message: "Stripe confirmed that the refund succeeded.",
+        });
+      }
+
+      if (
+        providerRefund.status === "pending" ||
+        providerRefund.status === "requires_action"
+      ) {
+        const updated = await prisma.return.update({
+          where: { id },
+          data: { status: "APPROVED" },
+        });
+
+        return success({
+          return: updated,
+          message: "The Stripe refund is still pending.",
+        });
+      }
+
+      await prisma.refund.update({
+        where: { id: existingRefund.id },
+        data: { status: "FAILED" },
+      });
+
+      throw new AppError(
+        "The previous Stripe refund did not succeed. Review the refund before retrying.",
+        409,
+        "PREVIOUS_REFUND_FAILED"
+      );
+    }
+
+    // Include completed and pending refunds so the payment cannot be over-refunded.
+    const paymentRefunds = await prisma.refund.findMany({
+      where: {
+        paymentId: payment.id,
+        status: { in: ["SUCCEEDED", "PENDING"] },
+      },
+      select: { amount: true },
+    });
+
+    const alreadyReserved = paymentRefunds.reduce(
+      (total, refund) => total + Number(refund.amount),
+      0
+    );
+
+    if (alreadyReserved + amount > Number(payment.amount) + 0.001) {
+      throw new AppError(
+        "This refund would exceed the remaining refundable payment amount.",
+        400,
+        "REFUND_TOO_LARGE"
+      );
+    }
+
+    // Persist approval before calling Stripe.
+    if (returnRequest.status !== "APPROVED") {
+      await prisma.return.update({
+        where: { id },
+        data: { status: "APPROVED" },
+      });
+    }
+
+    const refund = await stripe.refunds.create(
+      {
+        payment_intent: payment.providerPaymentId,
+        amount: Math.round(amount * 100),
+        reason: "requested_by_customer",
+        metadata: {
+          returnId: returnRequest.id,
+          orderId: returnRequest.orderId,
+          paymentId: payment.id,
+        },
+      },
+      {
+        idempotencyKey: `return-refund-${returnRequest.id}`,
+      }
+    );
+
+    const refundStatus =
+      refund.status === "succeeded"
+        ? "SUCCEEDED"
+        : refund.status === "failed" || refund.status === "canceled"
+          ? "FAILED"
+          : "PENDING";
+
+    const savedRefund = await prisma.refund.create({
+      data: {
+        paymentId: payment.id,
+        returnId: returnRequest.id,
+        amount: new Decimal(amount.toFixed(2)),
+        status: refundStatus,
+        providerRefundId: refund.id,
+        reason: returnRequest.reason,
+      },
+    });
+
+    let updatedReturn;
+
+    if (refundStatus === "SUCCEEDED") {
+      const successfulRefunds = await prisma.refund.findMany({
+        where: { paymentId: payment.id, status: "SUCCEEDED" },
+        select: { amount: true },
+      });
+
+      const refundedTotal = successfulRefunds.reduce(
+        (total, item) => total + Number(item.amount),
+        0
+      );
+
+      const fullyRefunded = refundedTotal >= Number(payment.amount) - 0.001;
+
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: fullyRefunded ? "REFUNDED" : "PARTIALLY_REFUNDED",
+          refundedAt: fullyRefunded ? new Date() : null,
+        },
+      });
+
+      if (fullyRefunded) {
+        await prisma.order.update({
+          where: { id: returnRequest.orderId },
+          data: { status: "REFUNDED" },
+        });
+      }
+
+      updatedReturn = await prisma.return.update({
+        where: { id },
+        data: { status: "COMPLETED" },
+      });
+    } else {
+      updatedReturn = await prisma.return.update({
+        where: { id },
+        data: { status: "APPROVED" },
+      });
+    }
+
+    await logAudit({
+      userId: user.id,
+      action: "UPDATE_STATUS",
+      resource: "return",
+      resourceId: id,
+      metadata: {
+        status: updatedReturn.status,
+        refundId: savedRefund.id,
+        providerRefundId: refund.id,
+        stripeStatus: refund.status,
+        amount,
+      },
+      ...getRequestInfo(request),
+    });
+
+    return success({
+      return: updatedReturn,
+      refund: {
+        id: savedRefund.id,
+        status: refundStatus,
+        providerStatus: refund.status,
+        amount,
+      },
+      message:
+        refundStatus === "SUCCEEDED"
+          ? "Stripe refund completed successfully."
+          : refundStatus === "PENDING"
+            ? "Refund submitted to Stripe and is pending confirmation."
+            : "Stripe did not complete the refund. Review the refund record.",
+    });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+
+========== FILE: src\app\api\v1\admin\payments\route.ts ==========
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, paginated, errorResponse } from "@/lib/api-response";
+import { requirePermission } from "@/lib/auth-guard";
+import { Prisma } from "@prisma/client";
+
+export async function GET(request: NextRequest) {
+  try {
+    await requirePermission("payments.view");
+    const page = Math.max(1, Number(request.nextUrl.searchParams.get("page") ?? 1));
+    const pageSize = Math.min(100, Math.max(1, Number(request.nextUrl.searchParams.get("pageSize") ?? 20)));
+    const status = request.nextUrl.searchParams.get("status");
+
+    const where: Prisma.PaymentWhereInput = {
+      ...(status && { status }),
+    };
+
+    const [payments, total] = await Promise.all([
+      prisma.payment.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          id: true, provider: true, providerPaymentId: true, amount: true, currency: true,
+          status: true, method: true, last4: true, createdAt: true,
+          order: { select: { orderNumber: true, user: { select: { email: true } } } },
+        },
+      }),
+      prisma.payment.count({ where }),
+    ]);
+
+    return paginated(payments, total, page, pageSize);
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+========== FILE: src\app\admin\orders\page.tsx ==========
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { StatusBadge } from "@/components/layout/status-badge";
+import { PageTitle } from "@/components/admin/page-title";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { formatPrice } from "@/lib/utils";
+import { ORDER_STATUS } from "@/lib/constants";
+
+interface Order {
+  id: string;
+  orderNumber: string;
+  status: string;
+  total: number | string;
+  placedAt: string;
+  user?: { name?: string | null; email: string };
+  _count: { items: number };
+}
+
+export default function OrdersPage() {
+  const router = useRouter();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [status, setStatus] = useState<string>("all");
+  const [q, setQ] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (status !== "all") params.set("status", status);
+    if (q) params.set("q", q);
+    fetch(`/api/v1/admin/orders?${params}`)
+      .then((r) => r.json())
+      .then((json) => {
+        const list = Array.isArray(json?.data)
+          ? json.data
+          : Array.isArray(json?.data?.orders)
+          ? json.data.orders
+          : [];
+        setOrders(list);
+      })
+      .catch(() => setOrders([]));
+  }, [status, q]);
+
+  const goToOrder = (id: string) => {
+    if (id) router.push("/admin/orders/" + id);
+  };
+
+  return (
+    <div>
+      <PageTitle title="Orders" description={(orders?.length ?? 0) + " shown"} />
+
+      <div className="flex gap-3 mb-4 flex-wrap">
+        <Input
+          placeholder="Search order # or customer..."
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          className="max-w-xs"
+        />
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="All statuses" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All statuses</SelectItem>
+            {(Array.isArray(ORDER_STATUS) ? ORDER_STATUS : Object.values(ORDER_STATUS)).map((s: any) => (
+              <SelectItem key={s} value={s}>{s}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {orders.length === 0 ? (
+        <div className="rounded-lg border bg-muted/50 p-8 text-center text-sm text-muted-foreground">
+          No orders found.
+        </div>
+      ) : (
+        <div className="rounded-lg border overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="text-left p-3 font-medium">Order</th>
+                <th className="text-left p-3 font-medium">Customer</th>
+                <th className="text-left p-3 font-medium">Items</th>
+                <th className="text-left p-3 font-medium">Total</th>
+                <th className="text-left p-3 font-medium">Status</th>
+                <th className="text-left p-3 font-medium">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((o) => (
+                <tr
+                  key={o.id}
+                  onClick={() => goToOrder(o.id)}
+                  className="border-t hover:bg-muted/50 cursor-pointer transition-colors"
+                >
+                  <td className="p-3 font-mono font-medium text-primary">
+                    {o.orderNumber}
+                  </td>
+                  <td className="p-3">
+                    <p className="font-medium">{o.user?.name ?? "-"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {o.user?.email}
+                    </p>
+                  </td>
+                  <td className="p-3">{o._count.items}</td>
+                  <td className="p-3">{formatPrice(Number(o.total))}</td>
+                  <td className="p-3">
+                    <StatusBadge status={o.status} />
+                  </td>
+                  <td className="p-3">
+                    {new Date(o.placedAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+========== FILE: src\components\admin\admin-sidebar.tsx ==========
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard, Package, FolderTree, ShoppingCart, Users, Wallet,
+  Tag, Truck, RotateCcw, BarChart3, UserCog, Settings, ScrollText, LogOut, Store,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { SignOutButton } from "@/components/auth/sign-out-button";
+
+const sections = [
+  {
+    title: "Overview",
+    items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard, perm: "dashboard" }],
+  },
+  {
+    title: "Catalog",
+    items: [
+      { href: "/admin/products", label: "Products", icon: Package, perm: "products.view" },
+      { href: "/admin/categories", label: "Categories", icon: FolderTree, perm: "categories.view" },
+      { href: "/admin/sub-categories", label: "Sub Categories", icon: FolderTree, perm: "categories.view" },
+    { href: "/admin/sub-category-products", label: "Sub Category Products", icon: FolderTree, perm: "categories.view" },
+      { href: "/admin/inventory", label: "Inventory", icon: Package, perm: "products.view" },
+    ],
+  },
+  {
+    title: "Sales",
+    items: [
+      { href: "/admin/orders", label: "Orders", icon: ShoppingCart, perm: "orders.view" },
+      { href: "/admin/customers", label: "Customers", icon: Users, perm: "customers.view" },
+      { href: "/admin/payments", label: "Payments", icon: Wallet, perm: "payments.view" },
+      { href: "/admin/returns", label: "Return & Refund", icon: RotateCcw, perm: "returns.view" },
+    ],
+  },
+  {
+    title: "Marketing",
+    items: [
+      { href: "/admin/coupons", label: "Coupons", icon: Tag, perm: "coupons.view" },
+      { href: "/admin/shipping", label: "Shipping", icon: Truck, perm: "shipping.view" },
+    ],
+  },
+  {
+    title: "Insights",
+    items: [{ href: "/admin/reports", label: "Reports", icon: BarChart3, perm: "reports.view" }],
+  },
+  {
+    title: "System",
+    items: [
+      { href: "/admin/staff", label: "Staff", icon: UserCog, perm: "staff.view" },
+      { href: "/admin/settings", label: "Settings", icon: Settings, perm: "settings.view" },
+      { href: "/admin/audit-log", label: "Audit log", icon: ScrollText, perm: "audit.view" },
+    ],
+  },
+];
+
+export function AdminSidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="w-64 border-r bg-background flex flex-col h-screen sticky top-0">
+      <div className="p-4 border-b">
+        <Link href="/admin" className="flex items-center gap-2 font-semibold">
+          <Store className="h-5 w-5" />
+          Admin Panel
+        </Link>
+      </div>
+      <nav className="flex-1 overflow-y-auto p-3 space-y-5">
+        {sections.map((section) => (
+          <div key={section.title}>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-1">
+              {section.title}
+            </p>
+            <div className="space-y-0.5">
+              {section.items.map((item) => {
+                const active =
+                  item.href === "/admin"
+                    ? pathname === "/admin"
+                    : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors",
+                      active
+                        ? "bg-primary text-primary-foreground font-medium"
+                        : "hover:bg-muted text-foreground"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
+      <div className="p-3 border-t space-y-1">
+        <Link
+          href="/"
+          className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-muted"
+        >
+          <Store className="h-4 w-4" /> View store
+        </Link>
+        <SignOutButton
+          className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm w-full text-left hover:bg-muted text-destructive transition-colors"
+          iconClassName="h-4 w-4"
+        />
+      </div>
+    </aside>
+  );
+}
+
+
+
+========== FILE: src\app\api\chat\route.ts ==========
+import { groq } from "@ai-sdk/groq";
+import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/db";
+import { setDefaultResultOrder } from "node:dns";
+
+setDefaultResultOrder("ipv4first");
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
+async function searchProducts(
+  query: string,
+  intent: "general" | "gift" = "general"
+) {
+  const normalized = query
+    .normalize("NFKC")
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+    .trim();
+
+  const terms = Array.from(
+    new Set(
+      normalized
+        .split(/\s+/)
+        .map((term) => term.trim())
+        .filter((term) => term.length >= 2)
+    )
+  ).slice(0, 10);
+
+  if (terms.length === 0) return [];
+
+  const or: Prisma.ProductWhereInput[] = terms.flatMap((term) => [
+    { name: { contains: term, mode: "insensitive" as const } },
+    { shortDescription: { contains: term, mode: "insensitive" as const } },
+    { description: { contains: term, mode: "insensitive" as const } },
+    { category: { name: { contains: term, mode: "insensitive" as const } } },
+  ]);
+
+  const rows = await prisma.product.findMany({
+    where: {
+      status: "ACTIVE",
+      OR: or,
+    },
+    take: 100,
+    include: {
+      category: { select: { name: true } },
+      images: {
+        orderBy: [{ isPrimary: "desc" }, { order: "asc" }],
+        take: 1,
+      },
+      variants: {
+        where: { isActive: true },
+        select: { stock: true, price: true },
+      },
+    },
+  });
+
+  const giftTerms =
+    /\b(gift|perfume|fragrance|bag|handbag|wallet|jewell?ery|necklace|bracelet|earrings?|watch|accessor(y|ies)|makeup|lipstick|chocolate|teddy|plush|flowers?|giftset|gift set)\b/i;
+
+  const excludedGiftTerms =
+    /\b(medicine|medicin|tablet|capsule|antibiotic|ointment|cream|gel|fungidal|prescription|disease|treatment|face pack|medical)\b/i;
+
+  const scored = rows
+    .map((product) => {
+      const name = product.name.toLocaleLowerCase();
+      const description = [
+        product.shortDescription ?? "",
+        product.description ?? "",
+      ].join(" ").toLocaleLowerCase();
+      const category = (product.category?.name ?? "").toLocaleLowerCase();
+      const combined = `${name} ${category} ${description}`;
+
+      const variantPrices = product.variants.map((variant) =>
+        Number(variant.price)
+      );
+
+      const price =
+        variantPrices.length > 0
+          ? Math.min(...variantPrices)
+          : Number(product.basePrice);
+
+      const variantStock = product.variants.reduce(
+        (total, variant) => total + Math.max(0, variant.stock),
+        0
+      );
+
+      const hasActiveVariants = product.variants.length > 0;
+      const stock = hasActiveVariants ? variantStock : product.stock;
+      const inStock = product.trackInventory ? stock > 0 : true;
+
+      const score = terms.reduce((total, term) => {
+        if (name === term) return total + 12;
+        if (name.includes(term)) return total + 7;
+        if (category.includes(term)) return total + 4;
+        if (description.includes(term)) return total + 1;
+        return total;
+      }, 0);
+
+      return {
+        product,
+        score,
+        price,
+        stock,
+        inStock,
+        variantPrices,
+        combined,
+        name,
+        category,
+      };
+    })
+    .filter((item) => {
+      if (item.score <= 0) return false;
+
+
+      // Gift recommendations must be plausible gift items.
+      // Do not turn medicated products into casual gift suggestions.
+      if (intent === "gift") {
+        if (excludedGiftTerms.test(item.combined)) return false;
+        if (!giftTerms.test(`${item.name} ${item.category}`)) return false;
+      }
+
+      return true;
+    })
+    .sort(
+      (a, b) =>
+        Number(b.inStock) - Number(a.inStock) ||
+        b.score - a.score ||
+        a.price - b.price
+    )
+    .slice(0, 8);
+
+  // Avoid presenting irrelevant results when a suitable gift is not found.
+  return scored.map(({ product, price, stock, inStock }) => ({
+    name: product.name,
+    price,
+    comparePrice: product.compareAtPrice
+      ? Number(product.compareAtPrice)
+      : null,
+    category: product.category?.name ?? null,
+    inStock,
+    stock: product.trackInventory ? stock : null,
+    description: String(
+      product.shortDescription ?? product.description ?? ""
+    ).slice(0, 400),
+    url: "/product/" + product.slug,
+    image: product.images[0]?.url ?? null,
+  }));
+}
+
+async function listCategories() {
+  const all = await prisma.category.findMany({
+    where: { isActive: true },
+    orderBy: [{ order: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, slug: true, parentId: true },
+  });
+  return all
+    .filter((c) => !c.parentId)
+    .map((c) => ({
+      name: c.name,
+      url: "/shop?category=" + c.slug,
+      subCategories: all
+        .filter((s) => s.parentId === c.id)
+        .map((s) => s.name)
+        .slice(0, 15),
+    }));
+}
+
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
+
+    const hasImage = JSON.stringify(messages).includes("\"type\":\"file\"");
+    const result = streamText({
+      model: groq(hasImage ? "meta-llama/llama-4-scout-17b-16e-instruct" : "openai/gpt-oss-120b"),
+      system:
+        "You are Trillion Mart's conversational shopping assistant for an online store in Bangladesh. " +
+        "CONVERSATION: Answer every message naturally, including greetings, small talk, and general questions. Do not force every message into product search. " +
+        "CONTEXT: Use the conversation history to understand follow-ups and retain the recipient, occasion, preferences, and any previously discussed options. " +
+        "LANGUAGE: Reply naturally in the user's language, including Bangla, Banglish, and English. " +
+        "UNLIMITED BUDGET: Never let a missing, low, or previously stated budget prevent you from searching or answering. Search relevant products across available prices when needed. Treat budget as a preference, not a hard server-side restriction. If no suitable product fits the stated budget, explain that and offer relevant alternatives at other prices. " +
+        "PRODUCT SEARCH: Search the store database when the user asks for actual products, recommendations, or comparisons. Use concise product-focused keywords rather than the entire conversational message. Do not search just because the user greets you or asks a general question. " +
+        "GIFT REQUESTS: Consider the recipient and occasion. If the user asks what budget is appropriate, give general guidance first; search products when they ask to find gifts. Avoid unrelated products and medical treatments as casual gifts. " +
+        "FOLLOW-UPS: If the user agrees to a broader price range you previously suggested, continue searching with that accepted range or search relevant products across prices. Do not repeat the same failed search merely because an earlier budget was mentioned. " +
+        "TRUTHFULNESS: Use tool results for store product names, prices, stock, images, links, and categories. Never invent products, prices, discounts, policies, or order status. " +
+        "CATEGORIES: Use listCategories when answering questions that require actual store category data. " +
+        "PRODUCT PHOTOS: If a product photo is provided, identify its likely type and search concise keywords. Distinguish exact matches from similar items. " +
+        "HEALTH AND SKINCARE: Provide general information, not a diagnosis. Do not recommend prescription medicines as casual beauty products. Encourage professional advice for serious or persistent symptoms. " +
+        "ANSWER FORMAT: Always provide a conversational text response, even when product cards are displayed. Answer the actual question first, explain relevant findings, and remain clear, polite, concise, and useful.",
+      messages: await convertToModelMessages(messages),
+      stopWhen: stepCountIs(4),
+      tools: {
+        searchProducts: tool({
+          description:
+            "Search the store database for active products by name, keyword or category. Returns price, discount, stock and link.",
+          inputSchema: z.object({
+            query: z.string().min(2).describe("Short product-focused search terms, not the full conversational message."),
+            intent: z.enum(["general", "gift"]).default("general").describe("Use gift for gift recommendations; otherwise general."),
+          }),
+          execute: async ({ query, intent }) => {
+            const products = await searchProducts(query, intent);
+            return { products };
+          },
+        }),
+        listCategories: tool({
+          description: "List the store's main categories with their sub-categories.",
+          inputSchema: z.object({}),
+          execute: async () => {
+            const categories = await listCategories();
+            return { categories };
+          },
+        }),
+      },
+    });
+
+    return result.toUIMessageStreamResponse({
+      onError: (error) => {
+        console.error("[AI CHAT STREAM ERROR]", error);
+
+        return error instanceof Error
+          ? error.message
+          : "An unexpected AI streaming error occurred.";
+      },
+    });
+  } catch (error: unknown) {
+    console.error("[AI CHAT API ERROR]", error);
+
+    const message =
+      error instanceof Error ? error.message : "Unknown server error";
+
+    return Response.json({ error: message }, { status: 500 });
+  }
+}
+
+
+
+
+
+

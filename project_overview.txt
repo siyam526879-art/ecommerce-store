@@ -1,0 +1,723 @@
+﻿=== PROJECT TREE ===
+.\.qodo
+.\backups
+.\prisma
+.\public
+.\src
+.\tests
+.\.env
+.\.env.example
+.\.env.local
+.\admin-page6.tsx.backup
+.\admin-sidebar11.tsx.backup
+.\AGENTS.md
+.\categories-page2.tsx.backup
+.\categories-page3.tsx.backup
+.\categories-page4.tsx.backup
+.\categories-page5.tsx.backup
+.\categories-page9.tsx.backup
+.\categories_dump.txt
+.\category-grid14.tsx.backup
+.\components.json
+.\dashboard_dump.txt
+.\eslint.config.mjs
+.\fix-payments.mjs
+.\header.tsx.backup
+.\header7.tsx.backup
+.\header8.tsx.backup
+.\next-env.d.ts
+.\next.config.ts
+.\package.json
+.\page-home3.tsx.backup
+.\page-home5.tsx.backup
+.\page.tsx.backup
+.\pnpm-lock.yaml
+.\pnpm-workspace.yaml
+.\postcss.config.mjs
+.\README.md
+.\schema6.prisma.backup
+.\search-bar8.tsx.backup
+.\search-bar9.tsx.backup
+.\shop_dump.txt
+.\sub-category-popup10.tsx.backup
+.\sub-products-page12.tsx.backup
+.\sub-products-page13.tsx.backup
+.\test.txt
+.\tsconfig.json
+.\.qodo\agents
+.\.qodo\workflows
+.\backups\2026-10-17_06-04-44
+.\backups\2026-10-17_06-10-01
+.\backups\2026-10-17_06-04-44\prisma
+.\backups\2026-10-17_06-04-44\src
+.\backups\2026-10-17_06-04-44\package.json
+.\backups\2026-10-17_06-04-44\prisma\migrations
+.\backups\2026-10-17_06-04-44\prisma\schema.prisma
+.\backups\2026-10-17_06-04-44\prisma\seed.ts
+.\backups\2026-10-17_06-04-44\src\app
+.\backups\2026-10-17_06-04-44\src\components
+.\backups\2026-10-17_06-04-44\src\hooks
+.\backups\2026-10-17_06-04-44\src\lib
+.\backups\2026-10-17_06-04-44\src\repositories
+.\backups\2026-10-17_06-04-44\src\services
+.\backups\2026-10-17_06-04-44\src\store
+.\backups\2026-10-17_06-04-44\src\types
+.\backups\2026-10-17_06-04-44\src\middleware.ts
+.\backups\2026-10-17_06-04-44\src\app\(account)
+.\backups\2026-10-17_06-04-44\src\app\(auth)
+.\backups\2026-10-17_06-04-44\src\app\(public)
+.\backups\2026-10-17_06-04-44\src\app\admin
+.\backups\2026-10-17_06-04-44\src\app\api
+.\backups\2026-10-17_06-04-44\src\app\seller
+.\backups\2026-10-17_06-04-44\src\app\error.tsx
+.\backups\2026-10-17_06-04-44\src\app\favicon.ico
+.\backups\2026-10-17_06-04-44\src\app\globals.css
+.\backups\2026-10-17_06-04-44\src\app\layout.tsx
+.\backups\2026-10-17_06-04-44\src\app\loading.tsx
+.\backups\2026-10-17_06-04-44\src\app\not-found.tsx
+.\backups\2026-10-17_06-04-44\src\app\robots.ts
+.\backups\2026-10-17_06-04-44\src\app\sitemap.ts
+.\backups\2026-10-17_06-04-44\src\app\(account)\account
+.\backups\2026-10-17_06-04-44\src\app\(account)\layout.tsx
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\addresses
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\orders
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\profile
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\returns
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\wishlist
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\addresses\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\orders\[id]
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\orders\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\orders\[id]\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\profile\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\returns\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(account)\account\wishlist\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth
+.\backups\2026-10-17_06-04-44\src\app\(auth)\forgot-password
+.\backups\2026-10-17_06-04-44\src\app\(auth)\login
+.\backups\2026-10-17_06-04-44\src\app\(auth)\register
+.\backups\2026-10-17_06-04-44\src\app\(auth)\layout.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\forgot-password
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\login
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\register
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\reset-password
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\forgot-password\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\login\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\register\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\auth\reset-password\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\forgot-password\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\login\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(auth)\register\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\cart
+.\backups\2026-10-17_06-04-44\src\app\(public)\checkout
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages
+.\backups\2026-10-17_06-04-44\src\app\(public)\product
+.\backups\2026-10-17_06-04-44\src\app\(public)\search
+.\backups\2026-10-17_06-04-44\src\app\(public)\shop
+.\backups\2026-10-17_06-04-44\src\app\(public)\layout.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\cart\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\checkout\cancel
+.\backups\2026-10-17_06-04-44\src\app\(public)\checkout\success
+.\backups\2026-10-17_06-04-44\src\app\(public)\checkout\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\checkout\cancel\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\checkout\success\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\about
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\contact
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\faq
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\privacy
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\returns
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\shipping
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\terms
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\about\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\contact\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\faq\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\privacy\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\returns\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\shipping\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\pages\terms\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\product\[slug]
+.\backups\2026-10-17_06-04-44\src\app\(public)\product\[slug]\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\search\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\shop\category
+.\backups\2026-10-17_06-04-44\src\app\(public)\shop\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\(public)\shop\category\[slug]
+.\backups\2026-10-17_06-04-44\src\app\(public)\shop\category\[slug]\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\audit-log
+.\backups\2026-10-17_06-04-44\src\app\admin\categories
+.\backups\2026-10-17_06-04-44\src\app\admin\coupons
+.\backups\2026-10-17_06-04-44\src\app\admin\customers
+.\backups\2026-10-17_06-04-44\src\app\admin\discounts
+.\backups\2026-10-17_06-04-44\src\app\admin\inventory
+.\backups\2026-10-17_06-04-44\src\app\admin\orders
+.\backups\2026-10-17_06-04-44\src\app\admin\pages
+.\backups\2026-10-17_06-04-44\src\app\admin\payments
+.\backups\2026-10-17_06-04-44\src\app\admin\products
+.\backups\2026-10-17_06-04-44\src\app\admin\reports
+.\backups\2026-10-17_06-04-44\src\app\admin\returns
+.\backups\2026-10-17_06-04-44\src\app\admin\roles
+.\backups\2026-10-17_06-04-44\src\app\admin\settings
+.\backups\2026-10-17_06-04-44\src\app\admin\shipping
+.\backups\2026-10-17_06-04-44\src\app\admin\staff
+.\backups\2026-10-17_06-04-44\src\app\admin\sub-categories
+.\backups\2026-10-17_06-04-44\src\app\admin\sub-category-products
+.\backups\2026-10-17_06-04-44\src\app\admin\dashboard-client.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\layout.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\audit-log\audit-log-client.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\audit-log\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\categories\[id]
+.\backups\2026-10-17_06-04-44\src\app\admin\categories\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\categories\[id]\products
+.\backups\2026-10-17_06-04-44\src\app\admin\categories\[id]\products\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\coupons\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\customers\[id]
+.\backups\2026-10-17_06-04-44\src\app\admin\customers\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\customers\[id]\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\discounts\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\inventory\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\orders\[id]
+.\backups\2026-10-17_06-04-44\src\app\admin\orders\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\orders\[id]\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\pages\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\payments\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\products\new
+.\backups\2026-10-17_06-04-44\src\app\admin\products\[id]
+.\backups\2026-10-17_06-04-44\src\app\admin\products\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\products\product-form.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\products\products-client.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\products\new\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\products\[id]\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\reports\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\returns\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\roles\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\settings\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\shipping\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\staff\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\sub-categories\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\admin\sub-category-products\page.tsx
+.\backups\2026-10-17_06-04-44\src\app\api\auth
+.\backups\2026-10-17_06-04-44\src\app\api\categories-live
+.\backups\2026-10-17_06-04-44\src\app\api\health
+.\backups\2026-10-17_06-04-44\src\app\api\search
+.\backups\2026-10-17_06-04-44\src\app\api\suggest
+.\backups\2026-10-17_06-04-44\src\app\api\v1
+.\backups\2026-10-17_06-04-44\src\app\api\webhooks
+.\backups\2026-10-17_06-04-44\src\app\api\categories-live\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\health\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\search\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\suggest\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\addresses
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth
+.\backups\2026-10-17_06-04-44\src\app\api\v1\cart
+.\backups\2026-10-17_06-04-44\src\app\api\v1\categories
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout
+.\backups\2026-10-17_06-04-44\src\app\api\v1\contact
+.\backups\2026-10-17_06-04-44\src\app\api\v1\customers
+.\backups\2026-10-17_06-04-44\src\app\api\v1\orders
+.\backups\2026-10-17_06-04-44\src\app\api\v1\pages
+.\backups\2026-10-17_06-04-44\src\app\api\v1\payments
+.\backups\2026-10-17_06-04-44\src\app\api\v1\products
+.\backups\2026-10-17_06-04-44\src\app\api\v1\profile
+.\backups\2026-10-17_06-04-44\src\app\api\v1\seller
+.\backups\2026-10-17_06-04-44\src\app\api\v1\webhooks
+.\backups\2026-10-17_06-04-44\src\app\api\v1\wishlist
+.\backups\2026-10-17_06-04-44\src\app\api\v1\addresses\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\addresses\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\addresses\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\audit-log
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\coupons
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\customers
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\dashboard
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\inventory
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\payments
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\products
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\reports
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\returns
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\settings
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\shipping
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\staff
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\upload
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\audit-log\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\[id]\products
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\[id]\products\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\coupons\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\coupons\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\coupons\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\customers\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\customers\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\customers\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\dashboard\live
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\dashboard\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\dashboard\live\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\inventory\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\[id]\refund
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\[id]\refund\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\payments\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\products\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\products\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\products\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\reports\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\returns\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\settings\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\shipping\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\shipping\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\shipping\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\staff\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\staff\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\staff\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\admin\upload\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\forgot-password
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\register
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\reset-password
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\verify-otp
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\forgot-password\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\register\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\reset-password\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\auth\verify-otp\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\cart\items
+.\backups\2026-10-17_06-04-44\src\app\api\v1\cart\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\cart\items\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\cart\items\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\categories\[id]
+.\backups\2026-10-17_06-04-44\src\app\api\v1\categories\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\categories\[id]\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\cod
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\create-intent
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\payment-intent
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\validate
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\cod\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\create-intent\route.ts
+.\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\payment-intent\route.ts
+
+=== FILE: package.json ===
+{
+  "name": "ecommerce-store",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.11.3",
+    "@hookform/resolvers": "^5.9.1",
+    "@prisma/client": "^6.19.3",
+    "@radix-ui/react-aspect-ratio": "^1.2.0",
+    "@radix-ui/react-dialog": "^1.3.0",
+    "@radix-ui/react-dropdown-menu": "^2.2.0",
+    "@radix-ui/react-label": "^2.1.17",
+    "@radix-ui/react-navigation-menu": "^1.4.0",
+    "@radix-ui/react-separator": "^1.2.0",
+    "@radix-ui/react-slot": "^1.5.0",
+    "@radix-ui/react-tabs": "^1.2.0",
+    "@radix-ui/react-toast": "^1.3.0",
+    "@stripe/react-stripe-js": "^7.0.0",
+    "@stripe/stripe-js": "^10.1.0",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.39.0",
+    "bcryptjs": "^3.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cn": "^0.4.0",
+    "jose": "^6.2.12",
+    "lucide-react": "^1.55.0",
+    "next": "16.4.0",
+    "next-auth": "5.0.0-beta.32",
+    "prisma": "^6.19.3",
+    "radix-ui": "^1.8.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "^7.90.0",
+    "resend": "^6.32.1",
+    "shadcn": "^4.21.4",
+    "sonner": "^2.0.8",
+    "stripe": "^23.0.0",
+    "tailwind-merge": "^3.7.0",
+    "tw-animate-css": "^1.4.0",
+    "zod": "^4.6.6",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/turbopack": "^4",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^18.0.8",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "postcss": "^8.5.30",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@12.11.2"
+}
+
+=== FILE: README.md ===
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+=== FILE: tsconfig.json ===
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+
+=== FILE: prisma\schema.prisma ===
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ AUTH & USERS ============
+
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  name           String?
+  phone          String?
+  passwordHash   String?
+  passwordResetToken    String?
+  passwordResetExpires  DateTime?
+  passwordResetAttempts Int      @default(0)
+  resetSessionToken     String?  @unique
+  resetSessionExpires   DateTime?
+  role           Role      @default(CUSTOMER)
+  image          String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  addresses      Address[]
+  products    Product[] @relation("SellerProducts")
+  orders         Order[]
+  cart           Cart?
+  wishlist       WishlistItem[]
+  reviews        Review[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============ ADDRESSES ============
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  label      String?
+  fullName   String
+  line1      String
+  line2      String?
+  city       String
+  state      String?
+  postalCode String
+  country    String  @default("US")
+  phone      String?
+  isDefault  Boolean @default(false)
+  deletedAt  DateTime?
+
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shippingOrders    Order[]        @relation("ShippingAddress")
+  billingOrders     Order[]        @relation("BillingAddress")
+
+  @@index([userId, deletedAt])
+}
+
+// ============ CATALOG ============
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  image       String?
+  parentId    String?
+  order       Int        @default(0)
+
+=== ENV FILES (secret hide kora) ===
+--- .env ---
+# Database
+DATABASE_URL=<hidden>
+
+# NextAuth
+NEXTAUTH_URL=<hidden>
+NEXTAUTH_SECRET=<hidden>
+
+# App
+NODE_ENV=<hidden>
+NEXT_PUBLIC_APP_URL=<hidden>
+NEXT_PUBLIC_APP_NAME=<hidden>
+
+# Payments (Stripe)
+STRIPE_SECRET_KEY=<hidden>
+STRIPE_PUBLISHABLE_KEY=<hidden>
+STRIPE_WEBHOOK_SECRET=<hidden>
+
+# Email (Resend)
+RESEND_API_KEY=<hidden>
+
+# Note: Google OAuth credentials are only in .env.local
+--- .env.example ---
+# Database (PostgreSQL)
+DATABASE_URL=<hidden>
+
+# NextAuth
+NEXTAUTH_URL=<hidden>
+NEXTAUTH_SECRET=<hidden>
+
+# OAuth (optional for Phase 0)
+GOOGLE_CLIENT_ID=<hidden>
+GOOGLE_CLIENT_SECRET=<hidden>
+
+# App
+NODE_ENV=<hidden>
+NEXT_PUBLIC_APP_URL=<hidden>
+NEXT_PUBLIC_APP_NAME=<hidden>
+
+# Payments (Phase 2 - placeholder)
+STRIPE_SECRET_KEY=<hidden>
+STRIPE_PUBLISHABLE_KEY=<hidden>
+STRIPE_WEBHOOK_SECRET=<hidden>
+PAYPAL_CLIENT_ID=<hidden>
+PAYPAL_CLIENT_SECRET=<hidden>
+
+# Email (Phase 2 - placeholder)
+RESEND_API_KEY=<hidden>
+EMAIL_FROM=<hidden>
+
+# Storage (Phase 1 - placeholder)
+CLOUDINARY_CLOUD_NAME=<hidden>
+CLOUDINARY_API_KEY=<hidden>
+CLOUDINARY_API_SECRET=<hidden>
+--- .env.local ---
+# Database
+DATABASE_URL=<hidden>
+
+# NextAuth
+NEXTAUTH_URL=<hidden>
+NEXTAUTH_SECRET=<hidden>
+
+# App
+NODE_ENV=<hidden>
+NEXT_PUBLIC_APP_URL=<hidden>
+NEXT_PUBLIC_APP_NAME=<hidden>
+
+# Payments (Stripe) - placeholder, key ÃƒÂ Ã‚Â¦Ã‚ÂªÃƒÂ Ã‚Â§Ã¢â‚¬Â¡ÃƒÂ Ã‚Â¦Ã‚Â²ÃƒÂ Ã‚Â§Ã¢â‚¬Â¡ replace ÃƒÂ Ã‚Â¦Ã¢â‚¬Â¢ÃƒÂ Ã‚Â¦Ã‚Â°ÃƒÂ Ã‚Â§Ã‚ÂÃƒÂ Ã‚Â¦Ã‚Â¨
+STRIPE_SECRET_KEY=<hidden>
+STRIPE_PUBLISHABLE_KEY=<hidden>
+STRIPE_WEBHOOK_SECRET=<hidden>
+
+# Email (Resend) - placeholder
+RESEND_API_KEY=<hidden>
+EMAIL_FROM=<hidden>
+
+# Google OAuth
+GOOGLE_CLIENT_ID=<hidden>
+GOOGLE_CLIENT_SECRET=<hidden>
+AUTH_TRUST_HOST=<hidden>
+
+# NextAuth v5 (required by next-auth@5 beta)
+AUTH_SECRET=<hidden>
+AUTH_URL=<hidden>
+
+=== DB RELATED FILES ===
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\prisma\seed.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\categories-live\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\health\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\search\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\suggest\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\addresses\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\addresses\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\audit-log\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\[id]\products\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\categories\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\coupons\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\coupons\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\customers\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\customers\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\dashboard\live\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\dashboard\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\inventory\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\[id]\refund\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\orders\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\payments\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\products\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\products\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\reports\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\returns\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\settings\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\shipping\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\shipping\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\staff\[id]\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\admin\staff\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\auth\forgot-password\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\auth\register\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\auth\reset-password\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\auth\verify-otp\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\cart\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\categories\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\cod\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\checkout\validate\route.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\app\api\v1\orders\[id]\route.ts
+
+=== MODEL / SCHEMA / MIGRATION FILES ===
+D:\New folder 190\ecommerce-store\schema6.prisma.backup
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\prisma\schema.prisma
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\lib\validators\api.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\lib\validators\auth.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\lib\validators\coupon.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\lib\validators\order.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-04-44\src\lib\validators\product.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-10-01\src\lib\validators\api.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-10-01\src\lib\validators\auth.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-10-01\src\lib\validators\coupon.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-10-01\src\lib\validators\order.schema.ts
+D:\New folder 190\ecommerce-store\backups\2026-10-17_06-10-01\src\lib\validators\product.schema.ts
+D:\New folder 190\ecommerce-store\prisma\schema.prisma
+D:\New folder 190\ecommerce-store\src\lib\validators\api.schema.ts
+D:\New folder 190\ecommerce-store\src\lib\validators\auth.schema.ts
+D:\New folder 190\ecommerce-store\src\lib\validators\coupon.schema.ts
+D:\New folder 190\ecommerce-store\src\lib\validators\order.schema.ts
+D:\New folder 190\ecommerce-store\src\lib\validators\product.schema.ts

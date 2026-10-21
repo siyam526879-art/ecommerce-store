@@ -1,0 +1,986 @@
+﻿=== prisma\schema.prisma ===
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ AUTH & USERS ============
+
+enum Role {
+  CUSTOMER
+  STAFF
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  emailVerified  DateTime?
+  name           String?
+  phone          String?
+  passwordHash   String?
+  passwordResetToken    String?
+  passwordResetExpires  DateTime?
+  passwordResetAttempts Int      @default(0)
+  resetSessionToken     String?  @unique
+  resetSessionExpires   DateTime?
+  role           Role      @default(CUSTOMER)
+  image          String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  addresses      Address[]
+  products    Product[] @relation("SellerProducts")
+  orders         Order[]
+  cart           Cart?
+  wishlist       WishlistItem[]
+  reviews        Review[]
+  auditLogs      AuditLog[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============ ADDRESSES ============
+
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  label      String?
+  fullName   String
+  line1      String
+  line2      String?
+  city       String
+  state      String?
+  postalCode String
+  country    String  @default("US")
+  phone      String?
+  isDefault  Boolean @default(false)
+  deletedAt  DateTime?
+
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shippingOrders    Order[]        @relation("ShippingAddress")
+  billingOrders     Order[]        @relation("BillingAddress")
+
+  @@index([userId, deletedAt])
+}
+
+// ============ CATALOG ============
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  image       String?
+  parentId    String?
+  order       Int        @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@index([parentId])
+  @@index([slug])
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  name             String
+  slug             String        @unique
+  description      String?       @db.Text
+  shortDescription String?
+  basePrice        Decimal       @db.Decimal(12, 2)
+  compareAtPrice   Decimal?      @db.Decimal(12, 2)
+  sku              String?       @unique
+  sellerId    String?
+  seller      User?     @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: SetNull)
+  categoryId       String
+  status           String        @default("DRAFT")
+  isFeatured       Boolean       @default(false)
+  weight           Decimal?      @db.Decimal(8, 2)
+  stock            Int           @default(0)
+  trackInventory   Boolean       @default(true)
+  metaTitle        String?
+  metaDescription  String?       @db.Text
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  category  Category         @relation(fields: [categoryId], references: [id])
+  variants  ProductVariant[]
+  images    ProductImage[]
+  reviews   Review[]
+  wishlist  WishlistItem[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([status])
+  @@index([isFeatured])
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+  productId  String
+  sku        String?  @unique
+  price      Decimal  @db.Decimal(12, 2)
+  stock      Int      @default(0)
+  attributes Json     @default("{}")
+  isActive   Boolean  @default(true)
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([productId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  alt       String?
+  order     Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ============ CART ============
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String?  @unique
+  sessionId String?  @unique
+  updatedAt DateTime @updatedAt
+
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([sessionId])
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String
+  variantId String
+  quantity  Int    @default(1)
+
+  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+}
+
+// ============ ORDERS ============
+
+model Order {
+  id                String   @id @default(cuid())
+  orderNumber       String   @unique
+  userId            String
+  status            String   @default("PENDING")
+  subtotal          Decimal  @db.Decimal(12, 2)
+  discountAmount    Decimal  @default(0) @db.Decimal(12, 2)
+  shippingAmount    Decimal  @default(0) @db.Decimal(12, 2)
+  deliveryZone      String?
+  taxAmount         Decimal  @default(0) @db.Decimal(12, 2)
+  total             Decimal  @db.Decimal(12, 2)
+  currency String @default("BDT")
+  shippingAddressId String
+  billingAddressId  String?
+  notes             String?  @db.Text
+  placedAt          DateTime @default(now())
+  paidAt            DateTime?
+  updatedAt         DateTime @updatedAt
+
+  user              User              @relation(fields: [userId], references: [id])
+  shippingAddress   Address           @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddress    Address?          @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  items             OrderItem[]
+  payments          Payment[]
+  statusLog         OrderStatusLog[]
+  couponUsages      CouponUsage[]
+  returns           Return[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
+  @@index([placedAt])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  variantId String
+  name      String
+  sku       String?
+  price     Decimal @db.Decimal(12, 2)
+  quantity  Int
+  total     Decimal @db.Decimal(12, 2)
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+}
+
+model OrderStatusLog {
+  id         String   @id @default(cuid())
+  orderId    String
+  fromStatus String
+  toStatus   String
+  note       String?
+  changedBy  String?
+  createdAt  DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ============ PAYMENTS ============
+
+model Payment {
+  id                String    @id @default(cuid())
+  orderId           String
+  provider          String
+  providerPaymentId String    @unique
+  amount            Decimal   @db.Decimal(12, 2)
+  currency String @default("BDT")
+  status            String    @default("PENDING")
+  method            String?
+  last4             String?
+  capturedAt        DateTime?
+  refundedAt        DateTime?
+  metadata          Json?
+  createdAt         DateTime  @default(now())
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds Refund[]
+
+  @@index([orderId])
+  @@index([providerPaymentId])
+}
+
+model Refund {
+  id                String    @id @default(cuid())
+  paymentId         String
+  returnId          String?
+  amount            Decimal   @db.Decimal(12, 2)
+  status            String    @default("PENDING")
+  providerRefundId  String?   @unique
+  reason            String?
+  createdAt         DateTime  @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+  return  Return? @relation(fields: [returnId], references: [id])
+
+  @@index([paymentId])
+}
+
+// ============ SHIPPING ============
+
+model ShippingZone {
+  id        String   @id @default(cuid())
+  name      String
+  countries Json     @default("[]")
+  isActive  Boolean  @default(true)
+
+  methods ShippingMethod[]
+}
+
+model ShippingMethod {
+  id              String  @id @default(cuid())
+  zoneId          String
+  name            String
+  price           Decimal @db.Decimal(12, 2)
+  freeThreshold   Decimal? @db.Decimal(12, 2)
+  estimatedDays   String?
+  isActive        Boolean @default(true)
+
+  zone ShippingZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId])
+}
+
+// ============ COUPONS ============
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  type        String
+  value       Decimal   @db.Decimal(12, 2)
+  minOrder    Decimal?  @db.Decimal(12, 2)
+  maxUses     Int?
+  usedCount   Int       @default(0)
+  startsAt    DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  usages CouponUsage[]
+
+  @@index([code])
+}
+
+model CouponUsage {
+  id        String   @id @default(cuid())
+  couponId  String
+  orderId   String
+  userId    String?
+  createdAt DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id])
+  order  Order  @relation(fields: [orderId], references: [id])
+
+  @@unique([couponId, orderId])
+}
+
+// ============ REVIEWS ============
+
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  userId     String
+  rating     Int
+  title      String?
+  body       String?  @db.Text
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+  @@index([productId])
+}
+
+// ============ WISHLIST ============
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+// ============ RETURNS ============
+
+model Return {
+  id           String   @id @default(cuid())
+  orderId      String
+  userId       String
+  status       String   @default("REQUESTED")
+  reason       String   @db.Text
+  items        Json
+  refundAmount Decimal  @db.Decimal(12, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  refunds Refund[]
+
+  @@index([orderId])
+}
+
+// ============ CMS ============
+
+model CmsPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  seoTitle  String?
+  seoDesc   String?
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+
+  @@index([key])
+}
+
+// ============ AUDIT ============
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  metadata   Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([resource, resourceId])
+  @@index([createdAt])
+}
+
+=== src\app\admin\categories\page.tsx ===
+"use client";
+
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { PageTitle } from "@/components/admin/page-title";
+import { DataTable } from "@/components/admin/data-table";
+import { StatusBadge } from "@/components/layout/status-badge";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
+import { Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+
+const schema = z.object({
+  name: z.string().min(2),
+  description: z.string().optional(),
+  order: z.coerce.number().int().default(0),
+  isActive: z.boolean().default(true),
+});
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  order: number;
+  isActive: boolean;
+  parent?: { name: string } | null;
+  _count: { products: number };
+}
+
+export default function CategoriesPage() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [editing, setEditing] = useState<Category | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const { register, handleSubmit, reset, setValue, watch } = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema) as any,
+    defaultValues: { name: "", description: "", order: 0, isActive: true },
+  });
+  const isActive = watch("isActive");
+
+  const load = async () => {
+    try {
+      const res = await fetch("/api/v1/admin/categories");
+      const json = await res.json();
+      const data = json?.data ?? [];
+      setCategories(Array.isArray(data) ? data : []);
+    } catch {
+      setCategories([]);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const onSubmit = async (data: z.infer<typeof schema>) => {
+    try {
+      const url = editing
+        ? `/api/v1/admin/categories/${editing.id}`
+        : "/api/v1/admin/categories";
+      const method = editing ? "PATCH" : "POST";
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed");
+      toast.success(editing ? "Category updated" : "Category created");
+      reset();
+      setEditing(null);
+      load();
+    } catch {
+      toast.error("Operation failed");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleting) return;
+    try {
+      await fetch(`/api/v1/admin/categories/${deleting}`, { method: "DELETE" });
+      toast.success("Category deleted");
+      setDeleting(null);
+      load();
+    } catch {
+      toast.error("Delete failed");
+    }
+  };
+
+  return (
+    <div>
+      <PageTitle title="Categories" description={`${categories.length} categories`} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle>{editing ? "Edit category" : "New category"}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-1.5">
+                <Label>Name</Label>
+                <Input {...register("name")} placeholder="e.g., Electronics" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Description</Label>
+                <Input {...register("description")} placeholder="Optional description" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Order</Label>
+                <Input type="number" {...register("order")} />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="active"
+                  checked={isActive}
+                  onCheckedChange={(c) => setValue("isActive", !!c)}
+                />
+                <Label htmlFor="active">Active</Label>
+              </div>
+              <div className="flex gap-2">
+                <Button type="submit" className="flex-1 bg-[#f85606] hover:bg-[#d04604]">
+                  {editing ? "Update" : "Create"}
+                </Button>
+                {editing && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      reset();
+                      setEditing(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        <div className="lg:col-span-2">
+          <DataTable
+            data={categories}
+            keyExtractor={(c) => c.id}
+            columns={[
+              {
+                key: "name",
+                header: "Name",
+                render: (c) => (
+                  <div>
+                    <p className="font-medium">{c.name}</p>
+                    <p className="text-xs text-muted-foreground">/{c.slug}</p>
+                  </div>
+                ),
+              },
+              {
+                key: "parent",
+                header: "Parent",
+                render: (c) => c.parent?.name ?? <span className="text-muted-foreground italic">None</span>,
+              },
+              {
+                key: "products",
+                header: "Products",
+                render: (c) => c._count.products,
+              },
+              {
+                key: "status",
+                header: "Status",
+                render: (c) => (
+                  <StatusBadge status={c.isActive ? "ACTIVE" : "ARCHIVED"} />
+                ),
+              },
+              {
+                key: "actions",
+                header: "",
+                className: "w-24 text-right",
+                render: (c) => (
+                  <div className="flex justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setEditing(c);
+                        reset({
+                          name: c.name,
+                          description: c.description ?? "",
+                          order: c.order,
+                          isActive: c.isActive,
+                        });
+                      }}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setDeleting(c.id)}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </div>
+      </div>
+
+      <ConfirmDialog
+        open={!!deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title="Delete category"
+        description="This will remove the category. Products in it will become uncategorized."
+        onConfirm={handleDelete}
+      />
+    </div>
+  );
+}
+
+=== src\app\api\v1\admin\categories\route.ts ===
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, paginated, errorResponse } from "@/lib/api-response";
+import { requirePermission, getRequestInfo } from "@/lib/auth-guard";
+import { logAudit } from "@/lib/audit";
+import { z } from "zod";
+
+const schema = z.object({
+  name: z.string().min(2),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  image: z.string().optional(),
+  parentId: z.string().nullable().optional(),
+  order: z.number().int().default(0),
+  isActive: z.boolean().default(true),
+});
+
+// GET /api/v1/admin/categories
+export async function GET(request: NextRequest) {
+  try {
+    await requirePermission("categories.view");
+
+    const page = Math.max(1, Number(request.nextUrl.searchParams.get("page") ?? 1));
+    const pageSize = Math.min(
+      100,
+      Math.max(1, Number(request.nextUrl.searchParams.get("pageSize") ?? 50))
+    );
+    const q = request.nextUrl.searchParams.get("q") ?? "";
+
+    const where = q
+      ? {
+          OR: [
+            { name: { contains: q, mode: "insensitive" as const } },
+            { slug: { contains: q, mode: "insensitive" as const } },
+          ],
+        }
+      : {};
+
+    const [categories, total] = await Promise.all([
+      prisma.category.findMany({
+        where,
+        orderBy: [{ order: "asc" }, { name: "asc" }],
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: {
+          parent: { select: { id: true, name: true } },
+          _count: { select: { products: true, children: true } },
+        },
+      }),
+      prisma.category.count({ where }),
+    ]);
+
+    return paginated(categories, total, page, pageSize);
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+// POST /api/v1/admin/categories
+export async function POST(request: NextRequest) {
+  try {
+    const user = await requirePermission("categories.manage");
+    const body = schema.parse(await request.json());
+
+    const slug =
+      body.slug ??
+      body.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    const category = await prisma.category.create({
+      data: {
+        name: body.name,
+        slug,
+        description: body.description,
+        image: body.image,
+        parentId: body.parentId ?? null,
+        order: body.order,
+        isActive: body.isActive,
+      },
+    });
+
+    await logAudit({
+      userId: user.id,
+      action: "CREATE",
+      resource: "category",
+      resourceId: category.id,
+      metadata: { name: category.name },
+      ...getRequestInfo(request),
+    });
+
+    return success({ category }, 201);
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+=== src\app\api\v1\admin\categories\[id]\route.ts ===
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { requirePermission, getRequestInfo } from "@/lib/auth-guard";
+import { logAudit } from "@/lib/audit";
+import { NotFoundError, AppError } from "@/lib/errors";
+import { z } from "zod";
+
+type Params = { params: Promise<{ id: string }> };
+
+const updateSchema = z.object({
+  name: z.string().min(2).optional(),
+  slug: z.string().min(2).optional(),
+  description: z.string().nullable().optional(),
+  image: z.string().nullable().optional(),
+  parentId: z.string().nullable().optional(),
+  order: z.number().int().optional(),
+  isActive: z.boolean().optional(),
+});
+
+// GET /api/v1/admin/categories/:id
+export async function GET(_req: NextRequest, { params }: Params) {
+  try {
+    await requirePermission("categories.view");
+    const { id } = await params;
+
+    const category = await prisma.category.findUnique({
+      where: { id },
+      include: {
+        parent: { select: { id: true, name: true } },
+        children: { select: { id: true, name: true, slug: true } },
+        _count: { select: { products: true, children: true } },
+      },
+    });
+
+    if (!category) throw new NotFoundError("Category");
+
+    return success({ category });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+// PATCH /api/v1/admin/categories/:id
+export async function PATCH(request: NextRequest, { params }: Params) {
+  try {
+    const user = await requirePermission("categories.manage");
+    const { id } = await params;
+    const body = updateSchema.parse(await request.json());
+
+    const existing = await prisma.category.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundError("Category");
+
+    if (body.parentId === id) {
+      throw new AppError("Category cannot be its own parent", 400);
+    }
+
+    const updated = await prisma.category.update({
+      where: { id },
+      data: body,
+    });
+
+    await logAudit({
+      userId: user.id,
+      action: "UPDATE",
+      resource: "category",
+      resourceId: id,
+      metadata: { name: updated.name },
+      ...getRequestInfo(request),
+    });
+
+    return success({ category: updated });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+// DELETE /api/v1/admin/categories/:id
+export async function DELETE(request: NextRequest, { params }: Params) {
+  try {
+    const user = await requirePermission("categories.manage");
+    const { id } = await params;
+
+    const existing = await prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: { select: { products: true, children: true } },
+      },
+    });
+
+    if (!existing) throw new NotFoundError("Category");
+
+    if (existing._count.products > 0) {
+      throw new AppError(
+        `Cannot delete: ${existing._count.products} products are in this category`,
+        400
+      );
+    }
+
+    if (existing._count.children > 0) {
+      throw new AppError(
+        `Cannot delete: ${existing._count.children} subcategories exist`,
+        400
+      );
+    }
+
+    await prisma.category.delete({ where: { id } });
+
+    await logAudit({
+      userId: user.id,
+      action: "DELETE",
+      resource: "category",
+      resourceId: id,
+      metadata: { name: existing.name },
+      ...getRequestInfo(request),
+    });
+
+    return success({ deleted: true });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+=== src\app\api\v1\admin\upload\route.ts ===
+import { NextRequest } from "next/server";
+import { success, errorResponse } from "@/lib/api-response";
+import { requirePermission } from "@/lib/auth-guard";
+import { saveUpload } from "@/lib/upload";
+import { logAudit } from "@/lib/audit";
+import { z } from "zod";
+
+export async function POST(request: NextRequest) {
+  try {
+    await requirePermission("products.manage");
+    const formData = await request.formData();
+    const file = formData.get("file");
+
+    const schema = z.instanceof(File).refine((f) => f.size > 0, "File required")
+      .refine((f) => f.size <= 5 * 1024 * 1024, "Max 5MB")
+      .refine(
+        (f) => ["image/jpeg", "image/png", "image/webp"].includes(f.type),
+        "JPEG, PNG, or WebP only"
+      );
+
+    const parsed = schema.safeParse(file);
+    if (!parsed.success) {
+      return Response.json(
+        { success: false, error: { code: "VALIDATION_ERROR", message: parsed.error.message } },
+        { status: 400 }
+      );
+    }
+
+    const url = await saveUpload(parsed.data);
+    return success({ url });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+=== src\lib\upload.ts ===
+import { writeFile, mkdir } from "fs/promises";
+import { join } from "path";
+import { existsSync } from "fs";
+
+const UPLOAD_DIR = join(process.cwd(), "public", "uploads");
+
+export async function saveUpload(file: File): Promise<string> {
+  if (!existsSync(UPLOAD_DIR)) {
+    await mkdir(UPLOAD_DIR, { recursive: true });
+  }
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const fullPath = join(UPLOAD_DIR, filename);
+  await writeFile(fullPath, buffer);
+  return `/uploads/${filename}`;
+}
+

@@ -1,0 +1,11 @@
+﻿node_modules
+.next
+.git
+backups
+backup-*
+.backups
+*.bak
+*.bak_*
+address-data-backup-*
+pnpm-lock.yaml
+*.log

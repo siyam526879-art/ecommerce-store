@@ -1,0 +1,10 @@
+﻿dangerouslyAllowAllBuilds: true
+onlyBuiltDependencies:
+  - esbuild
+  - unrs-resolver
+  - workerd
+  - prisma
+  - "@prisma/client"
+  - "@prisma/engines"
+  - sharp
+  - "@tailwindcss/oxide"

@@ -1,0 +1,447 @@
+﻿=== D:\New folder 190\ecommerce-store\src\app\(public)\pages\contact\page.tsx ===
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { ArrowLeft, X, Volume2, Paperclip, Image as ImageIcon, Bot, AlertCircle } from "lucide-react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+
+const transport = new DefaultChatTransport({ api: "/api/chat" });
+const TAKA = "\u09F3";
+
+export default function CustomerCareChat() {
+  const [input, setInput] = useState("");
+  const [top, setTop] = useState(0);
+  const { messages, sendMessage, status, error } = useChat({ transport });
+  const isLoading = status === "submitted" || status === "streaming";
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const header = document.querySelector("header") as HTMLElement | null;
+    const measure = () => setTop(header ? header.offsetHeight : 0);
+    measure();
+    window.addEventListener("resize", measure);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("resize", measure);
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [messages, status]);
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const text = input.trim();
+    if (!text || isLoading) return;
+    sendMessage({ text });
+    setInput("");
+  };
+
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-40 flex flex-col bg-[#f5f5f5] font-sans" style={{ top }}>
+      {/* Top Header */}
+      <div className="shrink-0 bg-white shadow-sm">
+        <div className="flex items-center border-b p-3">
+          <Link href="/help-center" className="rounded-full p-2 hover:bg-gray-100">
+            <ArrowLeft className="h-5 w-5 text-gray-700" />
+          </Link>
+          <div className="flex flex-1 items-center justify-center gap-2">
+            <div className="rounded-full bg-[#f85606] p-1.5">
+              <Bot className="h-6 w-6 text-white" />
+            </div>
+            <span className="font-semibold text-gray-800">T-bot Assistant</span>
+          </div>
+        </div>
+        <div className="flex items-center justify-between border-b border-orange-100 bg-orange-50 px-4 py-2">
+          <div className="flex items-center gap-2 text-sm font-medium text-[#f85606]">
+            <Volume2 className="h-4 w-4" />
+            <span>Refund Delay Notice</span>
+          </div>
+          <X className="h-4 w-4 cursor-pointer text-gray-500" />
+        </div>
+      </div>
+
+      {/* Chat Area: shudhu eta scroll hobe */}
+      <div ref={listRef} className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
+        {messages.length === 0 && !error && (
+          <div className="max-w-[90%] rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+            <p className="mb-3 text-[15px] text-gray-800">Hello Customer! Welcome to Trillion Mart!</p>
+            <p className="mb-3 text-[15px] text-gray-800">
+              I am <strong>T-bot</strong>, your virtual assistant. How can I help you today?
+            </p>
+          </div>
+        )}
+
+        {messages.map((m) => {
+          const parts = (m.parts ?? []) as any[];
+          const text = parts.filter((p) => p.type === "text").map((p) => p.text).join("");
+          const tools = parts.filter((p) => p.type === "tool-searchProducts" && p.state === "output-available");
+          const isUser = m.role === "user";
+          if (!text && tools.length === 0) return null;
+          return (
+            <div key={m.id} className={"flex " + (isUser ? "justify-end" : "justify-start")}>
+              <div
+                className={
+                  "max-w-[85%] rounded-lg border p-4 shadow-sm " +
+                  (isUser ? "border-[#f85606] bg-[#f85606] text-white" : "border-gray-200 bg-white text-gray-800")
+                }
+              >
+                {text && <p className="whitespace-pre-wrap text-[15px]">{text}</p>}
+                {tools.map((t) => {
+                  const products = t.output?.products ?? [];
+                  if (products.length === 0) return null;
+                  return (
+                    <div key={t.toolCallId} className="mt-3 space-y-2">
+                      {products.map((p: any, i: number) => (
+                        <div key={i} className="rounded border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800">
+                          <span className="block font-bold">{p.name}</span>
+                          <span className="font-bold text-[#f85606]">
+                            {TAKA} {p.price}
+                          </span>
+                          <a href={p.url} className="mt-1 block text-blue-600 underline">
+                            View Product Details
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+
+        {error && (
+          <div className="my-4 flex justify-center">
+            <div className="flex max-w-[90%] items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              <AlertCircle className="h-5 w-5 shrink-0" />
+              <p>API Error: {error.message || "Could not connect to AI."}</p>
+            </div>
+          </div>
+        )}
+
+        {status === "submitted" && (
+          <div className="flex justify-start">
+            <div className="animate-pulse rounded-lg border bg-white p-3 text-sm text-gray-500">T-bot is typing...</div>
+          </div>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <form onSubmit={onSubmit} className="flex shrink-0 items-center gap-2 border-t bg-white p-3">
+        <button type="button" className="text-gray-500 hover:text-gray-700">
+          <Paperclip className="h-5 w-5" />
+        </button>
+        <button type="button" className="text-gray-500 hover:text-gray-700">
+          <ImageIcon className="h-5 w-5" />
+        </button>
+        <input
+          type="text"
+          placeholder="Please type your message here..."
+          className="flex-1 rounded-full bg-gray-100 px-4 py-2.5 text-sm text-gray-800 outline-none"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={
+            "rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-colors " +
+            (isLoading ? "cursor-not-allowed bg-gray-400" : "bg-[#f85606] hover:bg-[#e04e05]")
+          }
+        >
+          Send
+        </button>
+      </form>
+    </div>
+  );
+}
+
+=== D:\New folder 190\ecommerce-store\src\app\api\chat\route.ts ===
+import { groq } from "@ai-sdk/groq";
+import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/db";
+import { setDefaultResultOrder } from "node:dns";
+
+setDefaultResultOrder("ipv4first");
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
+async function searchProducts(query: string) {
+  const terms = query
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter((t) => t.length >= 2)
+    .slice(0, 5);
+
+  const or: Prisma.ProductWhereInput[] = terms.flatMap((t) => [
+    { name: { contains: t, mode: "insensitive" } },
+    { description: { contains: t, mode: "insensitive" } },
+    { category: { name: { contains: t, mode: "insensitive" } } },
+  ]);
+
+  const where: Prisma.ProductWhereInput = { status: "ACTIVE", ...(or.length > 0 ? { OR: or } : {}) };
+
+  const rows = await prisma.product.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    take: 6,
+    include: {
+      category: { select: { name: true } },
+      images: { where: { isPrimary: true }, take: 1 },
+    },
+  });
+
+  const ids = rows.map((r) => r.id);
+  const variants =
+    ids.length > 0
+      ? await prisma.productVariant.findMany({
+          where: { productId: { in: ids }, isActive: true },
+          select: { productId: true, stock: true },
+        })
+      : [];
+  const stock = new Map<string, number>();
+  for (const v of variants) stock.set(v.productId, (stock.get(v.productId) ?? 0) + (v.stock ?? 0));
+
+  return rows.map((p) => {
+    const has = stock.has(p.id);
+    const total = stock.get(p.id) ?? 0;
+    return {
+      name: p.name,
+      price: Number(p.basePrice),
+      comparePrice: p.compareAtPrice ? Number(p.compareAtPrice) : null,
+      category: p.category?.name ?? null,
+      inStock: has ? total > 0 : null,
+      stock: has ? total : null,
+      description: String(p.description ?? "").slice(0, 300),
+      url: "/product/" + p.slug,
+      image: p.images?.[0]?.url ?? null,
+    };
+  });
+}
+
+async function listCategories() {
+  const all = await prisma.category.findMany({
+    where: { isActive: true },
+    orderBy: [{ order: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, slug: true, parentId: true },
+  });
+  return all
+    .filter((c) => !c.parentId)
+    .map((c) => ({
+      name: c.name,
+      url: "/shop?category=" + c.slug,
+      subCategories: all
+        .filter((s) => s.parentId === c.id)
+        .map((s) => s.name)
+        .slice(0, 15),
+    }));
+}
+
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
+
+    const result = streamText({
+      model: groq("openai/gpt-oss-120b"),
+      system:
+        "You are T-bot, a polite and helpful customer support assistant for Trillion Mart (an online store in Bangladesh). " +
+        "For ANY question about products, prices, discounts, availability or stock, or what the store sells, call the searchProducts tool. " +
+        "For questions about categories, call the listCategories tool. " +
+        "Never invent products, prices or stock: answer only from tool results. Prices are in Taka (BDT). " +
+        "If nothing is found, say so politely and suggest browsing the shop page (/shop). " +
+        "Keep answers short. Always reply in the language the user writes in (Bangla or English).",
+      messages: await convertToModelMessages(messages),
+      stopWhen: stepCountIs(4),
+      tools: {
+        searchProducts: tool({
+          description:
+            "Search the store database for active products by name, keyword or category. Returns price, discount, stock and link.",
+          inputSchema: z.object({
+            query: z.string().describe("Product name or keyword, e.g. 'speaker' or 'vitamin c serum'"),
+          }),
+          execute: async ({ query }) => {
+            const products = await searchProducts(query);
+            return { products };
+          },
+        }),
+        listCategories: tool({
+          description: "List the store's main categories with their sub-categories.",
+          inputSchema: z.object({}),
+          execute: async () => {
+            const categories = await listCategories();
+            return { categories };
+          },
+        }),
+      },
+    });
+
+    return result.toUIMessageStreamResponse({
+      onError: (e) => (e instanceof Error ? e.message : String(e)),
+    });
+  } catch (error: any) {
+    console.error("API Error:", error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  }
+}
+
+=== D:\New folder 190\ecommerce-store\src\components\layout\header-account.tsx ===
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { ChevronDown } from "lucide-react";
+import { SignOutConfirm } from "@/components/auth/sign-out-confirm";
+
+export function HeaderAccount() {
+  const { data: session, status } = useSession();
+  const [open, setOpen] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+
+  const openAuth = (mode: "login" | "register") =>
+    window.dispatchEvent(new CustomEvent("open-auth-modal", { detail: mode }));
+
+  if (status === "loading") return <span className="h-4 w-24" />;
+
+  if (status !== "authenticated") {
+    return (
+      <>
+        <button type="button" onClick={() => openAuth("login")} className="hover:underline">LOGIN</button>
+        <button type="button" onClick={() => openAuth("register")} className="hover:underline">SIGN UP</button>
+      </>
+    );
+  }
+
+  const first = (session?.user?.name || session?.user?.email || "My").split(/[\s@]/)[0];
+  const role = (session?.user as any)?.role as string | undefined;
+
+  return (
+    <div ref={ref} className="relative">
+      <button type="button" onClick={() => setOpen((o) => !o)} className="flex items-center gap-1 uppercase hover:underline">
+        {first}&apos;S ACCOUNT <ChevronDown className="h-3.5 w-3.5" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full z-[140] mt-2 w-52 overflow-hidden rounded-md border bg-white p-3 text-gray-800 shadow-2xl normal-case">
+          <p className="mb-2 truncate text-sm font-semibold">{session?.user?.name || session?.user?.email}</p>
+          <Link
+            href="/account"
+            onClick={() => setOpen(false)}
+            className="block rounded bg-[#f85606] py-2 text-center text-sm font-bold text-white hover:bg-[#d94b05]"
+          >
+            My Account
+          </Link>
+          <Link href="/account/orders" onClick={() => setOpen(false)} className="mt-1 block rounded px-2 py-2 text-sm hover:bg-orange-50">
+            My Orders
+          </Link>
+          {(role === "ADMIN" || role === "STAFF") && (
+            <Link href="/admin" onClick={() => setOpen(false)} className="block rounded px-2 py-2 text-sm hover:bg-orange-50">
+              Admin Panel
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={() => { setOpen(false); setConfirm(true); }}
+            className="block w-full rounded px-2 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+      <SignOutConfirm open={confirm} onClose={() => setConfirm(false)} />
+    </div>
+  );
+}
+
+=== D:\New folder 190\ecommerce-store\src\components\layout\header.tsx ===
+import Link from "next/link";
+import { CartButton } from "@/components/cart/cart-button";
+import { Container } from "@/components/ui/container";
+import { Logo } from "@/components/layout/logo";
+import { SearchBar } from "@/components/layout/search-bar";
+import { HeaderAccount } from "@/components/layout/header-account";
+
+const SITE_NAME = "Trillion Mart";
+
+export async function Header() {
+  return (
+    <header className="sticky top-0 z-50 w-full bg-[#f85606] shadow-md">
+      <div className="hidden md:block">
+        <Container>
+          <div className="flex h-9 items-center justify-end gap-8 text-xs font-medium text-white">
+            <Link href="/pages/about" className="hover:underline">SAVE MORE ON APP</Link>
+            <Link href="/auth/register" className="hover:underline">BECOME A SELLER</Link>
+            
+<div className="relative group flex items-center self-center">
+  <div className="flex items-center gap-1 hover:text-white transition-colors py-1">
+    HELP & SUPPORT
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+  </div>
+  <div className="absolute top-[100%] right-0 mt-2 w-[220px] bg-white text-gray-800 shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
+    <ul className="py-2 text-[14px] font-medium text-left">
+      <li><a href="/help-center" className="block px-5 py-2.5 hover:bg-gray-100 hover:text-[#f85606]">Help Center</a></li>
+      <li><a href="/pages/contact" className="block px-5 py-2.5 hover:bg-gray-100 hover:text-[#f85606]">Contact Customer Care</a></li>
+      <li><a href="/pages/shipping" className="block px-5 py-2.5 hover:bg-gray-100 hover:text-[#f85606]">Shipping & Delivery</a></li>
+      <li><a href="/account/orders" className="block px-5 py-2.5 hover:bg-gray-100 hover:text-[#f85606]">Order</a></li>
+      <li><a href="/account/payments" className="block px-5 py-2.5 hover:bg-gray-100 hover:text-[#f85606]">Payment</a></li>
+      <li><a href="/account/returns" className="block px-5 py-2.5 hover:bg-gray-100 hover:text-[#f85606]">Returns & Refunds</a></li>
+    </ul>
+  </div>
+</div>
+
+            <HeaderAccount />
+          </div>
+        </Container>
+      </div>
+
+      <Container>
+        <div className="flex h-16 items-center gap-4 md:h-[72px] md:gap-6">
+          <Link href="/" className="shrink-0 hover:opacity-90" aria-label={SITE_NAME}>
+            <Logo name={SITE_NAME} variant="white" />
+          </Link>
+
+          <SearchBar siteName={SITE_NAME} />
+
+          <CartButton />
+        </div>
+      </Container>
+    </header>
+  );
+}
+
+=== D:\New folder 190\ecommerce-store\src\app\(public)\layout.tsx ===
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+
+export default function PublicLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
+  );
+}
+

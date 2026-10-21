@@ -1,0 +1,137 @@
+// Bangladesh Post Codes by District
+export interface PostCode {
+  code: string;
+  area: string;
+}
+
+export const postCodesByDistrict: Record<string, PostCode[]> = {
+  // DHAKA DIVISION
+  dhaka: [
+    { code: "1000", area: "Dhaka GPO" },
+    { code: "1100", area: "Dhaka Sadar" },
+    { code: "1205", area: "Dhanmondi" },
+    { code: "1216", area: "Gulshan" },
+    { code: "1212", area: "Banani" },
+    { code: "1209", area: "Uttara" },
+    { code: "1207", area: "Mirpur" },
+    { code: "1204", area: "Mohammadpur" },
+  ],
+  faridpur: [{ code: "7800", area: "Faridpur" }],
+  gazipur: [
+    { code: "1700", area: "Gazipur Sadar" },
+    { code: "1703", area: "Tongi" },
+    { code: "1704", area: "Joydebpur" },
+  ],
+  gopalganj: [{ code: "8100", area: "Gopalganj" }],
+  kishoreganj: [{ code: "2300", area: "Kishoreganj" }],
+  madaripur: [{ code: "7900", area: "Madaripur" }],
+  manikganj: [{ code: "1800", area: "Manikganj" }],
+  munshiganj: [{ code: "1500", area: "Munshiganj" }],
+  narayanganj: [
+    { code: "1400", area: "Narayanganj" },
+    { code: "1410", area: "Fatullah" },
+  ],
+  narsingdi: [{ code: "1600", area: "Narsingdi" }],
+  rajbari: [{ code: "7700", area: "Rajbari" }],
+  shariatpur: [{ code: "8000", area: "Shariatpur" }],
+  tangail: [{ code: "1900", area: "Tangail" }],
+
+  // CHITTAGONG DIVISION
+  chittagong: [
+    { code: "4000", area: "Chittagong GPO" },
+    { code: "4100", area: "Chittagong Sadar" },
+    { code: "4212", area: "Halishahar" },
+    { code: "4000", area: "Agrabad" },
+  ],
+  bandarban: [{ code: "4600", area: "Bandarban" }],
+  brahmanbaria: [{ code: "3400", area: "Brahmanbaria" }],
+  chandpur: [{ code: "3600", area: "Chandpur" }],
+  comilla: [
+    { code: "3500", area: "Comilla" },
+    { code: "3501", area: "Comilla Sadar" },
+  ],
+  coxsbazar: [
+    { code: "4700", area: "Cox's Bazar" },
+    { code: "4702", area: "Cox's Bazar Sadar" },
+  ],
+  feni: [{ code: "3900", area: "Feni" }],
+  khagrachari: [{ code: "4400", area: "Khagrachari" }],
+  lakshmipur: [{ code: "3700", area: "Lakshmipur" }],
+  noakhali: [{ code: "3800", area: "Noakhali" }],
+  rangamati: [{ code: "4500", area: "Rangamati" }],
+
+  // RAJSHAHI DIVISION
+  rajshahi: [
+    { code: "6000", area: "Rajshahi GPO" },
+    { code: "6100", area: "Rajshahi Sadar" },
+  ],
+  bogra: [{ code: "5800", area: "Bogra" }],
+  chapainawabganj: [{ code: "6300", area: "Chapainawabganj" }],
+  joypurhat: [{ code: "5900", area: "Joypurhat" }],
+  naogaon: [{ code: "6500", area: "Naogaon" }],
+  natore: [{ code: "6400", area: "Natore" }],
+  pabna: [{ code: "6600", area: "Pabna" }],
+  sirajganj: [{ code: "6700", area: "Sirajganj" }],
+
+  // KHULNA DIVISION
+  khulna: [
+    { code: "9000", area: "Khulna GPO" },
+    { code: "9100", area: "Khulna Sadar" },
+  ],
+  bagerhat: [{ code: "9300", area: "Bagerhat" }],
+  chuadanga: [{ code: "7200", area: "Chuadanga" }],
+  jessore: [
+    { code: "7400", area: "Jessore" },
+    { code: "7401", area: "Jessore Sadar" },
+  ],
+  jhenaidah: [{ code: "7300", area: "Jhenaidah" }],
+  kushtia: [{ code: "7000", area: "Kushtia" }],
+  magura: [{ code: "7600", area: "Magura" }],
+  meherpur: [{ code: "7100", area: "Meherpur" }],
+  narail: [{ code: "7500", area: "Narail" }],
+  satkhira: [{ code: "9400", area: "Satkhira" }],
+
+  // BARISHAL DIVISION
+  barishal: [
+    { code: "8200", area: "Barishal" },
+    { code: "8201", area: "Barishal Sadar" },
+  ],
+  barguna: [{ code: "8700", area: "Barguna" }],
+  bhola: [{ code: "8300", area: "Bhola" }],
+  jhalokati: [{ code: "8400", area: "Jhalokati" }],
+  patuakhali: [{ code: "8600", area: "Patuakhali" }],
+  pirojpur: [{ code: "8500", area: "Pirojpur" }],
+
+  // SYLHET DIVISION
+  sylhet: [
+    { code: "3100", area: "Sylhet GPO" },
+    { code: "3101", area: "Sylhet Sadar" },
+    { code: "3103", area: "Zindabazar" },
+  ],
+  habiganj: [{ code: "3300", area: "Habiganj" }],
+  moulvibazar: [{ code: "3200", area: "Moulvibazar" }],
+  sunamganj: [{ code: "3000", area: "Sunamganj" }],
+
+  // RANGPUR DIVISION
+  rangpur: [
+    { code: "5400", area: "Rangpur GPO" },
+    { code: "5401", area: "Rangpur Sadar" },
+  ],
+  dinajpur: [{ code: "5200", area: "Dinajpur" }],
+  gaibandha: [{ code: "5700", area: "Gaibandha" }],
+  kurigram: [{ code: "5600", area: "Kurigram" }],
+  lalmonirhat: [{ code: "5500", area: "Lalmonirhat" }],
+  nilphamari: [{ code: "5300", area: "Nilphamari" }],
+  panchagarh: [{ code: "5000", area: "Panchagarh" }],
+  thakurgaon: [{ code: "5100", area: "Thakurgaon" }],
+
+  // MYMENSINGH DIVISION
+  mymensingh: [{ code: "2200", area: "Mymensingh" }],
+  jamalpur: [{ code: "2000", area: "Jamalpur" }],
+  netrokona: [{ code: "2400", area: "Netrokona" }],
+  sherpur: [{ code: "2100", area: "Sherpur" }],
+};
+
+export function getPostCodesByDistrict(districtId: string): PostCode[] {
+  return postCodesByDistrict[districtId] || [];
+}

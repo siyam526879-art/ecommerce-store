@@ -1,0 +1,203 @@
+﻿
+=== TIME ===
+10/19/2026 10:16:29 AM
+
+=== INTERNET ===
+
+
+ComputerName     : google.com
+RemoteAddress    : 2404:6800:4002:819::200e
+RemotePort       : 443
+InterfaceAlias   : Wi-Fi
+SourceAddress    : 2400:c600:357d:a012:2824:c2ba:f809:377
+TcpTestSucceeded : True
+
+
+
+
+
+=== DATABASE HOST ===
+Host: ep-square-surf-a1bpkoi0-pooler.ap-southeast-1.aws.neon.tech
+
+
+ComputerName     : ep-square-surf-a1bpkoi0-pooler.ap-southeast-1.aws.neon.tech
+RemoteAddress    : 2406:da18:94d:821b:df69:86d1:da7a:84f1
+RemotePort       : 5432
+InterfaceAlias   : Wi-Fi
+SourceAddress    : 2400:c600:357d:a012:2824:c2ba:f809:377
+TcpTestSucceeded : True
+
+
+
+
+
+=== PROCESSES ON PORT 3000 ===
+
+  TCP    0.0.0.0:3000           0.0.0.0:0              LISTENING       24084
+  TCP    [::]:3000              [::]:0                 LISTENING       24084
+  TCP    [::1]:1608             [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:3000             [::1]:1608             ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:3149             ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:3801             TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:5164             ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:5745             TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:6695             TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:7684             ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:7877             TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:9601             TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:11916            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:13476            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:14258            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:17123            ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:20925            ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:21948            ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:22526            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:23290            ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:29598            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:33252            ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:35800            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:37981            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:38650            ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:39235            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:40170            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:40403            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:43275            FIN_WAIT_2      24084
+  TCP    [::1]:3000             [::1]:43798            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:45804            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:46347            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:48320            ESTABLISHED     24084
+  TCP    [::1]:3000             [::1]:48822            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:50929            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:52725            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:53019            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:54690            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:59650            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:59755            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:61003            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:61575            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:62316            TIME_WAIT       0
+  TCP    [::1]:3000             [::1]:63840            FIN_WAIT_2      24084
+  TCP    [::1]:3149             [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:5164             [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:7684             [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:17123            [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:20925            [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:21948            [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:23290            [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:33252            [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:38650            [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:43275            [::1]:3000             CLOSE_WAIT      15732
+  TCP    [::1]:48320            [::1]:3000             ESTABLISHED     15732
+  TCP    [::1]:63840            [::1]:3000             CLOSE_WAIT      15732
+
+
+
+
+=== TYPESCRIPT ERRORS (src only) ===
+
+src/app/admin/categories/page.tsx(408,68): error TS18047: 'subOf' is possibly 'null'.
+src/app/admin/categories/page.tsx(486,26): error TS2322: Type 'string | null' is not assignable to type 'string 
+| Blob | undefined'.
+src/app/admin/products/page.tsx(33,23): error TS2322: Type '({ category: { id: string; name: string; image: 
+string | null; isActive: boolean; createdAt: Date; updatedAt: Date; slug: string; description: string | null; 
+parentId: string | null; order: number; }; } & { ...; })[]' is not assignable to type 'Product[]'.
+src/app/api/v1/checkout/create-intent/route.ts(8,10): error TS2305: Module '"@/lib/rate-limit"' has no exported 
+member 'checkoutLimiter'.
+src/app/api/v1/checkout/create-intent/route.ts(8,27): error TS2305: Module '"@/lib/rate-limit"' has no exported 
+member 'getClientIp'.
+src/app/api/v1/checkout/create-intent/route.ts(8,40): error TS2305: Module '"@/lib/rate-limit"' has no exported 
+member 'rateLimitResponse'.
+src/app/api/v1/seller/stats/route.ts(31,28): error TS2322: Type '{ items: { some: { product: { sellerId: string; 
+}; }; }; }' is not assignable to type 'OrderWhereInput'.
+src/app/api/v1/seller/stats/route.ts(32,28): error TS2322: Type '{ items: { some: { product: { sellerId: string; 
+}; }; }; placedAt: { gte: Date; }; }' is not assignable to type 'OrderWhereInput'.
+src/app/api/v1/seller/stats/route.ts(33,28): error TS2322: Type '{ items: { some: { product: { sellerId: string; 
+}; }; }; status: string; }' is not assignable to type 'OrderWhereInput'.
+src/app/api/v1/seller/stats/route.ts(35,9): error TS2322: Type '{ items: { some: { product: { sellerId: string; 
+}; }; }; status: { in: string[]; }; }' is not assignable to type 'OrderWhereInput'.
+src/app/api/v1/seller/stats/route.ts(39,9): error TS2322: Type '{ items: { some: { product: { sellerId: string; 
+}; }; }; placedAt: { gte: Date; }; status: { in: string[]; }; }' is not assignable to type 'OrderWhereInput'.
+src/app/api/v1/seller/stats/route.ts(43,9): error TS2322: Type '{ items: { some: { product: { sellerId: string; 
+}; }; }; placedAt: { gte: Date; lt: Date; }; status: { in: string[]; }; }' is not assignable to type 
+'OrderWhereInput'.
+src/app/api/v1/seller/stats/route.ts(49,9): error TS2322: Type '{ items: { some: { product: { sellerId: string; 
+}; }; }; }' is not assignable to type 'OrderWhereInput'.
+src/app/api/v1/seller/stats/route.ts(54,31): error TS18048: 'revenueAgg._sum' is possibly 'undefined'.
+src/app/api/v1/seller/stats/route.ts(55,29): error TS18048: 'monthRevenueAgg._sum' is possibly 'undefined'.
+src/app/api/v1/seller/stats/route.ts(56,30): error TS18048: 'lastMonthRevenueAgg._sum' is possibly 'undefined'.
+src/components/product/product-card.tsx(83,46): error TS2322: Type '{ productId: string; productName: string; }' 
+is not assignable to type 'IntrinsicAttributes & WishlistButtonProps'.
+src/lib/stripe.ts(7,5): error TS2322: Type '"2024-06-20"' is not assignable to type '"2026-09-30.endive"'.
+src/services/order.service.ts(250,39): error TS2353: Object literal may only specify known properties, and 
+'trackInventory' does not exist in type 'ProductVariantSelect<DefaultArgs>'.
+
+
+
+
+=== KEY FILES ===
+True  src\app\(public)\page.tsx
+True  src\components\layout\header.tsx
+True  src\components\layout\footer.tsx
+True  src\components\layout\logo.tsx
+True  src\app\(auth)\auth\login\page.tsx
+True  src\app\api\chat\route.ts
+True  src\app\icon.svg
+
+=== BACKUPS (newest first) ===
+
+Name                                    LastWriteTime         
+----                                    -------------         
+chat-photo-2026-10-18_10-10-32          10/18/2026 10:10:33 AM
+rename-bot-2026-10-18_09-59-21          10/18/2026 9:59:21 AM 
+chatbot2-2026-10-18_09-52-09            10/18/2026 9:52:10 AM 
+chatbot-2026-10-18_09-48-27             10/18/2026 9:48:28 AM 
+chat-ipv4-2026-10-18_09-31-26           10/18/2026 9:31:27 AM 
+chat-model2-2026-10-18_09-17-29         10/18/2026 9:17:36 AM 
+chat-model-2026-10-18_04-23-13          10/18/2026 4:23:31 AM 
+chat-model-2026-10-18_04-21-55          10/18/2026 4:22:13 AM 
+chat-db-2026-10-18_04-21-08             10/18/2026 4:21:10 AM 
+chat-fix-2026-10-18_04-18-32            10/18/2026 4:18:33 AM 
+chat-model-2026-10-18_04-15-56          10/18/2026 4:15:58 AM 
+chat-econnreset-fix-2026-10-18_04-14-14 10/18/2026 4:14:14 AM 
+chat-model-2026-10-18_04-08-26          10/18/2026 4:08:29 AM 
+chat-db-2026-10-18_04-04-12             10/18/2026 4:04:13 AM 
+chat-fix-2026-10-18_03-58-21            10/18/2026 3:58:23 AM 
+chat-2026-10-18_03-55-58                10/18/2026 3:55:58 AM 
+logo-same-2026-10-18_01-52-27           10/18/2026 1:52:28 AM 
+logo-sync-2026-10-18_01-50-12           10/18/2026 1:50:13 AM 
+help-logo2-2026-10-18_01-47-22          10/18/2026 1:47:23 AM 
+help-logo-2026-10-18_01-45-08           10/18/2026 1:45:08 AM 
+favicon-2026-10-18_01-42-54             10/18/2026 1:42:55 AM 
+settings-sidebar2-2026-10-17_21-22-23   10/17/2026 9:22:24 PM 
+settings-sidebar-2026-10-17_21-16-30    10/17/2026 9:16:34 PM 
+settings-popup-2026-10-17_21-09-46      10/17/2026 9:09:50 PM 
+website-banners-2026-10-17_20-42-47     10/17/2026 8:42:47 PM 
+settings-2026-10-17_20-39-24            10/17/2026 8:39:24 PM 
+footer2-2026-10-17_20-16-07             10/17/2026 8:16:08 PM 
+footer-2026-10-17_20-09-47              10/17/2026 8:09:48 PM 
+logout-reviews-2026-10-17_15-27-18      10/17/2026 3:27:19 PM 
+account-2026-10-17_15-19-46             10/17/2026 3:19:47 PM 
+just-for-you-2026-10-17_15-11-44        10/17/2026 3:11:44 PM 
+no-letter-icon-2026-10-17_15-05-17      10/17/2026 3:05:18 PM 
+sidebar-cleanup-2026-10-17_14-59-02     10/17/2026 2:59:10 PM 
+live-grid-2026-10-17_14-53-59           10/17/2026 2:53:59 PM 
+reviews-2026-10-17_11-09-36             10/17/2026 11:09:37 AM
+product-page-2026-10-17_10-58-57        10/17/2026 10:58:58 AM
+clean-orders-2026-10-17_10-52-46        10/17/2026 10:52:47 AM
+simple-order-2026-10-17_10-47-35        10/17/2026 10:47:36 AM
+cart-orders-2026-10-17_10-35-58         10/17/2026 10:35:59 AM
+buy-flow-2026-10-17_10-24-58            10/17/2026 10:24:59 AM
+cart-buy-2026-10-17_10-22-01            10/17/2026 10:22:01 AM
+2026-10-17_09-41-32                     10/17/2026 9:41:32 AM 
+header-account-2026-10-17_09-18-33      10/17/2026 9:18:35 AM 
+guest-login-2026-10-17_09-14-29         10/17/2026 9:14:33 AM 
+load-more-time-2026-10-17_09-04-01      10/17/2026 9:04:01 AM 
+load-more-2026-10-17_09-01-40           10/17/2026 9:01:40 AM 
+auth-modal-size-2026-10-17_08-57-17     10/17/2026 8:57:17 AM 
+auth-modal-2026-10-17_08-54-40          10/17/2026 8:54:44 AM 
+login-signup-2026-10-17_08-44-29        10/17/2026 8:44:30 AM 
+2026-10-17_06-10-01                     10/17/2026 6:10:01 AM 
+2026-10-17_06-04-44                     10/17/2026 6:04:45 AM 
+
+
+

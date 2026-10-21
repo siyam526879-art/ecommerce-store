@@ -1,0 +1,130 @@
+import { groq } from "@ai-sdk/groq";
+import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/db";
+import { setDefaultResultOrder } from "node:dns";
+
+setDefaultResultOrder("ipv4first");
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
+async function searchProducts(query: string) {
+  const terms = query
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter((t) => t.length >= 2)
+    .slice(0, 5);
+
+  const or: Prisma.ProductWhereInput[] = terms.flatMap((t) => [
+    { name: { contains: t, mode: "insensitive" } },
+    { description: { contains: t, mode: "insensitive" } },
+    { category: { name: { contains: t, mode: "insensitive" } } },
+  ]);
+
+  const where: Prisma.ProductWhereInput = { status: "ACTIVE", ...(or.length > 0 ? { OR: or } : {}) };
+
+  const rows = await prisma.product.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    take: 6,
+    include: {
+      category: { select: { name: true } },
+      images: { orderBy: { order: "asc" }, take: 1 },
+    },
+  });
+
+  const ids = rows.map((r) => r.id);
+  const variants =
+    ids.length > 0
+      ? await prisma.productVariant.findMany({
+          where: { productId: { in: ids }, isActive: true },
+          select: { productId: true, stock: true },
+        })
+      : [];
+  const stock = new Map<string, number>();
+  for (const v of variants) stock.set(v.productId, (stock.get(v.productId) ?? 0) + (v.stock ?? 0));
+
+  return Array.from(new Map(rows.map((x) => [x.name, x])).values()).map((p) => {
+    const has = stock.has(p.id);
+    const total = stock.get(p.id) ?? 0;
+    return {
+      name: p.name,
+      price: Number(p.basePrice),
+      comparePrice: p.compareAtPrice ? Number(p.compareAtPrice) : null,
+      category: p.category?.name ?? null,
+      inStock: has ? total > 0 : null,
+      stock: has ? total : null,
+      description: String(p.description ?? "").slice(0, 300),
+      url: "/product/" + p.slug,
+      image: p.images?.[0]?.url ?? null,
+    };
+  });
+}
+
+async function listCategories() {
+  const all = await prisma.category.findMany({
+    where: { isActive: true },
+    orderBy: [{ order: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, slug: true, parentId: true },
+  });
+  return all
+    .filter((c) => !c.parentId)
+    .map((c) => ({
+      name: c.name,
+      url: "/shop?category=" + c.slug,
+      subCategories: all
+        .filter((s) => s.parentId === c.id)
+        .map((s) => s.name)
+        .slice(0, 15),
+    }));
+}
+
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
+
+    const hasImage = JSON.stringify(messages).includes("\"type\":\"file\"");
+    const result = streamText({
+      model: groq(hasImage ? "meta-llama/llama-4-scout-17b-16e-instruct" : "openai/gpt-oss-120b"),
+      system:
+        "You are the Trillion Mart Assistant, a polite and helpful customer support assistant for Trillion Mart (an online store in Bangladesh). " +
+        "For ANY question about products, prices, discounts, availability or stock, or what the store sells, call the searchProducts tool. " +
+        "For questions about categories, call the listCategories tool. " +
+        "Never invent products, prices or stock: answer only from tool results. Prices are in Taka (BDT). " +
+        "If nothing is found, say so politely and suggest browsing the shop page (/shop). " +
+        "If the user sends a photo of a product: first work out what it is (type, brand or text visible on it, and what it is used for). Then call searchProducts with 1 to 3 short keywords (for example the product type or brand). If a result is the same product, say it is available and mention its price and stock. If there is no same product, recommend products from the results that do the same job, and say why using only the tool data (price, stock, description). Never claim a product is better unless the tool data shows it. If nothing similar exists, say the store does not have it. " + "Keep answers short. Always reply in the language the user writes in (Bangla or English).",
+      messages: await convertToModelMessages(messages),
+      stopWhen: stepCountIs(4),
+      tools: {
+        searchProducts: tool({
+          description:
+            "Search the store database for active products by name, keyword or category. Returns price, discount, stock and link.",
+          inputSchema: z.object({
+            query: z.string().describe("Product name or keyword, e.g. 'speaker' or 'vitamin c serum'"),
+          }),
+          execute: async ({ query }) => {
+            const products = await searchProducts(query);
+            return { products };
+          },
+        }),
+        listCategories: tool({
+          description: "List the store's main categories with their sub-categories.",
+          inputSchema: z.object({}),
+          execute: async () => {
+            const categories = await listCategories();
+            return { categories };
+          },
+        }),
+      },
+    });
+
+    return result.toUIMessageStreamResponse({
+      onError: (e) => (e instanceof Error ? e.message : String(e)),
+    });
+  } catch (error: any) {
+    console.error("API Error:", error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  }
+}

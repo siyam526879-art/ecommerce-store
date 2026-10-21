@@ -1,0 +1,186 @@
+﻿import { groq } from "@ai-sdk/groq";
+import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/db";
+import { setDefaultResultOrder } from "node:dns";
+
+setDefaultResultOrder("ipv4first");
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
+async function searchProducts(query: string) {
+  const normalized = query
+    .normalize("NFKC")
+    .toLocaleLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+    .trim();
+
+  const terms = Array.from(
+    new Set(
+      normalized
+        .split(/\s+/)
+        .map((term) => term.trim())
+        .filter((term) => term.length >= 2)
+    )
+  ).slice(0, 8);
+
+  if (terms.length === 0) {
+    return [];
+  }
+
+  const or: Prisma.ProductWhereInput[] = terms.flatMap((term) => [
+    { name: { contains: term, mode: "insensitive" } },
+    { shortDescription: { contains: term, mode: "insensitive" } },
+    { description: { contains: term, mode: "insensitive" } },
+    { category: { name: { contains: term, mode: "insensitive" } } },
+  ]);
+
+  const rows = await prisma.product.findMany({
+    where: {
+      status: "ACTIVE",
+      OR: or,
+    },
+    take: 60,
+    include: {
+      category: { select: { name: true } },
+      images: {
+        orderBy: [{ isPrimary: "desc" }, { order: "asc" }],
+        take: 1,
+      },
+      variants: {
+        where: { isActive: true },
+        select: { stock: true, price: true },
+      },
+    },
+  });
+
+  const scored = rows
+    .map((product) => {
+      const name = product.name.toLocaleLowerCase();
+      const description = [
+        product.shortDescription ?? "",
+        product.description ?? "",
+      ].join(" ").toLocaleLowerCase();
+      const category = (product.category?.name ?? "").toLocaleLowerCase();
+
+      const score = terms.reduce((total, term) => {
+        if (name === term) return total + 12;
+        if (name.includes(term)) return total + 7;
+        if (category.includes(term)) return total + 4;
+        if (description.includes(term)) return total + 1;
+        return total;
+      }, 0);
+
+      const variantStock = product.variants.reduce(
+        (total, variant) => total + Math.max(0, variant.stock),
+        0
+      );
+
+      const hasActiveVariants = product.variants.length > 0;
+      const stock = hasActiveVariants ? variantStock : product.stock;
+      const inStock = product.trackInventory ? stock > 0 : true;
+
+      return {
+        product,
+        score,
+        stock,
+        inStock,
+        variantPrices: product.variants.map((variant) => Number(variant.price)),
+      };
+    })
+    .filter((item) => item.score > 0)
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        Number(b.inStock) - Number(a.inStock) ||
+        b.product.createdAt.getTime() - a.product.createdAt.getTime()
+    )
+    .slice(0, 8);
+
+  return scored.map(({ product, stock, inStock, variantPrices }) => ({
+    name: product.name,
+    price:
+      variantPrices.length > 0
+        ? Math.min(...variantPrices)
+        : Number(product.basePrice),
+    comparePrice: product.compareAtPrice
+      ? Number(product.compareAtPrice)
+      : null,
+    category: product.category?.name ?? null,
+    inStock,
+    stock: product.trackInventory ? stock : null,
+    description: String(
+      product.shortDescription ?? product.description ?? ""
+    ).slice(0, 400),
+    url: "/product/" + product.slug,
+    image: product.images[0]?.url ?? null,
+  }));
+}
+
+async function listCategories() {
+  const all = await prisma.category.findMany({
+    where: { isActive: true },
+    orderBy: [{ order: "asc" }, { name: "asc" }],
+    select: { id: true, name: true, slug: true, parentId: true },
+  });
+  return all
+    .filter((c) => !c.parentId)
+    .map((c) => ({
+      name: c.name,
+      url: "/shop?category=" + c.slug,
+      subCategories: all
+        .filter((s) => s.parentId === c.id)
+        .map((s) => s.name)
+        .slice(0, 15),
+    }));
+}
+
+export async function POST(req: Request) {
+  try {
+    const { messages } = await req.json();
+
+    const hasImage = JSON.stringify(messages).includes("\"type\":\"file\"");
+    const result = streamText({
+      model: groq(hasImage ? "meta-llama/llama-4-scout-17b-16e-instruct" : "openai/gpt-oss-120b"),
+      system:
+        "You are the Trillion Mart Assistant, a polite and helpful customer support assistant for Trillion Mart (an online store in Bangladesh). " +
+        "For ANY question about products, prices, discounts, availability or stock, or what the store sells, call the searchProducts tool. " +
+        "For questions about categories, call the listCategories tool. " +
+        "Never invent products, prices or stock: answer only from tool results. Prices are in Taka (BDT). " +
+        "If nothing is found, say so politely and suggest browsing the shop page (/shop). " +
+        "If the user sends a photo of a product: first work out what it is (type, brand or text visible on it, and what it is used for). Then call searchProducts with 1 to 3 short keywords (for example the product type or brand). If a result is the same product, say it is available and mention its price and stock. If there is no same product, recommend products from the results that do the same job, and say why using only the tool data (price, stock, description). Never claim a product is better unless the tool data shows it. If nothing similar exists, say the store does not have it. " + "Keep answers short. Always reply in the language the user writes in (Bangla or English).",
+      messages: await convertToModelMessages(messages),
+      stopWhen: stepCountIs(4),
+      tools: {
+        searchProducts: tool({
+          description:
+            "Search the store database for active products by name, keyword or category. Returns price, discount, stock and link.",
+          inputSchema: z.object({
+            query: z.string().describe("Product name or keyword, e.g. 'speaker' or 'vitamin c serum'"),
+          }),
+          execute: async ({ query }) => {
+            const products = await searchProducts(query);
+            return { products };
+          },
+        }),
+        listCategories: tool({
+          description: "List the store's main categories with their sub-categories.",
+          inputSchema: z.object({}),
+          execute: async () => {
+            const categories = await listCategories();
+            return { categories };
+          },
+        }),
+      },
+    });
+
+    return result.toUIMessageStreamResponse({
+      onError: (e) => (e instanceof Error ? e.message : String(e)),
+    });
+  } catch (error: any) {
+    console.error("API Error:", error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  }
+}

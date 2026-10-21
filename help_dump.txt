@@ -1,0 +1,183 @@
+﻿=== src\app\help-center\page.tsx ===
+import Link from 'next/link';
+import { 
+  PackageSearch, LockKeyhole, TicketPercent, Ban, RotateCcw, CreditCard, MapPin, UserCircle, Search,
+  Tag, User, LayoutGrid, ShoppingBag, Truck, DollarSign, RefreshCcw, Store, Headphones, Phone
+} from 'lucide-react';
+
+export default function HelpCenterPage() {
+  const tools = [
+    { title: 'Track My Order', icon: PackageSearch },
+    { title: 'Reset Password', icon: LockKeyhole },
+    { title: 'My Vouchers', icon: TicketPercent },
+    { title: 'Cancel My Order', icon: Ban },
+    { title: 'Return My Order', icon: RotateCcw },
+    { title: 'My Payment Options', icon: CreditCard },
+    { title: 'Change Delivery Address', icon: MapPin },
+    { title: 'My Profile', icon: UserCircle },
+  ];
+
+  const categories = [
+    { title: 'Promotions', icon: Tag },
+    { title: 'Account Management', icon: User },
+    { title: 'Trillion Mart Categories', icon: LayoutGrid },
+    { title: 'Orders', icon: ShoppingBag },
+    { title: 'Shipping & Delivery', icon: Truck },
+    { title: 'Payments', icon: DollarSign },
+    { title: 'Returns & Refunds', icon: RefreshCcw },
+    { title: 'Sell On Trillion Mart', icon: Store },
+  ];
+
+  const topQuestions = [
+    'How do I place an order on Trillion Mart?',
+    'Can I change my order details after placing an order?',
+    'What is Trillion Mart Collection Point?',
+    'Why am I unable to use collectible vouchers?',
+    "What are the 'Delivery Timelines'?"
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#f5f5f5] pb-12 font-sans text-gray-800">
+      {/* Top Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="bg-[#f85606] text-white w-8 h-8 flex items-center justify-center rounded font-black text-xl">T</div>
+            <span className="text-2xl font-bold tracking-tight">Trillion Mart</span>
+            <span className="text-2xl text-gray-300 ml-2 font-light">|</span>
+            <span className="text-xl text-gray-600 ml-2">Help Center</span>
+          </div>
+          <div className="flex gap-8 items-center font-medium">
+            <Link href="/" className="text-[#f85606] border-b-2 border-[#f85606] pb-1">Homepage</Link>
+            <Link href="#" className="text-gray-600 hover:text-[#f85606] transition-colors pb-1">FAQ</Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Banner */}
+      <div className="bg-[#f85606] relative overflow-hidden h-[220px]">
+        <div className="absolute top-0 right-0 h-full w-[45%] bg-[#cbf1e9] z-0" style={{ clipPath: 'polygon(30% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+        <div className="absolute top-0 right-0 h-full w-[40%] bg-[#f85606] z-0" style={{ clipPath: 'polygon(40% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+
+        <div className="max-w-3xl mx-auto px-4 pt-12 relative z-10">
+          <h1 className="text-[22px] md:text-[26px] text-white font-normal mb-6 text-center">Hi customer, How can we help?</h1>
+          
+          <div className="flex max-w-2xl mx-auto w-full shadow-sm">
+            <input
+              type="text"
+              placeholder="Search for topics, questions..."
+              className="w-full px-4 py-3 bg-white text-gray-800 text-[15px] outline-none"
+            />
+            <button className="bg-[#d92027] hover:bg-[#c01a20] text-white px-6 flex items-center justify-center transition-colors">
+              <Search className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="max-w-5xl mx-auto px-4 mt-6 space-y-6">
+        
+        {/* Refund Notice */}
+        <div className="bg-white flex flex-col md:flex-row p-6 md:p-8">
+          <div className="w-full md:w-[180px] shrink-0 mb-4 md:mb-0">
+            <h2 className="text-[18px] leading-snug">
+              Refund<br/>Delay<br/>Notice
+            </h2>
+          </div>
+          <div className="text-[14.5px] leading-relaxed pr-4">
+            Dear Customer, Due to a technical issue, your bKash refund might take a little longer than the standard refund timeline. We are actively working to resolve this and are proceeding with your refund. We sincerely apologize for the inconvenience.
+          </div>
+        </div>
+
+        {/* Self Service Tools */}
+        <div className="bg-white p-6 md:p-8">
+          <h2 className="text-[18px] mb-8">Self Service Tools</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-4">
+            {tools.map((tool, idx) => {
+              const Icon = tool.icon;
+              return (
+                <div key={idx} className="flex flex-col items-center justify-center cursor-pointer group">
+                  <div className="w-14 h-14 bg-[#fdf3f3] rounded-full flex items-center justify-center text-[#f85606] mb-3 group-hover:scale-105 transition-transform">
+                    <Icon className="w-7 h-7" strokeWidth={1.5} />
+                  </div>
+                  <span className="text-[14px] text-center group-hover:text-[#f85606] transition-colors">{tool.title}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Top Questions & My Cases */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 bg-white p-6 md:p-8">
+            <h2 className="text-[18px] mb-6">Top Questions</h2>
+            <ul className="space-y-4">
+              {topQuestions.map((q, idx) => (
+                <li key={idx} className="flex items-start text-[14.5px] text-gray-700">
+                  <span className="mr-3 text-gray-400 mt-1">•</span>
+                  <span className="hover:text-[#f85606] cursor-pointer">{q}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-white p-6 md:p-8 flex flex-col">
+            <h2 className="text-[18px] mb-2">My Cases</h2>
+            <p className="text-[14.5px] text-gray-600 mb-6">To view your complaints</p>
+            <button className="w-full py-3 border-2 border-blue-600 text-blue-600 font-medium rounded hover:bg-blue-50 transition-colors">
+              Click Here
+            </button>
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className="bg-white p-6 md:p-8">
+          <h2 className="text-[18px] mb-8">Categories</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-4">
+            {categories.map((cat, idx) => {
+              const Icon = cat.icon;
+              return (
+                <div key={idx} className="flex flex-col items-center justify-center cursor-pointer group">
+                  <div className="w-14 h-14 bg-[#fdf3f3] rounded-full flex items-center justify-center text-[#f85606] mb-3 group-hover:scale-105 transition-transform">
+                    <Icon className="w-7 h-7" strokeWidth={1.5} />
+                  </div>
+                  <span className="text-[14px] text-center group-hover:text-[#f85606] transition-colors">{cat.title}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="relative flex items-center py-6">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="flex-shrink-0 mx-4 text-gray-600 text-[15px]">Trillion Mart, Our Virtual Assistant: 24/7</span>
+          <div className="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        {/* Contact Section */}
+        <div className="bg-white p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 divide-y md:divide-y-0 md:divide-x border border-gray-100">
+          <div className="flex items-center gap-4 cursor-pointer group">
+            <div className="w-14 h-14 bg-[#fdf3f3] rounded-full flex items-center justify-center text-[#f85606]">
+              <Headphones className="w-7 h-7" strokeWidth={1.5} />
+            </div>
+            <div>
+              <h3 className="text-[16px] font-medium group-hover:text-[#f85606] transition-colors">Contact Customer Care</h3>
+              <p className="text-[14px] text-gray-600 mt-1">Live Chat: 9AM - 6PM (Everyday)</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 md:pl-8 pt-6 md:pt-0 cursor-pointer group">
+            <div className="w-14 h-14 bg-[#fdf3f3] rounded-full flex items-center justify-center text-[#f85606]">
+              <Phone className="w-7 h-7" strokeWidth={1.5} />
+            </div>
+            <div>
+              <h3 className="text-[16px] font-medium group-hover:text-[#f85606] transition-colors">Call Us on 16492</h3>
+              <p className="text-[14px] text-gray-600 mt-1">9AM - 6PM (Sat - Thurs)</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}

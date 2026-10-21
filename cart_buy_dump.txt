@@ -1,0 +1,2138 @@
+﻿=== src\app\(public)\product\[slug]\page.tsx ===
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { Container } from "@/components/ui/container";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { PriceDisplay } from "@/components/product/price-display";
+import { ProductGallery } from "@/components/product/product-gallery";
+import { AddToCartButton } from "@/components/product/add-to-cart-button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Truck, RotateCcw, Shield, Package } from "lucide-react";
+import { ProductJsonLd } from "@/components/seo/product-json-ld";
+
+interface ProductPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: ProductPageProps) {
+  const { slug } = await params;
+  const product = await prisma.product.findUnique({
+    where: { slug, status: "ACTIVE" },
+    select: { name: true, metaTitle: true, metaDescription: true },
+  });
+  if (!product) return { title: "Product not found" };
+  return {
+    title: product.metaTitle ?? product.name,
+    description: product.metaDescription ?? product.name,
+  };
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { slug } = await params;
+
+  const product = await prisma.product.findUnique({
+    where: { slug, status: "ACTIVE" },
+    include: {
+      category: true,
+      images: { orderBy: { order: "asc" } },
+      variants: { where: { isActive: true } },
+      reviews: { select: { rating: true } },
+    },
+  });
+
+  if (!product) notFound();
+
+  const totalStock = product.variants.reduce((sum, v) => sum + v.stock, 0);
+  const inStock = product.trackInventory ? totalStock > 0 : true;
+
+  // Shape data for JSON-LD (Google Rich Snippets)
+  const jsonLdProduct = {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    description: product.description,
+    shortDescription: product.shortDescription,
+    sku: product.sku,
+    basePrice: Number(product.basePrice),
+    compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
+    stock: totalStock,
+    images: product.images.map((img) => ({ url: img.url, alt: img.alt })),
+    category: { name: product.category.name },
+    reviews: product.reviews,
+  };
+
+  return (
+    <Container className="py-8">
+      {/* JSON-LD â€” Google Rich Snippets (invisible) */}
+      <ProductJsonLd product={jsonLdProduct} />
+
+      <Breadcrumbs
+        items={[
+          { label: "Shop", href: "/shop" },
+          { label: product.category.name, href: `/shop/category/${product.category.slug}` },
+          { label: product.name },
+        ]}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-6">
+        {/* Gallery */}
+        <ProductGallery
+          images={product.images.map((img) => ({ url: img.url, alt: img.alt ?? product.name }))}
+        />
+
+        {/* Info */}
+        <div className="flex flex-col">
+          <span className="text-sm text-muted-foreground uppercase tracking-wide mb-2">
+            {product.category.name}
+          </span>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{product.name}</h1>
+
+          <PriceDisplay
+            price={Number(product.basePrice)}
+            compareAtPrice={product.compareAtPrice ? Number(product.compareAtPrice) : null}
+            size="lg"
+          />
+
+          <div className="mt-4">
+            {inStock ? (
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                In stock{product.trackInventory ? ` (${totalStock} available)` : ""}
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                Out of stock
+              </Badge>
+            )}
+          </div>
+
+          {product.shortDescription && (
+            <p className="text-muted-foreground mt-6 leading-relaxed">
+              {product.shortDescription}
+            </p>
+          )}
+
+          <Separator className="my-6" />
+
+          <AddToCartButton
+            productId={product.id}
+            productSlug={product.slug}
+            productName={product.name}
+            variants={product.variants.map((v) => ({
+              id: v.id,
+              price: Number(v.price),
+              stock: v.stock,
+              sku: v.sku,
+              attributes: v.attributes as Record<string, string>,
+            }))}
+            image={product.images[0]?.url}
+            disabled={!inStock}
+          />
+
+          <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t">
+            {[
+              { icon: Truck, label: "Free shipping", desc: "On orders over \u09F31,000" },
+              { icon: RotateCcw, label: "7-day returns", desc: "Easy & free" },
+              { icon: Shield, label: "Secure payment", desc: "SSL encrypted" },
+              { icon: Package, label: "Fast delivery", desc: "1-5 business days" },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <item.icon className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium">{item.label}</p>
+                  <p className="text-xs text-muted-foreground">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {product.description && (
+            <>
+              <Separator className="my-8" />
+              <div>
+                <h2 className="text-xl font-semibold mb-3">Description</h2>
+                <div className="prose prose-sm max-w-none text-muted-foreground">
+                  {product.description}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </Container>
+  );
+}
+
+=== src\components\product\add-to-cart-button.tsx ===
+"use client";
+
+import { useState } from "react";
+import { ShoppingCart, Loader2, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { QuantitySelector } from "./quantity-selector";
+import { useCartStore } from "@/lib/store/cart-store";
+import { toast } from "sonner";
+
+interface Variant {
+  id: string;
+  price: number;
+  stock: number;
+  sku?: string | null;
+  attributes?: Record<string, string>;
+}
+
+interface AddToCartButtonProps {
+  productId: string;
+  productSlug: string;
+  productName: string;
+  variants: Variant[];
+  disabled?: boolean;
+  image?: string;
+}
+
+export function AddToCartButton({
+  productId,
+  productSlug,
+  productName,
+  variants,
+  disabled,
+  image,
+}: AddToCartButtonProps) {
+  const [selectedVariantId, setSelectedVariantId] = useState<string>(variants[0]?.id ?? "");
+  const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
+  const addItem = useCartStore((s) => s.addItem);
+
+  const selectedVariant = variants.find((v) => v.id === selectedVariantId);
+  const currentStock = selectedVariant?.stock ?? 0;
+
+  const handleAdd = () => {
+    if (!selectedVariant) return;
+    setAdding(true);
+
+    addItem(
+      {
+        variantId: selectedVariant.id,
+        productId,
+        name: productName,
+        slug: productSlug,
+        price: selectedVariant.price,
+        image,
+        attributes: selectedVariant.attributes,
+        stock: selectedVariant.stock,
+      },
+      quantity
+    );
+
+    toast.success("Added to cart");
+    setTimeout(() => {
+      setAdding(false);
+      setQuantity(1);
+    }, 500);
+  };
+
+  return (
+    <div className="space-y-4">
+      {variants.length > 1 && (
+        <div>
+          <label className="text-sm font-medium mb-2 block">Options</label>
+          <div className="flex flex-wrap gap-2">
+            {variants.map((v) => {
+              const label = v.attributes
+                ? Object.values(v.attributes).join(" / ")
+                : v.sku ?? v.id.slice(0, 8);
+              return (
+                <button
+                  key={v.id}
+                  onClick={() => {
+                    setSelectedVariantId(v.id);
+                    setQuantity(1);
+                  }}
+                  disabled={v.stock <= 0}
+                  className={`px-4 py-2 rounded-md border text-sm transition-colors ${
+                    selectedVariantId === v.id
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : v.stock <= 0
+                      ? "border-muted bg-muted text-muted-foreground cursor-not-allowed line-through"
+                      : "border-border hover:border-primary"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-4">
+        <QuantitySelector
+          value={quantity}
+          onChange={setQuantity}
+          max={currentStock}
+          disabled={disabled}
+        />
+        <Button
+          onClick={handleAdd}
+          disabled={disabled || adding || currentStock <= 0}
+          className="flex-1"
+          size="lg"
+        >
+          {adding ? (
+            <>
+              <Check className="mr-2 h-4 w-4" /> Added
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              {adding ? "Adding..." : "Add to cart"}
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+=== src\components\product\quantity-selector.tsx ===
+"use client";
+
+import { Minus, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+interface QuantitySelectorProps {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+  disabled?: boolean;
+}
+
+export function QuantitySelector({
+  value,
+  onChange,
+  min = 1,
+  max = 99,
+  disabled = false,
+}: QuantitySelectorProps) {
+  const decrement = () => onChange(Math.max(min, value - 1));
+  const increment = () => onChange(Math.min(max, value + 1));
+
+  return (
+    <div className="flex items-center border rounded-md w-fit">
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9"
+        onClick={decrement}
+        disabled={disabled || value <= min}
+        aria-label="Decrease quantity"
+      >
+        <Minus className="h-4 w-4" />
+      </Button>
+      <Input
+        type="number"
+        value={value}
+        onChange={(e) => {
+          const v = parseInt(e.target.value) || min;
+          onChange(Math.max(min, Math.min(max, v)));
+        }}
+        className="h-9 w-14 border-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        min={min}
+        max={max}
+        disabled={disabled}
+      />
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9"
+        onClick={increment}
+        disabled={disabled || value >= max}
+        aria-label="Increase quantity"
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
+=== src\components\auth\login-modal.tsx ===
+"use client";
+
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
+
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+
+export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      if (mode === "login") {
+        const res = await signIn("credentials", { 
+          email, password, redirect: false 
+        });
+        if (res?.ok) {
+          onSuccess?.();
+          onClose();
+        } else {
+          alert("Invalid credentials");
+        }
+      } else {
+        // For registration, we set intent cookie and redirect
+        document.cookie = "auth_intent=register; path=/; max-age=60";
+        await signIn("google", { callbackUrl: window.location.href });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden border-0">
+        <div className="bg-[#f85606] p-4 text-white flex justify-between items-center">
+          <DialogTitle className="text-lg font-bold">
+            {mode === "login" ? "Welcome Back!" : "Join Trillon Mart"}
+          </DialogTitle>
+          <button onClick={onClose} className="hover:bg-white/20 rounded-full p-1">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        
+        <div className="p-6 space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input 
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                required 
+                placeholder="Enter your email"
+              />
+            </div>
+            
+            {mode === "login" && (
+              <div className="space-y-2">
+                <Label>Password</Label>
+                <Input 
+                  type="password" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  required 
+                  placeholder="Enter password"
+                />
+              </div>
+            )}
+
+            <Button type="submit" className="w-full bg-[#f85606] hover:bg-[#d04604] text-white" disabled={loading}>
+              {loading ? "Processing..." : (mode === "login" ? "Sign In" : "Continue with Google")}
+            </Button>
+          </form>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-muted-foreground">Or</span></div>
+          </div>
+
+          {mode === "login" ? (
+             <Button variant="outline" className="w-full" onClick={() => {
+               document.cookie = "auth_intent=register; path=/; max-age=60";
+               signIn("google", { callbackUrl: window.location.href });
+             }}>
+               Continue with Google
+             </Button>
+          ) : null}
+
+          <p className="text-center text-sm text-gray-600">
+            {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+            <button 
+              onClick={() => setMode(mode === "login" ? "register" : "login")} 
+              className="text-[#f85606] font-bold hover:underline"
+            >
+              {mode === "login" ? "Create Account" : "Sign In"}
+            </button>
+          </p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+=== src\components\auth\sign-out-button.tsx ===
+"use client";
+
+import { useState } from "react";
+import { signOut } from "next-auth/react";
+import { LogOut, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+interface SignOutButtonProps {
+  className?: string;
+  showIcon?: boolean;
+  label?: string;
+  iconClassName?: string;
+}
+
+export function SignOutButton({
+  className,
+  showIcon = true,
+  label = "Sign out",
+  iconClassName = "h-4 w-4",
+}: SignOutButtonProps) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      await signOut({ callbackUrl: "/" });
+    } catch {
+      setLoading(false);
+    }
+  };
+
+  const defaultClass =
+    "flex items-center gap-3 px-3 py-2 rounded-md text-sm w-full text-left hover:bg-muted transition-colors text-destructive";
+
+  return (
+    <>
+      <button
+        type="button"
+        className={className || defaultClass}
+        onClick={() => setOpen(true)}
+      >
+        {showIcon && <LogOut className={iconClassName} />}
+        {label}
+      </button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[380px] p-5 gap-3">
+          <DialogHeader className="space-y-1.5">
+            <div className="mx-auto mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+              <LogOut className="h-5 w-5 text-red-600" />
+            </div>
+            <DialogTitle className="text-center text-base">
+              Sign out?
+            </DialogTitle>
+            <DialogDescription className="text-center text-xs">
+              You&apos;ll need to sign in again to access your account.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex-row gap-2 sm:justify-center mt-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setOpen(false)}
+              disabled={loading}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={handleConfirm}
+              disabled={loading}
+              className="flex-1"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                  Signing out...
+                </>
+              ) : (
+                "Sign out"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+=== src\components\layout\header.tsx ===
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
+import { Container } from "@/components/ui/container";
+import { Logo } from "@/components/layout/logo";
+import { SearchBar } from "@/components/layout/search-bar";
+import { HeaderAccount } from "@/components/layout/header-account";
+
+const SITE_NAME = "Trillion Mart";
+
+export async function Header() {
+  return (
+    <header className="sticky top-0 z-50 w-full bg-[#f85606] shadow-md">
+      <div className="hidden md:block">
+        <Container>
+          <div className="flex h-9 items-center justify-end gap-8 text-xs font-medium text-white">
+            <Link href="/pages/about" className="hover:underline">SAVE MORE ON APP</Link>
+            <Link href="/auth/register" className="hover:underline">BECOME A SELLER</Link>
+            <Link href="/pages/contact" className="hover:underline">HELP &amp; SUPPORT</Link>
+            <HeaderAccount />
+          </div>
+        </Container>
+      </div>
+
+      <Container>
+        <div className="flex h-16 items-center gap-4 md:h-[72px] md:gap-6">
+          <Link href="/" className="shrink-0 hover:opacity-90" aria-label={SITE_NAME}>
+            <Logo name={SITE_NAME} variant="white" />
+          </Link>
+
+          <SearchBar siteName={SITE_NAME} />
+
+          <Link href="/cart" aria-label="Cart" className="shrink-0 text-white hover:opacity-80">
+            <ShoppingCart className="h-8 w-8" />
+          </Link>
+        </div>
+      </Container>
+    </header>
+  );
+}
+
+=== src\components\cart\cart-icon.tsx ===
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/lib/store/cart-store";
+
+export function CartIcon() {
+  const [mounted, setMounted] = useState(false);
+  const count = useCartStore((s) => s.itemCount());
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label="Cart"
+      asChild
+      className="relative"
+    >
+      <Link href="/cart">
+        <ShoppingCart className="h-5 w-5" />
+        {mounted && count > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+            {count > 99 ? "99+" : count}
+          </span>
+        )}
+      </Link>
+    </Button>
+  );
+}
+
+=== src\components\cart\CartDrawer.tsx ===
+
+=== src\components\cart\CartItemRow.tsx ===
+
+=== src\components\cart\CartSummary.tsx ===
+
+=== src\components\providers.tsx ===
+"use client";
+import { AuthModalHost } from "@/components/auth/auth-modal";
+
+import { SessionProvider } from "next-auth/react";
+import { Toaster } from "@/components/ui/sonner";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <SessionProvider>
+      {children}
+      <AuthModalHost />
+      <Toaster position="top-right" richColors />
+    </SessionProvider>
+  );
+}
+
+=== src\hooks\useAuth.ts ===
+
+=== src\hooks\useCart.ts ===
+
+=== src\lib\store\cart-store.ts ===
+"use client";
+
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+
+export interface CartItem {
+  variantId: string;
+  productId: string;
+  name: string;
+  slug: string;
+  price: number;
+  image?: string;
+  attributes?: Record<string, string>;
+  quantity: number;
+  stock: number;
+}
+
+interface CartState {
+  items: CartItem[];
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
+  removeItem: (variantId: string) => void;
+  updateQuantity: (variantId: string, quantity: number) => void;
+  clear: () => void;
+  itemCount: () => number;
+  subtotal: () => number;
+}
+
+const CART_VERSION = 6;
+
+// Detect mojibake / corrupted strings
+function cleanText(s: string): string {
+  if (typeof s !== "string") return "";
+  // Remove common mojibake sequences
+  const stripped = s.replace(/[][^\s]*/g, "").replace(/[\u0080-\u00BF]+/g, "");
+  return stripped.replace(/\s+/g, " ").trim();
+}
+
+function isCorruptedString(s: string): boolean {
+  if (typeof s !== "string") return true;
+  // Reject strings with common mojibake markers
+  if (/[]/.test(s)) return true;
+  // Reject strings with weird non-ASCII (allow standard letters + emoji ranges)
+  if (/[\u0080-\u00FF]{2,}/.test(s)) return true;
+  return false;
+}
+
+function sanitizeItems(items: any): CartItem[] {
+  if (!Array.isArray(items)) return [];
+  return items
+    .filter((i) => i && typeof i === "object")
+    .filter((i) => !isCorruptedString(i.name ?? ""))
+    .filter((i) => !isCorruptedString(i.slug ?? ""))
+    .map((i) => ({
+      variantId: String(i.variantId ?? ""),
+      productId: String(i.productId ?? ""),
+      name: cleanText(String(i.name ?? "")),
+      slug: cleanText(String(i.slug ?? "")),
+      price: Number(i.price ?? 0),
+      image: typeof i.image === "string" ? i.image : undefined,
+      attributes: i.attributes && typeof i.attributes === "object" ? i.attributes : undefined,
+      quantity: Math.max(1, Number(i.quantity ?? 1)),
+      stock: Math.max(0, Number(i.stock ?? 0)),
+    }))
+    .filter((i) => i.variantId && i.name);
+}
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      addItem: (item, quantity = 1) => {
+        set((state) => {
+          const existing = state.items.find((i) => i.variantId === item.variantId);
+          if (existing) {
+            const newQty = Math.min(existing.quantity + quantity, item.stock);
+            return {
+              items: state.items.map((i) =>
+                i.variantId === item.variantId
+                  ? { ...i, quantity: newQty, image: item.image ?? i.image }
+                  : i
+              ),
+            };
+          }
+          return {
+            items: [
+              ...state.items,
+              { ...item, name: item.name.trim(), quantity: Math.min(quantity, item.stock) },
+            ],
+          };
+        });
+      },
+      removeItem: (variantId) =>
+        set((state) => ({ items: state.items.filter((i) => i.variantId !== variantId) })),
+      updateQuantity: (variantId, quantity) =>
+        set((state) => ({
+          items: state.items.map((i) =>
+            i.variantId === variantId
+              ? { ...i, quantity: Math.max(1, Math.min(quantity, i.stock)) }
+              : i
+          ),
+        })),
+      clear: () => set({ items: [] }),
+      itemCount: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+      subtotal: () => get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    }),
+    {
+      name: "ecommerce-cart",
+      storage: createJSONStorage(() => localStorage),
+      version: CART_VERSION,
+      migrate: (persistedState: any, version: number) => {
+        if (version < CART_VERSION) {
+          // Sanitize instead of full clear
+          const clean = sanitizeItems(persistedState?.items);
+          return { items: clean };
+        }
+        return persistedState;
+      },
+      merge: (persistedState: any, currentState) => {
+        // ALWAYS sanitize on every rehydrate  even same version
+        const clean = sanitizeItems(persistedState?.items);
+        return { ...currentState, items: clean };
+      },
+    }
+  )
+);
+
+=== src\store\cart.store.ts ===
+
+=== src\lib\auth.ts ===
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+import { cookies } from "next/headers";
+import * as bcrypt from "bcryptjs";
+import { prisma } from "./db";
+import { loginSchema } from "./validators/auth.schema";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
+  trustHost: true,
+  pages: {
+    signIn: "/auth/login",
+    error: "/auth/login",
+    newUser: "/", 
+  },
+  providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const parsed = loginSchema.safeParse(credentials);
+        if (!parsed.success) return null;
+
+        const { email, password } = parsed.data;
+        const user = await prisma.user.findUnique({
+          where: { email: email.toLowerCase() },
+        });
+
+        if (!user || !user.passwordHash || !user.isActive) return null;
+
+        const valid = await bcrypt.compare(password, user.passwordHash);
+        if (!valid) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          image: user.image,
+        };
+      },
+    }),
+  ],
+  callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        const email = user.email?.toLowerCase();
+        if (!email) return false;
+
+        const existingUser = await prisma.user.findUnique({
+          where: { email },
+          select: { id: true, isActive: true },
+        });
+
+        if (existingUser) {
+          if (!existingUser.isActive) {
+            return "/auth/login?error=AccountDisabled";
+          }
+          return true;
+        }
+
+        const cookieStore = await cookies();
+        const intent = cookieStore.get("auth_intent")?.value;
+
+        if (intent === "register") {
+          return true; 
+        }
+
+        return "/auth/login?error=SignupRequired";
+      }
+      return true;
+    },
+
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as { role?: string }).role;
+      }
+      if (!token.role && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: { role: true, id: true },
+        });
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.id = dbUser.id;
+        }
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (session.user && token) {
+        (session.user as { id?: string; role?: string }).id = token.id as string;
+        (session.user as { id?: string; role?: string }).role = token.role as string;
+      }
+      return session;
+    },
+    
+    async redirect({ url, baseUrl }) {
+      // Always redirect to home page after login/register
+      return baseUrl;
+    }
+  },
+});
+
+=== src\lib\auth-guard.ts ===
+import { auth } from "./auth";
+import { ForbiddenError, UnauthorizedError } from "./errors";
+import { Permission, hasPermission } from "./permissions";
+
+export async function requireUser() {
+  const session = await auth();
+  if (!session?.user?.id) throw new UnauthorizedError("You must be signed in");
+  return {
+    id: session.user.id as string,
+    email: session.user.email as string,
+    role: (session.user as any).role as string,
+  };
+}
+
+export async function requireRole(...roles: string[]) {
+  const user = await requireUser();
+  if (!roles.includes(user.role)) throw new ForbiddenError("Insufficient permissions");
+  return user;
+}
+
+export async function requirePermission(permission: Permission) {
+  const user = await requireUser();
+  if (!hasPermission(user.role, permission)) {
+    throw new ForbiddenError(`Missing permission: ${permission}`);
+  }
+  return user;
+}
+
+export function getRequestInfo(request: Request) {
+  return {
+    ip: request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? undefined,
+    userAgent: request.headers.get("user-agent") ?? undefined,
+  };
+}
+
+=== src\app\(public)\cart\page.tsx ===
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { Trash2, ArrowRight, ShoppingBag } from "lucide-react";
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { QuantitySelector } from "@/components/product/quantity-selector";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/layout/page-header";
+import { useCartStore } from "@/lib/store/cart-store";
+import { formatPrice, cleanProductName } from "@/lib/utils";
+
+export default function CartPage() {
+  const items = useCartStore((s) => s.items);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const subtotalSelector = useCartStore((s) => s.subtotal);
+
+  const subtotalValue =
+    typeof subtotalSelector === "function"
+      ? (subtotalSelector as () => number)()
+      : (subtotalSelector as number);
+
+  if (items.length === 0) {
+    return (
+      <>
+        <PageHeader title="Shopping Cart" breadcrumbs={[{ label: "Cart" }]} />
+        <Container className="py-16">
+          <EmptyState
+            icon={ShoppingBag}
+            title="Your cart is empty"
+            description="Looks like you haven't added anything yet."
+            action={{ label: "Start shopping", href: "/shop" }}
+          />
+        </Container>
+      </>
+    );
+  }
+
+  const shipping = subtotalValue >= 1000 ? 0 : 60;
+  const total = subtotalValue + shipping;
+
+  return (
+    <>
+      <PageHeader title="Shopping Cart" breadcrumbs={[{ label: "Cart" }]} />
+      <Container className="py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
+          <div className="space-y-4">
+            {items.map((item) => (
+              <Card key={item.variantId}>
+                <CardContent className="p-4 flex gap-4">
+                  <div className="relative w-24 h-24 flex-shrink-0 rounded-md overflow-hidden bg-muted">
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={cleanProductName(item.name)}
+                        fill
+                        sizes="96px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <ShoppingBag className="h-8 w-8 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between gap-2">
+                      <div>
+                        <Link
+                          href={`/product/${item.slug}`}
+                          className="font-medium hover:text-primary line-clamp-2"
+                        >
+                          {cleanProductName(item.name)}
+                        </Link>
+                        {item.attributes && Object.keys(item.attributes).length > 0 && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {Object.entries(item.attributes)
+                              .map(([k, v]) => `${k}: ${v}`)
+                              .join(" / ")}
+                          </p>
+                        )}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeItem(item.variantId)}
+                        aria-label="Remove"
+                      >
+                        <Trash2 className="h-4 w-4 text-muted-foreground" />
+                      </Button>
+                    </div>
+                    <div className="flex items-end justify-between mt-3">
+                      <QuantitySelector
+                        value={item.quantity}
+                        onChange={(q) => updateQuantity(item.variantId, q)}
+                        max={item.stock}
+                      />
+                      <div className="text-right">
+                        <p className="font-semibold">
+                          {formatPrice(item.price * item.quantity)}
+                        </p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-muted-foreground">
+                            {formatPrice(item.price)} each
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div>
+            <Card>
+              <CardContent className="p-6 space-y-4">
+                <h2 className="text-lg font-semibold">Order summary</h2>
+                <Separator />
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>{formatPrice(subtotalValue)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>{shipping === 0 ? "Free" : formatPrice(shipping)}</span>
+                  </div>
+                  {shipping > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      Add {formatPrice(1000 - subtotalValue)} more for free shipping
+                    </p>
+                  )}
+                </div>
+                <Separator />
+                <div className="flex justify-between font-semibold text-base">
+                  <span>Total</span>
+                  <span>{formatPrice(total)}</span>
+                </div>
+                <Button asChild className="w-full" size="lg">
+                  <Link href="/checkout">
+                    Proceed to checkout <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/shop">Continue shopping</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </Container>
+    </>
+  );
+}
+
+=== src\app\(public)\checkout\page.tsx ===
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Loader2, Check, Lock, CreditCard, Banknote } from "lucide-react";
+import { Container } from "@/components/ui/container";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { PageHeader } from "@/components/layout/page-header";
+import { useCartStore } from "@/lib/store/cart-store";
+import { formatPrice, cleanProductName } from "@/lib/utils";
+import { toast } from "sonner";
+import { StripeCheckoutForm } from "@/components/checkout/stripe-checkout-form";
+import { SearchableSelect } from "@/components/ui/searchable-select";
+import { divisions, getDistrictsByDivision } from "@/lib/data/bangladesh";
+import { getThanasByDistrict } from "@/lib/data/bangladesh-thanas";
+import { getPostCodesByDistrict } from "@/lib/data/bangladesh-postcodes";
+
+const addressSchema = z.object({
+  fullName: z.string().min(2, "Required"),
+  line1: z.string().min(2, "Required"),
+  line2: z.string().optional(),
+  city: z.string().min(2, "Required"),
+  state: z.string().optional(),
+  postalCode: z.string().min(1, "Required"),
+  thana: z.string().min(1, "Required"),
+  country: z.string().min(2, "Required").default("Bangladesh"),
+  phone: z.string().optional(),
+  email: z.string().email("Valid email required"),
+});
+
+type PaymentMethod = "card" | "cod";
+
+const steps = ["Information", "Shipping", "Payment", "Review"];
+
+export default function CheckoutPage() {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const items = useCartStore((s) => s.items);
+  const subtotal = useCartStore((s) => s.subtotal());
+  const clearCart = useCartStore((s) => s.clear);
+
+  const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [address, setAddress] = useState<z.infer<typeof addressSchema> | null>(null);
+  const [shippingMethod, setShippingMethod] = useState<"inside" | "outside">("inside");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [notes, setNotes] = useState("");
+  const [codEnabled, setCodEnabled] = useState(true); // Default enabled
+
+  // Stripe state
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [stripeError, setStripeError] = useState<string | null>(null);
+
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<z.infer<typeof addressSchema>>({
+    resolver: zodResolver(addressSchema) as any,
+    defaultValues: {
+      fullName: session?.user?.name ?? "",
+      email: session?.user?.email ?? "",
+      country: "Bangladesh",
+    },
+  });
+
+  const selectedDivision = watch("state") || "";
+  const selectedDistrict = watch("city") || "";
+  const selectedThana = watch("thana") || "";
+  const selectedPostCode = watch("postalCode") || "";
+  const selectedDistrictId = (() => {
+    const divId = divisions.find((d) => d.name === selectedDivision)?.id;
+    if (!divId) return "";
+    return getDistrictsByDivision(divId).find((d) => d.name === selectedDistrict)?.id ?? "";
+  })();
+
+  useEffect(() => {
+    if (items.length === 0) router.replace("/cart");
+  }, [items.length, router]);
+
+  // Check COD availability
+  useEffect(() => {
+    fetch("/api/v1/admin/settings")
+      .then((r) => r.json())
+      .then(({ data }) => setCodEnabled(data.settings["payments.cod.enabled"] === true))
+      .catch(() => setCodEnabled(true)); // Keep enabled on error
+  }, []);
+
+  const shippingCost = shippingMethod === "outside" ? 120 : 60;
+  const total = subtotal + shippingCost;
+
+  const onAddressSubmit = (data: z.infer<typeof addressSchema>) => {
+    setAddress(data);
+    setStep(1);
+  };
+
+  const initiateCardPayment = async () => {
+    if (!session?.user?.id) {
+      toast.error("Please sign in to complete your order");
+      window.dispatchEvent(new CustomEvent("open-auth-modal", { detail: "login" }));
+      return;
+    }
+    if (!address) return;
+
+    setLoading(true);
+    setStripeError(null);
+    try {
+      // Create address
+      const addrRes = await fetch("/api/v1/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: address.fullName,
+          line1: address.line1,
+          line2: address.line2,
+          city: address.city,
+          state: address.state,
+          postalCode: address.postalCode,
+          country: address.country,
+          phone: address.phone,
+          label: "Checkout",
+        }),
+      });
+      const addrText = await addrRes.text();
+      let addrJson: any = {};
+      try { addrJson = addrText ? JSON.parse(addrText) : {}; } catch { addrJson = {}; }
+      if (!addrRes.ok) throw new Error(addrJson.error?.message ?? `Address error (${addrRes.status})`);
+
+      // Create payment intent
+      const intentRes = await fetch("/api/v1/checkout/create-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: (useCartStore.getState().items).map((i) => ({
+            variantId: i.variantId,
+            quantity: i.quantity,
+          })),
+          addressId: addrJson.data.address.id,
+          deliveryZone: shippingMethod,
+          notes: notes || undefined,
+        }),
+      });
+      const intentText = await intentRes.text();
+      let intentJson: any = {};
+      try { intentJson = intentText ? JSON.parse(intentText) : {}; } catch { intentJson = {}; }
+      if (!intentRes.ok) {
+        throw new Error(intentJson.error?.message ?? "Payment initialization failed");
+      }
+
+      setClientSecret(intentJson.data.clientSecret);
+      setOrderNumber(intentJson.data.orderNumber);
+      setStep(2);
+    } catch (err: any) {
+      toast.error(err.message);
+      setStripeError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const placeCodOrder = async () => {
+    if (!session?.user?.id) {
+      toast.error("Please sign in");
+      window.dispatchEvent(new CustomEvent("open-auth-modal", { detail: "login" }));
+      return;
+    }
+    if (!address) return;
+
+    setLoading(true);
+    try {
+      const addrRes = await fetch("/api/v1/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: address.fullName,
+          line1: address.line1,
+          line2: address.line2,
+          city: address.city,
+          state: address.state,
+          postalCode: address.postalCode,
+          country: address.country,
+          phone: address.phone,
+          label: "Checkout",
+        }),
+      });
+      const addrText = await addrRes.text();
+      let addrJson: any = {};
+      try { addrJson = addrText ? JSON.parse(addrText) : {}; } catch { addrJson = {}; }
+      if (!addrRes.ok) throw new Error(addrJson.error?.message ?? `Address error (${addrRes.status})`);
+
+      const codRes = await fetch("/api/v1/checkout/cod", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: (useCartStore.getState().items).map((i) => ({
+            variantId: i.variantId,
+            quantity: i.quantity,
+          })),
+          addressId: addrJson.data.address.id,
+          deliveryZone: shippingMethod,
+          notes: notes || undefined,
+        }),
+      });
+      const codText = await codRes.text();
+      let codJson: any = {};
+      try { codJson = codText ? JSON.parse(codText) : {}; } catch { codJson = {}; }
+      if (!codRes.ok) throw new Error(codJson.error?.message ?? `Order failed (${codRes.status})`);
+
+      clearCart();
+      toast.success("Order placed! Pay on delivery.");
+      router.push(`/checkout/success?order=${codJson.data.orderNumber}`);
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    clearCart();
+    if (orderNumber) {
+      router.push(`/checkout/success?order=${orderNumber}`);
+    }
+  };
+
+  if (items.length === 0) return null;
+
+  return (
+    <>
+      <PageHeader
+        title="Checkout"
+        breadcrumbs={[{ label: "Cart", href: "/cart" }, { label: "Checkout" }]}
+      />
+      <Container className="py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
+          <div>
+            {/* Step indicator */}
+            <div className="flex items-center gap-2 mb-8">
+              {steps.map((s, i) => (
+                <div key={s} className="flex items-center gap-2 flex-1">
+                  <div
+                    className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                      i <= step ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {i < step ? <Check className="h-4 w-4" /> : i + 1}
+                  </div>
+                  <span className={`text-sm hidden sm:inline ${i <= step ? "font-medium" : "text-muted-foreground"}`}>
+                    {s}
+                  </span>
+                  {i < steps.length - 1 && <div className="flex-1 h-px bg-border" />}
+                </div>
+              ))}
+            </div>
+
+            {/* Step 0: Address */}
+            {step === 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contact & Shipping Address</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit(onAddressSubmit as any)} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Field label="Full name" error={errors.fullName?.message}>
+                        <Input {...register("fullName")} />
+                      </Field>
+                      <Field label="Email" error={errors.email?.message}>
+                        <Input type="email" {...register("email")} />
+                      </Field>
+                    </div>
+                    <Field label="Address line 1" error={errors.line1?.message}>
+                      <Input {...register("line1")} />
+                    </Field>
+                    <Field label="Address line 2 (optional)">
+                      <Input {...register("line2")} />
+                    </Field>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <Field label="District *" error={errors.city?.message}>
+                        <SearchableSelect options={getDistrictsByDivision(divisions.find((d) => d.name === selectedDivision)?.id || "").map((d) => ({ value: d.name, label: d.name, sublabel: d.bn }))} value={selectedDistrict} onChange={(v) => { setValue("city", v, { shouldValidate: true }); setValue("thana", "", { shouldValidate: false }); setValue("postalCode", "", { shouldValidate: false }); }} placeholder={selectedDivision ? "Select district" : "Select division first"} searchPlaceholder="Search district (English / Bangla)..." openUpward={true} disabled={!selectedDivision} />
+                      </Field>
+                      <Field label="Thana / Upazila *" error={errors.thana?.message}>
+                        <SearchableSelect options={getThanasByDistrict(selectedDistrictId).map((t) => ({ value: t.name, label: t.name }))} value={selectedThana} onChange={(v) => setValue("thana", v, { shouldValidate: true })} placeholder={selectedDistrict ? "Select thana" : "Select district first"} searchPlaceholder="Search thana..." openUpward={true} disabled={!selectedDistrictId} />
+                      </Field>
+                      <Field label="Division" error={errors.state?.message}>
+                        <SearchableSelect options={divisions.map((d) => ({ value: d.name, label: d.name, sublabel: d.bn }))} value={selectedDivision} onChange={(v) => { setValue("state", v, { shouldValidate: true }); setValue("city", "", { shouldValidate: false }); }} placeholder="Select division" searchPlaceholder="Search division (English / Bangla)..." openUpward={true} />
+                      </Field>
+                      <Field label="Post code" error={errors.postalCode?.message}>
+                        <SearchableSelect options={getPostCodesByDistrict(selectedDistrictId).map((p) => ({ value: p.code, label: p.code, sublabel: p.area }))} value={selectedPostCode} onChange={(v) => setValue("postalCode", v, { shouldValidate: true })} placeholder={selectedDistrictId ? "Select post code" : "Select district first"} searchPlaceholder="Search post code..." openUpward={true} disabled={!selectedDistrictId} />
+                      </Field>
+                      </div>
+                    <Field label="Phone (optional)">
+                      <Input type="tel" {...register("phone")} />
+                    </Field>
+                    <Button type="submit" className="w-full">
+                      Continue to shipping
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Step 1: Shipping */}
+            {step === 1 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Shipping method</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {[
+                    { id: "inside", label: "Inside Dhaka", desc: "Delivery within Dhaka city (1-2 days)", price: 60 },
+                    { id: "outside", label: "Outside Dhaka", desc: "All other districts (3-5 days)", price: 120 },
+                  ].map((m) => (
+                    <label
+                      key={m.id}
+                      className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer ${
+                        shippingMethod === m.id ? "border-primary bg-primary/5" : "hover:border-muted-foreground"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="shipping"
+                          checked={shippingMethod === m.id}
+                          onChange={() => setShippingMethod(m.id as any)}
+                          className="h-4 w-4"
+                        />
+                        <div>
+                          <p className="font-medium">{m.label}</p>
+                          <p className="text-sm text-muted-foreground">{m.desc}</p>
+                        </div>
+                      </div>
+                      <span className="font-semibold">{m.price === 0 ? "Free" : formatPrice(m.price)}</span>
+                    </label>
+                  ))}
+
+                  <div className="space-y-2 pt-4">
+                    <Label>Order notes (optional)</Label>
+                    <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
+                  </div>
+
+                  <div className="flex gap-2 pt-4">
+                    <Button variant="outline" onClick={() => setStep(0)}>Back</Button>
+                    <Button className="flex-1" onClick={() => setStep(2)}>
+                      Continue to payment
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Step 2: Payment */}
+            {step === 2 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Lock className="h-4 w-4" /> Payment method
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {!clientSecret ? (
+                    <>
+                      <div className="space-y-2">
+                        <button
+                          onClick={() => setPaymentMethod("card")}
+                          className={`w-full flex items-center justify-between p-4 rounded-lg border ${
+                            paymentMethod === "card" ? "border-primary bg-primary/5" : "hover:border-muted-foreground"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <CreditCard className="h-5 w-5" />
+                            <div className="text-left">
+                              <p className="font-medium">Credit / Debit card</p>
+                              <p className="text-xs text-muted-foreground">Secure payment via Stripe</p>
+                            </div>
+                          </div>
+                          <input type="radio" checked={paymentMethod === "card"} readOnly className="h-4 w-4" />
+                        </button>
+
+                        {codEnabled && (
+                          <button
+                            onClick={() => setPaymentMethod("cod")}
+                            className={`w-full flex items-center justify-between p-4 rounded-lg border ${
+                              paymentMethod === "cod" ? "border-primary bg-primary/5" : "hover:border-muted-foreground"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Banknote className="h-5 w-5" />
+                              <div className="text-left">
+                                <p className="font-medium">Cash on delivery</p>
+                                <p className="text-xs text-muted-foreground">Pay when you receive your order</p>
+                              </div>
+                            </div>
+                            <input type="radio" checked={paymentMethod === "cod"} readOnly className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2 pt-4">
+                        <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
+                        <Button
+                          className="flex-1"
+                          onClick={() => {
+                            if (paymentMethod === "cod") {
+                              setStep(3);
+                            } else {
+                              initiateCardPayment();
+                            }
+                          }}
+                          disabled={loading}
+                        >
+                          {loading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Preparing payment...
+                            </>
+                          ) : paymentMethod === "cod" ? (
+                            "Review order"
+                          ) : (
+                            "Continue to payment"
+                          )}
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground">
+                        Order <span className="font-mono font-semibold">{orderNumber}</span>  Complete payment below
+                      </p>
+                      <StripeCheckoutForm
+                        clientSecret={clientSecret}
+                        orderNumber={orderNumber!}
+                        onSuccess={handlePaymentSuccess}
+                        onError={(err) => setStripeError(err)}
+                      />
+                      {stripeError && (
+                        <p className="text-sm text-destructive">{stripeError}</p>
+                      )}
+                      <Button variant="ghost" className="w-full" onClick={() => { setClientSecret(null); setStep(1); }}>
+                         Change payment method
+                      </Button>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Step 3: Review (COD only) */}
+            {step === 3 && paymentMethod === "cod" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Review your order</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-medium mb-1">Shipping to</h4>
+                    {address && (
+                      <p className="text-sm text-muted-foreground">
+                        {address.fullName}<br />
+                        {address.line1}{address.line2 && `, ${address.line2}`}<br />
+                        {address.city}, {address.state} {address.postalCode}<br />
+                        {address.country}
+                      </p>
+                    )}
+                  </div>
+                  <Separator />
+                  <div>
+                    <h4 className="text-sm font-medium mb-1">Payment</h4>
+                    <p className="text-sm text-muted-foreground">Cash on delivery  pay when you receive your order</p>
+                  </div>
+                  <Separator />
+                  <div>
+                    <h4 className="text-sm font-medium mb-1">Items ({items.length})</h4>
+                    <ul className="space-y-2 text-sm">
+                      {items.map((i) => (
+                        <li key={i.variantId} className="flex justify-between">
+                          <span className="text-muted-foreground">{cleanProductName(i.name)}  {i.quantity}</span>
+                          <span>{formatPrice(i.price * i.quantity)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="flex gap-2 pt-4">
+                    <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
+                    <Button className="flex-1" onClick={placeCodOrder} disabled={loading}>
+                      {loading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Placing order...
+                        </>
+                      ) : (
+                        `Place order  ${formatPrice(total)}`
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Summary sidebar */}
+          <div>
+            <Card className="sticky top-20">
+              <CardContent className="p-6 space-y-4">
+                <h3 className="font-semibold">Order summary</h3>
+                <ul className="space-y-2 text-sm">
+                  {items.map((i) => (
+                    <li key={i.variantId} className="flex justify-between gap-2">
+                      <span className="text-muted-foreground truncate">{cleanProductName(i.name)}  {i.quantity}</span>
+                      <span className="flex-shrink-0">{formatPrice(i.price * i.quantity)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Separator />
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>{formatPrice(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>{formatPrice(shippingCost)}</span>
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex justify-between text-lg font-semibold">
+                  <span>Total</span>
+                  <span>{formatPrice(total)}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </Container>
+    </>
+  );
+}
+
+function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      {children}
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+=== src\app\(public)\checkout\success\page.tsx ===
+export default function Page() { return <div className='p-8'><h1 className='text-2xl font-bold'>Success</h1></div>; }
+
+=== src\app\api\v1\cart\route.ts ===
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { auth } from "@/lib/auth";
+import { z } from "zod";
+
+const addItemSchema = z.object({
+  variantId: z.string(),
+  quantity: z.number().int().min(1).max(99).default(1),
+});
+
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return success({ items: [] });
+
+    const cart = await prisma.cart.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        items: {
+          include: {
+            variant: {
+              include: {
+                product: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    images: { take: 1, orderBy: [{ isPrimary: "desc" }, { order: "asc" }] },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!cart) return success({ items: [] });
+
+    const items = cart.items.map((item) => ({
+      variantId: item.variantId,
+      productId: item.variant.productId,
+      name: item.variant.product.name,
+      slug: item.variant.product.slug,
+      price: Number(item.variant.price),
+      image: item.variant.product.images[0]?.url,
+      attributes: item.variant.attributes as Record<string, string>,
+      quantity: item.quantity,
+      stock: item.variant.stock,
+    }));
+
+    return success({ items });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return Response.json({ success: false, error: { code: "UNAUTHORIZED" } }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const parsed = addItemSchema.safeParse(body);
+    if (!parsed.success) {
+      return Response.json(
+        { success: false, error: { code: "VALIDATION_ERROR", issues: parsed.error.issues } },
+        { status: 400 }
+      );
+    }
+
+    const { variantId, quantity } = parsed.data;
+
+    const variant = await prisma.productVariant.findUnique({
+      where: { id: variantId, isActive: true },
+      include: { product: { select: { status: true } } },
+    });
+
+    if (!variant || variant.product.status !== "ACTIVE") {
+      return Response.json(
+        { success: false, error: { code: "NOT_FOUND", message: "Product variant not found" } },
+        { status: 404 }
+      );
+    }
+
+    if (variant.stock < quantity) {
+      return Response.json(
+        { success: false, error: { code: "INSUFFICIENT_STOCK" } },
+        { status: 400 }
+      );
+    }
+
+    const cart = await prisma.cart.upsert({
+      where: { userId: session.user.id },
+      update: {},
+      create: { userId: session.user.id },
+    });
+
+    await prisma.cartItem.upsert({
+      where: { cartId_variantId: { cartId: cart.id, variantId } },
+      update: { quantity: { increment: quantity } },
+      create: { cartId: cart.id, variantId, quantity },
+    });
+
+    return success({ ok: true });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return Response.json({ success: false, error: { code: "UNAUTHORIZED" } }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { variantId, quantity } = z.object({
+      variantId: z.string(),
+      quantity: z.number().int().min(0).max(99),
+    }).parse(body);
+
+    const cart = await prisma.cart.findUnique({ where: { userId: session.user.id } });
+    if (!cart) return success({ ok: true });
+
+    if (quantity === 0) {
+      await prisma.cartItem.deleteMany({
+        where: { cartId: cart.id, variantId },
+      });
+    } else {
+      await prisma.cartItem.updateMany({
+        where: { cartId: cart.id, variantId },
+        data: { quantity },
+      });
+    }
+
+    return success({ ok: true });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+export async function DELETE() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return Response.json({ success: false, error: { code: "UNAUTHORIZED" } }, { status: 401 });
+    }
+
+    await prisma.cartItem.deleteMany({
+      where: { cart: { userId: session.user.id } },
+    });
+
+    return success({ ok: true });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+=== src\app\api\v1\cart\items\[id]\route.ts ===
+import { NextResponse } from 'next/server';
+export async function GET() { return NextResponse.json({ ok: true }); }
+
+=== src\app\api\v1\checkout\route.ts ===
+import { NextResponse } from 'next/server';
+export async function GET() { return NextResponse.json({ ok: true }); }
+
+=== src\app\api\v1\checkout\cod\route.ts ===
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { requireUser, getRequestInfo } from "@/lib/auth-guard";
+import { logAudit } from "@/lib/audit";
+import { createOrder } from "@/services/order.service";
+import { sendEmail, orderConfirmationHtml } from "@/lib/email";
+import { z } from "zod";
+
+const schema = z.object({
+  items: z
+    .array(
+      z.object({
+        variantId: z.string().min(1),
+        quantity: z.number().int().min(1),
+      })
+    )
+    .min(1, "Cart is empty"),
+  addressId: z.string().min(1),
+  deliveryZone: z.enum(["inside", "outside"]).optional(),
+  notes: z.string().optional(),
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const user = await requireUser();
+
+    // ===== COD enabled check =====
+    const codSetting = await prisma.siteSetting.findUnique({
+      where: { key: "payments.cod.enabled" },
+    });
+
+    let codEnabled = true;
+    if (codSetting) {
+      const v = codSetting.value as any;
+      codEnabled = v === true || v === "true";
+    }
+
+    if (!codEnabled) {
+      return Response.json(
+        {
+          success: false,
+          error: {
+            code: "COD_DISABLED",
+            message: "Cash on delivery is not available",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // ===== Parse body =====
+    const body = schema.parse(await request.json());
+
+    // ===== SYNC client items  DB cart =====
+    // Service reads from DB cart, so we must sync first
+    const cart = await prisma.cart.upsert({
+      where: { userId: user.id },
+      update: {},
+      create: { userId: user.id },
+    });
+
+    // Clear existing cart items
+    await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+
+    // Insert fresh items
+    for (const item of body.items) {
+      await prisma.cartItem.create({
+        data: {
+          cartId: cart.id,
+          variantId: item.variantId,
+          quantity: item.quantity,
+        },
+      });
+    }
+
+    // ===== Create order via service (reads from DB cart) =====
+    const result = await createOrder({
+      userId: user.id,
+      shippingAddressId: body.addressId,
+      deliveryZone: body.deliveryZone,
+      paymentMethod: "cod",
+      notes: body.notes,
+    });
+
+    const order = result.order;
+
+    // ===== Send confirmation email (optional) =====
+    const orderWithItems = await prisma.order.findUnique({
+      where: { id: order.id },
+      include: {
+        user: true,
+        items: { select: { name: true, quantity: true, price: true } },
+      },
+    });
+
+    if (orderWithItems && orderWithItems.user.email) {
+      try {
+        await sendEmail({
+          to: orderWithItems.user.email,
+          subject: "Order " + orderWithItems.orderNumber + " confirmed",
+          html: orderConfirmationHtml({
+            orderNumber: orderWithItems.orderNumber,
+            customerName: orderWithItems.user.name || "Customer",
+            total: Number(orderWithItems.total),
+            items: orderWithItems.items.map((i) => ({
+              name: i.name,
+              quantity: i.quantity,
+              price: Number(i.price),
+            })),
+          }),
+        });
+      } catch (emailErr) {
+        console.error("[COD EMAIL FAILED]", emailErr);
+      }
+    }
+
+    // ===== Audit log =====
+    await logAudit({
+      userId: user.id,
+      action: "COD_ORDER_PLACED",
+      resource: "order",
+      resourceId: order.id,
+      metadata: {
+        orderNumber: order.orderNumber,
+        total: order.total,
+      },
+      ...getRequestInfo(request),
+    });
+
+    return success(
+      {
+        orderNumber: order.orderNumber,
+        orderId: order.id,
+      },
+      201
+    );
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+=== src\app\api\v1\checkout\validate\route.ts ===
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/db";
+import { success, errorResponse } from "@/lib/api-response";
+import { requireUser } from "@/lib/auth-guard";
+import { z } from "zod";
+
+// Client calls this to validate cart before showing payment UI
+const schema = z.object({
+  couponCode: z.string().optional(),
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const user = await requireUser();
+    const { couponCode } = schema.parse(await request.json());
+
+    const cart = await prisma.cart.findUnique({
+      where: { userId: user.id },
+      include: {
+        items: {
+          include: {
+            variant: {
+              include: {
+                product: { select: { name: true, status: true, trackInventory: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!cart || cart.items.length === 0) {
+      return success({ valid: false, error: "Cart is empty" });
+    }
+
+    const issues: string[] = [];
+    let subtotal = 0;
+
+    for (const item of cart.items) {
+      if (item.variant.product.status !== "ACTIVE") {
+        issues.push(`"${item.variant.product.name}" is no longer available`);
+      } else if (item.variant.product.trackInventory && item.variant.stock < item.quantity) {
+        issues.push(`Only ${item.variant.stock} left of "${item.variant.product.name}"`);
+      } else {
+        subtotal += Number(item.variant.price) * item.quantity;
+      }
+    }
+
+    // Validate coupon
+    let discount = 0;
+    if (couponCode) {
+      const coupon = await prisma.coupon.findUnique({
+        where: { code: couponCode.toUpperCase(), isActive: true },
+      });
+      if (!coupon) {
+        issues.push("Invalid coupon code");
+      } else {
+        const now = new Date();
+        if (coupon.startsAt && coupon.startsAt > now) issues.push("Coupon not yet active");
+        if (coupon.expiresAt && coupon.expiresAt < now) issues.push("Coupon has expired");
+        if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) issues.push("Coupon usage limit reached");
+        if (coupon.minOrder && subtotal < Number(coupon.minOrder)) {
+          issues.push(`Minimum order ${Number(coupon.minOrder)} required`);
+        }
+        if (coupon.type === "PERCENT") discount = (subtotal * Number(coupon.value)) / 100;
+        else if (coupon.type === "FIXED") discount = Math.min(Number(coupon.value), subtotal);
+      }
+    }
+
+    return success({
+      valid: issues.length === 0,
+      issues,
+      subtotal,
+      discount,
+      itemCount: cart.items.reduce((sum, i) => sum + i.quantity, 0),
+    });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
+
+=== src\lib\validators\order.schema.ts ===
+
+=== src\middleware.ts ===
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+
+  // Security headers
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(self)"
+  );
+
+  // Content Security Policy
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://va.vercel-scripts.com",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data:",
+    "connect-src 'self' https://api.stripe.com wss://api.stripe.com https://nominatim.openstreetmap.org",
+    "frame-src https://js.stripe.com https://hooks.stripe.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join("; ");
+
+  response.headers.set("Content-Security-Policy", csp);
+
+  return response;
+}
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|uploads).*)"],
+};
+

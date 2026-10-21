@@ -1,0 +1,400 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Loader2, Upload, X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+
+const schema = z.object({
+  name: z.string().min(2, "Name required"),
+  description: z.string().optional(),
+  shortDescription: z.string().optional(),
+  basePrice: z.coerce.number().min(0),
+  compareAtPrice: z.coerce.number().min(0).optional(),
+  sku: z.string().optional(),
+  categoryId: z.string().min(1, "Category required"),
+  status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
+  isFeatured: z.boolean(),
+  stock: z.coerce.number().int().min(0),
+  trackInventory: z.boolean(),
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof schema>;
+
+interface Props {
+  categories: Array<{ id: string; name: string }>;
+  product?: any;
+}
+
+export function ProductForm({ categories, product }: Props) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState<string[]>(
+    product?.images?.map((i: any) => i.url) ?? []
+  );
+  const [uploading, setUploading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema) as any,
+    defaultValues: {
+      name: product?.name ?? "",
+      description: product?.description ?? "",
+      shortDescription: product?.shortDescription ?? "",
+      basePrice: product ? Number(product.basePrice) : 0,
+      compareAtPrice: product?.compareAtPrice
+        ? Number(product.compareAtPrice)
+        : undefined,
+      sku: product?.sku ?? "",
+      categoryId: product?.categoryId ?? "",
+      status: product?.status ?? "DRAFT",
+      isFeatured: product?.isFeatured ?? false,
+      stock: product?.stock ?? 0,
+      trackInventory: product?.trackInventory ?? true,
+      metaTitle: product?.metaTitle ?? "",
+      metaDescription: product?.metaDescription ?? "",
+    },
+  });
+
+  // ✅ Watch values for controlled components
+  const categoryId = watch("categoryId");
+  const status = watch("status");
+  const isFeatured = watch("isFeatured");
+  const trackInventory = watch("trackInventory");
+
+  const handleImageUpload = async (files: FileList | null) => {
+    if (!files) return;
+    setUploading(true);
+    try {
+      const newUrls: string[] = [];
+      for (const file of Array.from(files)) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/v1/admin/upload", {
+          method: "POST",
+          body: fd,
+        });
+        if (!res.ok) throw new Error("Upload failed");
+        const { data } = await res.json();
+        newUrls.push(data.url);
+      }
+      setImages((prev) => [...prev, ...newUrls]);
+      toast.success(`${newUrls.length} image(s) uploaded`);
+    } catch {
+      toast.error("Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const [descUploading, setDescUploading] = useState(false);
+  const addDescImages = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setDescUploading(true);
+    try {
+      let add = "";
+      for (const file of Array.from(files)) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/v1/admin/upload", { method: "POST", body: fd });
+        if (!res.ok) throw new Error("Upload failed");
+        const { data } = await res.json();
+        add += "\n[img:" + data.url + "]\n";
+      }
+      setValue("description", (watch("description") ?? "") + add);
+      toast.success("Photo added to details");
+    } catch {
+      toast.error("Upload failed");
+    } finally {
+      setDescUploading(false);
+    }
+  };
+
+  const onSubmit = async (data: FormValues) => {
+    setLoading(true);
+    try {
+      const url = product
+        ? `/api/v1/admin/products/${product.id}`
+        : "/api/v1/admin/products";
+      const method = product ? "PATCH" : "POST";
+
+      const payload = {
+        ...data,
+        images,
+        compareAtPrice: data.compareAtPrice || undefined,
+      };
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        throw new Error(json.error?.message ?? `Failed (${res.status})`);
+      }
+
+      toast.success(product ? "Product updated" : "Product created");
+      
+      if (product) {
+        // Edit mode: just go back
+        router.push("/admin/products");
+      } else {
+        // Create mode: reset form + go to list
+        reset();
+        setImages([]);
+        router.push("/admin/products");
+      }
+      router.refresh();
+    } catch (err: any) {
+      toast.error(err.message ?? "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+    >
+      <div className="lg:col-span-2 space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Basic information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Field label="Name" error={errors.name?.message}>
+              <Input {...register("name")} />
+            </Field>
+            <Field label="Short description">
+              <Input {...register("shortDescription")} />
+            </Field>
+            <Field label="Description">
+              <div className="space-y-2">
+                <Textarea rows={8} {...register("description")} />
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded border px-3 py-1.5 text-sm font-medium hover:bg-muted/50">
+                  {descUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  Add photo to details
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    className="hidden"
+                    disabled={descUploading}
+                    onChange={(e) => {
+                      addDescImages(e.target.files);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              </div>
+            </Field>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Images</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-4 gap-3">
+              {images.map((url, i) => (
+                <div
+                  key={i}
+                  className="relative aspect-square rounded border overflow-hidden bg-muted group"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  {i === 0 && (
+                    <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded">
+                      Primary
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setImages((prev) => prev.filter((_, idx) => idx !== i))
+                    }
+                    className="absolute top-1 right-1 bg-background/80 rounded p-1 opacity-0 group-hover:opacity-100"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+              <label className="aspect-square rounded border-2 border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50">
+                {uploading ? (
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                ) : (
+                  <>
+                    <Upload className="h-6 w-6 text-muted-foreground mb-1" />
+                    <span className="text-xs text-muted-foreground">Upload</span>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => handleImageUpload(e.target.files)}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>SEO</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Field label="Meta title">
+              <Input {...register("metaTitle")} />
+            </Field>
+            <Field label="Meta description">
+              <Textarea rows={3} {...register("metaDescription")} />
+            </Field>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Organization</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Field label="Category" error={errors.categoryId?.message}>
+              <Select
+                value={categoryId || undefined}
+                onValueChange={(v) => setValue("categoryId", v, { shouldValidate: true })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+
+            <Field label="Status">
+              <Select
+                value={status}
+                onValueChange={(v) => setValue("status", v as any)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DRAFT">Draft</SelectItem>
+                  <SelectItem value="ACTIVE">Active</SelectItem>
+                  <SelectItem value="ARCHIVED">Archived</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="featured"
+                checked={isFeatured}
+                onCheckedChange={(c) => setValue("isFeatured", !!c)}
+              />
+              <Label htmlFor="featured">Featured product</Label>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Pricing & inventory</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Field label="Base price" error={errors.basePrice?.message}>
+              <Input type="number" step="0.01" {...register("basePrice")} />
+            </Field>
+            <Field label="Compare at price">
+              <Input type="number" step="0.01" {...register("compareAtPrice")} />
+            </Field>
+            <Field label="SKU">
+              <Input {...register("sku")} />
+            </Field>
+            <Field label="Stock">
+              <Input type="number" {...register("stock")} />
+            </Field>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="track"
+                checked={trackInventory}
+                onCheckedChange={(c) => setValue("trackInventory", !!c)}
+              />
+              <Label htmlFor="track">Track inventory</Label>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex gap-2 sticky bottom-4 bg-background p-3 rounded-lg border">
+          <Button type="submit" className="flex-1" disabled={loading}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {product ? "Save changes" : "Create product"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.back()}
+          >
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </form>
+  );
+}
+
+function Field({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      {children}
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
+}
