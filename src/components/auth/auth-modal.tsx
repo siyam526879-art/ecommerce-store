@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -44,7 +44,7 @@ function Social({ label }: { label: string }) {
         <button type="button" onClick={() => signIn("google", { callbackUrl: "/account" })} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
           <GoogleIcon /> Google
         </button>
-        <button type="button" onClick={() => signIn("facebook")} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+        <button type="button" onClick={() => window.alert("Facebook Sign-In is currently unavailable. Please use Google or email and password.")} className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-500" aria-label="Facebook Sign-In currently unavailable">
           <FacebookIcon /> Facebook
         </button>
       </div>
@@ -360,3 +360,4 @@ export function AuthModalHost() {
     </div>
   );
 }
+
