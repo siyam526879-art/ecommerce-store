@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -28,8 +28,8 @@ export function HeaderAccount() {
   if (status !== "authenticated") {
     return (
       <>
-        <button type="button" onClick={() => openAuth("login")} className="hover:underline">LOGIN</button>
-        <button type="button" onClick={() => openAuth("register")} className="hover:underline">SIGN UP</button>
+        <button type="button" onClick={() => openAuth("login")} className="whitespace-nowrap rounded-md px-2 py-2 font-semibold text-white hover:bg-white/15 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">LOGIN</button>
+        <button type="button" onClick={() => openAuth("register")} className="whitespace-nowrap rounded-md px-2 py-2 font-semibold text-white hover:bg-white/15 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">SIGN UP</button>
       </>
     );
   }
@@ -73,3 +73,4 @@ export function HeaderAccount() {
     </div>
   );
 }
+

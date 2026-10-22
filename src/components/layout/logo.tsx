@@ -1,4 +1,4 @@
-export function LogoMark({ className = "h-10 w-10" }: { className?: string }) {
+﻿export function LogoMark({ className = "h-10 w-10" }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
       <defs>
@@ -43,14 +43,15 @@ export function Logo({ name = "Trillion Mart", variant = "white" }: { name?: str
   const text = variant === "white" ? "text-white" : "text-[#f85606]";
   return (
     <span className={"flex items-center gap-2.5 " + text}>
-      {variant === "white" ? <LogoMark className="h-10 w-10 shrink-0" /> : <LogoMarkOrange className="h-10 w-10 shrink-0" />}
+      {variant === "white" ? <LogoMark className="h-8 w-8 shrink-0 sm:h-10 sm:w-10" /> : <LogoMarkOrange className="h-8 w-8 shrink-0 sm:h-10 sm:w-10" />}
       <span className="flex flex-col leading-none">
         <span className="flex items-baseline gap-1 whitespace-nowrap">
-          <span className="text-[26px] font-extrabold tracking-tight">{first}</span>
-          <span className="text-[26px] font-light tracking-tight">{rest.join(" ")}</span>
+          <span className="text-[18px] font-extrabold tracking-tight sm:text-[26px]">{first}</span>
+          <span className="text-[18px] font-light tracking-tight sm:text-[26px]">{rest.join(" ")}</span>
         </span>
         <span className="mt-1 h-2 w-full rounded-b-[100%] border-b-[3px] border-[#ffc400]" />
       </span>
     </span>
   );
 }
+

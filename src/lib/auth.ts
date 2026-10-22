@@ -1,4 +1,4 @@
-﻿import NextAuth from "next-auth";
+import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -55,6 +55,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
+        if (
+          credentials.portal === "customer" &&
+          (user.role === "ADMIN" || user.role === "STAFF")
+        ) {
+          return null;
+        }
+
         return {
           id: user.id,
           email: user.email,
@@ -73,13 +80,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const existingUser = await prisma.user.findUnique({
           where: { email },
-          select: { id: true, isActive: true },
+          select: { id: true, isActive: true, role: true },
         });
 
         if (existingUser) {
           if (!existingUser.isActive) {
             return "/auth/login?error=AccountDisabled";
           }
+
+          // Google sign-in from the customer-facing flow must not admit staff/admin.
+          if (existingUser.role === "ADMIN" || existingUser.role === "STAFF") {
+            return false;
+          }
+
           return true;
         }
 
@@ -124,7 +137,3 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async redirect({ url, baseUrl }) { if (url.startsWith("/")) return `${baseUrl}${url}`; if (new URL(url).origin === baseUrl) return url; return baseUrl; }
   },
 });
-
-
-
-

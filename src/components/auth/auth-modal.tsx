@@ -41,7 +41,7 @@ function Social({ label }: { label: string }) {
     <div className="mt-6 text-center">
       <p className="mb-3 text-sm text-gray-500">{label}</p>
       <div className="flex items-center justify-center gap-8">
-        <button type="button" onClick={() => signIn("google")} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+        <button type="button" onClick={() => signIn("google", { callbackUrl: "/account" })} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
           <GoogleIcon /> Google
         </button>
         <button type="button" onClick={() => signIn("facebook")} className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
@@ -183,6 +183,7 @@ export function AuthModalHost() {
       const res = await signIn("credentials", {
         redirect: false,
         email: ident,
+        portal: "customer",
         identifier: ident,
         phone: ident,
         username: ident,

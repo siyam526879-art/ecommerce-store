@@ -81,19 +81,19 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-3 text-center">
+    <main className="flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-slate-50 px-3 py-8 sm:px-6 sm:py-12">
+      <Card className="mx-auto w-full min-w-0 max-w-md shadow-lg">
+        <CardHeader className="space-y-3 px-4 text-center sm:px-6">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white">
             <ShieldCheck className="h-6 w-6" />
           </div>
-          <CardTitle className="text-2xl">Admin & Seller Login</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl leading-tight sm:text-2xl">Admin & Seller Login</CardTitle>
+          <CardDescription className="text-sm leading-relaxed">
             Sign in using your authorized staff account.
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="px-4 pb-6 sm:px-6">
           {errorMsg && (
             <div role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {errorMsg}
@@ -131,7 +131,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="h-11 w-full touch-manipulation text-base font-semibold" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -151,5 +151,6 @@ export default function LoginPage() {
     </main>
   );
 }
+
 
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
@@ -19,7 +19,7 @@ export function SignOutConfirm({ open, onClose }: { open: boolean; onClose: () =
   const yes = async () => {
     setBusy(true);
     try {
-      await signOut({ callbackUrl: "/auth/login" });
+      await signOut({ callbackUrl: "/home" });
     } catch {
       setBusy(false);
     }

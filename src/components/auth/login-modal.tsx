@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -29,7 +29,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
     try {
       if (mode === "login") {
         const res = await signIn("credentials", { 
-          email, password, redirect: false 
+          email, password, portal: "customer", redirect: false 
         });
         if (res?.ok) {
           onSuccess?.();
@@ -120,3 +120,4 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
     </Dialog>
   );
 }
+

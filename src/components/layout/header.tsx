@@ -1,10 +1,11 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { CartButton } from "@/components/cart/cart-button";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/layout/logo";
 import { SearchBar } from "@/components/layout/search-bar";
 import { HeaderAccount } from "@/components/layout/header-account";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 const SITE_NAME = "Trillion Mart";
 
@@ -49,14 +50,36 @@ export async function Header() {
       </div>
 
       <Container>
-        <div className="flex h-16 items-center gap-4 md:h-[72px] md:gap-6">
+        <div className="flex min-w-0 items-center gap-2 py-3 md:h-[72px] md:gap-6 md:py-0">
+          <div className="shrink-0 md:hidden">
+            <MobileNav items={[
+              { href: "/home", label: "Home" },
+              { href: "/shop", label: "Shop All" },
+              { href: "/categories", label: "Categories" },
+              { href: "/cart", label: "Shopping Cart" },
+              { href: "/account", label: "My Account" },
+              { href: "/account/orders", label: "My Orders" },
+              { href: "/help-center", label: "Help Center" }
+            ]} />
+          </div>
+
           <Link href="/" className="shrink-0 hover:opacity-90" aria-label={SITE_NAME}>
             <Logo name={SITE_NAME} variant="white" />
           </Link>
 
-          <SearchBar siteName={SITE_NAME} />
+          <div className="hidden min-w-0 flex-1 md:block">
+            <SearchBar siteName={SITE_NAME} />
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2 text-[10px] sm:text-xs md:hidden">
+            <HeaderAccount />
+          </div>
 
           <CartButton />
+        </div>
+
+        <div className="min-w-0 pb-3 md:hidden">
+          <SearchBar siteName={SITE_NAME} />
         </div>
       </Container>
     </header>
